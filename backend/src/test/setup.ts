@@ -2,8 +2,9 @@
 import path from 'path';
 // import { app } from '../app';
 
+require('dotenv').config({path: path.resolve('./src/test/.env')});
+
 beforeAll(async () => {
-    require('dotenv').config({path: path.resolve('./src/test/.env')});
     expect(process.env.DB_USER).toBeDefined();
     expect(process.env.DB_PWD).toBeDefined();
     expect(process.env.DB_NAME).toBeDefined();

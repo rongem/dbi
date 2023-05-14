@@ -1,3 +1,5 @@
+import { authorizationTableName } from "../utils/config.templates";
+
 export class EnvironmentController {
     private constructor() {
         if (!this.dbName) {
@@ -46,19 +48,11 @@ export class EnvironmentController {
         return process.env.DB_INSTANCE?.trim() ?? '';
     }
 
-    get corsOrigin() {
-        return process.env.CORS_ORIGIN?.trim() ?? '*';
-    }
-
     get authMode() {
         return process.env.AUTH_MODE?.trim().toLocaleLowerCase() ?? 'ntlm';
     }
 
-    get ldapDomain() {
-        return process.env.LDAP_DOMAIN?.trim() ?? undefined;
-    }
-
-    get ldapServer() {
-        return process.env.LDAP_SERVER?.trim() ?? undefined;
+    get authTableName() {
+        return process.env.AUTH_TABLENAME?.trim() ?? authorizationTableName;
     }
 }

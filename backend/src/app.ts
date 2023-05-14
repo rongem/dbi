@@ -5,7 +5,8 @@ import ntlm = require('express-ntlm');
 import { error404 } from './controllers/error.controller';
 import { HttpError } from './models/rest-api/httpError.model';
 import { EnvironmentController } from './controllers/environment.controller';
-// import restRouter from './routes/rest.routes';
+import { getAuthentication } from './controllers/auth.controller';
+import tablesRouter from './routes/tables.routes';
 
 const app = express();
 
@@ -26,6 +27,9 @@ if (env.authMode === 'ntlm') {
     }
     app.use(ntlm(ntlmOptions));
 }
+
+// app.use('/rest', express.json({limit: '50mb'}), getAuthentication, restRouter);
+app.use('/tables', getAuthentication, tablesRouter);
 
 app.use('/', error404);
 
