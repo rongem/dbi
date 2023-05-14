@@ -1,16 +1,10 @@
 // import { checkDatabase } from './models/db';
 
 import { app } from './app';
+import { checkDatabase } from './models/db';
 
-let exp: any;
-
-// checkDatabase().then((result) => {
-//     if (result === true) {
-//         const server = app.listen(8000);
-//         exp = server;
-//     }
-// });
-
-export default () => exp;
-
-
+checkDatabase().then((result) => {
+    if (result === true) {
+        app.listen(8000);
+    }
+});

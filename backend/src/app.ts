@@ -27,6 +27,9 @@ if (env.authMode === 'ntlm') {
 app.use('/tables', getAuthentication, tablesRouter);
 app.use('/table', getAuthentication, tableRouter);
 
+const path = __dirname + '/views';
+app.use(express.static(path));
+app.get('/', (req, res) => res.sendFile(path + '/index.html'));
 app.use('/', error404);
 
 app.use((error: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {
