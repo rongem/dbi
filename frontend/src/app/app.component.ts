@@ -2,7 +2,6 @@ import { ChangeDetectorRef, Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs';
 import packageJson from '../../package.json';
-import { EnvService } from './lib/services/env.service';
 import * as StoreSelectors from './lib/store/store.selectors';
 @Component({
   selector: 'app-root',
@@ -29,8 +28,8 @@ export class AppComponent {
   }
 
   get headerText() {
-    return this.env.headerText;
+    return this.store.select(StoreSelectors.databaseName);
   }
 
-  constructor(private cd: ChangeDetectorRef, private store: Store, private env: EnvService) {};
+  constructor(private cd: ChangeDetectorRef, private store: Store) {};
 }

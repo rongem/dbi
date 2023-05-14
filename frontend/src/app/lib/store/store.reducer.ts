@@ -1,8 +1,17 @@
-import { Action, createReducer, on } from "@ngrx/store";
+import { Action, ActionReducerMap, createReducer, on } from "@ngrx/store";
 import * as StoreActions from './store.actions';
 import { Table } from "../models/rest-backend/table.model";
 
 export const STORE = 'STORE';
+
+export interface AppState {
+    [STORE]: State,
+}
+
+export const appReducer: ActionReducerMap<AppState> = {
+    [STORE]: storeReducer,
+};
+
 
 export interface State {
     tablesLoaded: boolean;
@@ -11,6 +20,7 @@ export interface State {
     tables: Table[];
     selectedTable?: Table;
     userName?: string;
+    databaseName?: string;
     error?: string;
 };
 
@@ -28,12 +38,14 @@ export function storeReducer(appState: State | undefined, appAction: Action) {
         on(StoreActions.retrieveUser, (state, action) => ({
             ...state,
             userName: undefined,
+            databaseName: undefined,
             notAuthorized: false,
             working: true,
         })),
         on(StoreActions.setUser, (state, action) => ({
             ...state,
             userName: action.name,
+            databaseName: action.databaseName,
             notAuthorized: !action.isAuthorized,
             working: false,
         })),

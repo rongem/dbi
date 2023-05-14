@@ -3,6 +3,9 @@ import * as mssql from 'mssql';
 import { pool } from '../db';
 import { User } from '../data/user.model';
 import { HttpError } from '../rest-api/httpError.model';
+import { EnvironmentController } from '../../controllers/environment.controller';
+
+const env = EnvironmentController.instance;
 
 export const readUser = async (name: string): Promise<User> => {
     try {
@@ -11,9 +14,9 @@ export const readUser = async (name: string): Promise<User> => {
         const result = await req.query(`SELECT * FROM [BoatExt_Authorizations] WHERE [Username]=@name`);
         if (result.rowsAffected.length === 1 && result.rowsAffected[0] === 0) {
             createUser(name);
-            return {name, isAuthorized: false};
+            return {name, isAuthorized: false, databaseName: env.dbName};
         }
-        const user: User = { name: result.recordset[0].Username, isAuthorized: result.recordset[0].Allowed };
+        const user: User = { name: result.recordset[0].Username, isAuthorized: result.recordset[0].Allowed, databaseName: env.dbName };
         return user;
     } catch (error: any) {
         console.log('readUser', error);
@@ -21,7 +24,7 @@ export const readUser = async (name: string): Promise<User> => {
     }
 };
 
-const createUser = async (name: string) => {
+const createUser = async (name: string): Promise<User> => {
     try {
         const req = await pool.then(connection => new mssql.Request(connection));
         req.input('name', mssql.NVarChar(70), name);
@@ -32,6 +35,7 @@ const createUser = async (name: string) => {
         return {
             name: '',
             isAuthorized: false,
+            databaseName: env.dbName,
         }
     } catch (error: any) {
         console.log('createUser', error);
