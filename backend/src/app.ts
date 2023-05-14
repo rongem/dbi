@@ -7,6 +7,7 @@ import { HttpError } from './models/rest-api/httpError.model';
 import { EnvironmentController } from './controllers/environment.controller';
 import { getAuthentication } from './controllers/auth.controller';
 import tablesRouter from './routes/tables.routes';
+import tableRouter from './routes/table.route';
 
 const app = express();
 
@@ -19,17 +20,12 @@ if (env.authMode === 'ntlm') {
         //     console.log('debug-ntlm', args);
         // },
     };
-    if (!!env.ldapDomain) {
-        ntlmOptions.domain = env.ldapDomain;
-    }
-    if (!!env.ldapServer) {
-        ntlmOptions.domaincontroller = env.ldapServer;
-    }
     app.use(ntlm(ntlmOptions));
 }
 
-// app.use('/rest', express.json({limit: '50mb'}), getAuthentication, restRouter);
+// express.json({limit: '50mb'}) -> after route to enhance upload size
 app.use('/tables', getAuthentication, tablesRouter);
+app.use('/table', getAuthentication, tableRouter);
 
 app.use('/', error404);
 

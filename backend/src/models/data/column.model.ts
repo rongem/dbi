@@ -10,7 +10,7 @@ export interface Column {
     isNullable: boolean;
     dataType: SqlType;
     characterData?: {
-        maximumCharacterLenght: number;
+        maximumCharacterLength: number;
         characterSetName: string;
         collationName: string;
     };
