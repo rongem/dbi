@@ -1,14 +1,15 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { map } from 'rxjs';
 import packageJson from '../../package.json';
 import * as StoreSelectors from './lib/store/store.selectors';
+import { loadTables, retrieveUser } from './lib/store/store.actions';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'Datenbank-Importer';
   version = packageJson.version;
   busy = false;
@@ -31,5 +32,10 @@ export class AppComponent {
     return this.store.select(StoreSelectors.databaseName);
   }
 
-  constructor(private cd: ChangeDetectorRef, private store: Store) {};
+  constructor(private cd: ChangeDetectorRef, private store: Store) {}
+  
+  ngOnInit(): void {
+    this.store.dispatch(retrieveUser());
+  }
+;
 }

@@ -15,3 +15,7 @@ export const error = createSelector(appState, state => state.error);
 export const notAuthorized = createSelector(appState, state => state.notAuthorized);
 
 export const isAuthenticated = createSelector(appState, state => !!state.userName);
+
+export const tables = createSelector(appState, state => state.tables);
+
+export const schemas = createSelector(tables, tables => [...new Set(tables.map(t => t.schema))].sort());

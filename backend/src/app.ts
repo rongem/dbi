@@ -7,7 +7,8 @@ import { HttpError } from './models/rest-api/httpError.model';
 import { EnvironmentController } from './controllers/environment.controller';
 import { getAuthentication } from './controllers/auth.controller';
 import tablesRouter from './routes/tables.routes';
-import tableRouter from './routes/table.route';
+import tableRouter from './routes/table.routes';
+import userRouter from './routes/user.routes';
 
 const app = express();
 
@@ -26,6 +27,7 @@ if (env.authMode === 'ntlm') {
 // express.json({limit: '50mb'}) -> after route to enhance upload size
 app.use('/tables', getAuthentication, tablesRouter);
 app.use('/table', getAuthentication, tableRouter);
+app.use('/user', getAuthentication, userRouter);
 
 const path = __dirname + '/views';
 app.use(express.static(path));
