@@ -2,7 +2,7 @@
 <p>Die Datenbank besitzt mehrere Schemas. In jedem Schema befinden sich Tabellen, die aber erst angezeigt werden, wenn Sie das
     Schema ausgewählt haben. Bei Fragen zum korrekten Schema wenden Sie sich an Ihren Datenbankbetreuer.</p>
 <div class="card-container">
-    <button type="button" class="card" *ngFor="let schema of (schemas | async)" [routerLink]="['/', 'schema', schema]">
+    <button type="button" class="card selectable" *ngFor="let schema of (schemas | async)" [routerLink]="['/', 'schema', schema]">
         <h2>{{schema}}</h2>
     </button>
 </div>
