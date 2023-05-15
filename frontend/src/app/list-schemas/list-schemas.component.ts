@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import * as StoreSelectors from '../lib/store/store.selectors';
 import { Subscription } from 'rxjs';
+import * as StoreSelectors from '../lib/store/store.selectors';
 
 @Component({
   selector: 'app-list-schemas',

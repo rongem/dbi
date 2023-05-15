@@ -19,3 +19,5 @@ export const isAuthenticated = createSelector(appState, state => !!state.userNam
 export const tables = createSelector(appState, state => state.tables);
 
 export const schemas = createSelector(tables, tables => [...new Set(tables.map(t => t.schema))].sort());
+
+export const tableNamesForSchema = (schema: string) => createSelector(tables, tables => tables.filter(t => t.schema === schema).map(t => t.name).sort());
