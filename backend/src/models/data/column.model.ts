@@ -19,4 +19,7 @@ export interface Column {
         numericScale: number;
     };
     typeInfo: tsTypeInfo;
+    primary: boolean;
+    foreignKey: boolean;
+    unique: boolean;
 }

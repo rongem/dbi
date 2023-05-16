@@ -9,7 +9,7 @@ const env = EnvironmentController.instance;
 
 export const readUser = async (name: string): Promise<User> => {
     try {
-        const req = await pool.then(connection => new mssql.Request(connection));
+        const req = await pool().then(connection => new mssql.Request(connection));
         req.input('name', mssql.NVarChar(70), name);
         const result = await req.query(`SELECT * FROM [BoatExt_Authorizations] WHERE [Username]=@name`);
         if (result.rowsAffected.length === 1 && result.rowsAffected[0] === 0) {
@@ -26,7 +26,7 @@ export const readUser = async (name: string): Promise<User> => {
 
 const createUser = async (name: string): Promise<User> => {
     try {
-        const req = await pool.then(connection => new mssql.Request(connection));
+        const req = await pool().then(connection => new mssql.Request(connection));
         req.input('name', mssql.NVarChar(70), name);
         const result = await req.query(`INSERT INTO [BoatExt_Authorizations] ([Username], [Allowed]) VALUES (@name, 0)`);
         if (result.rowsAffected.length !== 1 || result.rowsAffected[0] !== 1) {

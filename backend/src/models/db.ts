@@ -24,21 +24,29 @@ const sqlConfig: config = {
 
 const poolPromise = new ConnectionPool(sqlConfig);
 
-export const pool = poolPromise
-    .connect()
-    .then(pool => {
-        console.debug('Connected to', sqlConfig.server, sqlConfig.options?.instanceName, sqlConfig.database);
-        return pool;
-    }).catch(err => {
-        console.error('Database Connection Failed! Bad Config: ', err)
-        return undefined;
-    });
+let connectedPool: ConnectionPool;
 
-export const requestPromise = pool.then(connection => new Request(connection));
+export const pool = async () => {
+    if (connectedPool) return connectedPool;
+    const p = await poolPromise.connect()
+        .then(pool => {
+            console.debug('Connected to', sqlConfig.server, sqlConfig.options?.instanceName, sqlConfig.database);
+            return pool;
+        }).catch(err => {
+            console.error('Database Connection Failed! Bad Config: ', err)
+            throw new Error(err);
+        });
+    return connectedPool = p;
+}
+
+export const requestPromise = async () => {
+    const connection = await pool();
+    return new Request(connection);
+};
 
 // preflight check if connection works and all tables and stored procedures exist
 export const checkDatabase = async () => {
-    const req = await requestPromise;
+    const req = await requestPromise();
     try {
         let result = (await req.query(sqlGetAllTableNamesCurrentUserHasRights)).recordset.map(r => r.TABLE_NAME as string);
         if (!result.includes(env.authTableName)) {
