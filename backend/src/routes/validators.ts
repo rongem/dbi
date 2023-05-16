@@ -1,8 +1,8 @@
 import { CustomValidator, param } from 'express-validator';
-import { escape } from 'tsqlstring'
+import SqlString from 'tsqlstring'
 import { retrieveTableNames } from '../controllers/table.controller';
 
-const sqlStringValidator: CustomValidator = (value: string) => value === escape(value);
+const sqlStringValidator: CustomValidator = (value: string) => `'${value}'` === SqlString.escape(value);
 
 export const schemaValidator = param('schemaName')
     .exists().withMessage('SchemaName nicht vorhanden')

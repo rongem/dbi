@@ -17,7 +17,6 @@ export class ListSchemasComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription = this.schemas.subscribe(schemas => {
-      console.log(schemas);
       if (schemas.length === 1) {
         this.router.navigateByUrl('/schema/' + schemas[0], {replaceUrl: true});
       }

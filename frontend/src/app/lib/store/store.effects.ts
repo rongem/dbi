@@ -35,6 +35,17 @@ export class StoreEffects {
         })
     ), {dispatch: false});
 
+    selectTable$ = createEffect(() => this.actions$.pipe(
+        ofType(StoreActions.selectTable),
+        switchMap(table => this.dbi.loadColumns(table)),
+        map(columns => {
+            if (columns) {
+                console.log(columns);
+                this.store.dispatch(StoreActions.columnsLoaded({columns}));
+            }
+        })
+    ), {dispatch: false});
+
     constructor(private actions$: Actions,
         private store: Store,
         private dbi: DbiService) {}

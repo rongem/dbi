@@ -23,7 +23,6 @@ export class ListTablesComponent implements OnInit, OnDestroy {
         this.schemaName = schema;
       }
     });
-    // this.schemas.subscribe()
   }
   ngOnDestroy(): void {
     this.subscription?.unsubscribe();
