@@ -1,1 +1,29 @@
-<p>table works!</p>
+<div></div>
+<table class="table">
+    <thead>
+        <tr>
+            <th *ngFor="let column of columns; let i = index"
+                draggable="true"
+                (dragstart)="onDragStart($event, i)"
+                (dragend)="onDragEnd()"
+                (dragover)="onDragOver($event, i)"
+                (drop)="onDrop(i)"
+                [ngClass]="{dragging: this.sourceIndex === i, target: presumedTargetIndex === i, primary: (getColumn(columns[i]) | async)?.primary, foreign: (getColumn(columns[i]) | async)?.foreignKey}"
+                class="position-relative">
+                {{(getColumn(columns[i]) | async)?.name}}
+                <span class="visually-hidden" *ngIf="(getColumn(columns[i]) | async)?.primary === true">
+                    Diese Spalte wird für den Primärschlüssel der Tabelle verwendet.
+                </span>
+                <span class="visually-hidden" *ngIf="(getColumn(columns[i]) | async)?.foreignKey === true">
+                    Diese Spalte enthält einen Fremdschlüssel auf eine andere Tabelle.
+                </span>
+                <span class="visually-hidden" *ngIf="(getColumn(columns[i]) | async)?.unique === true">
+                    In dieser Spalte der Tabelle dürfen keine doppelten Einträge vorhanden sein.
+                </span>
+           </th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+

@@ -11,8 +11,7 @@ import * as StoreSelectors from '../lib/store/store.selectors';
 export class ListTablesComponent implements OnInit, OnDestroy {
   schemas = this.store.select(StoreSelectors.schemas).pipe(map(schemas => schemas.map(s => s.toLocaleLowerCase())));
   schemaName = '';
-  tables = (schemaName: string) => this.store.select(StoreSelectors.tableNamesForSchema(schemaName));
-
+    
   private subscription?: Subscription;
   constructor(private store: Store, private router: Router, private route: ActivatedRoute) {}
   ngOnInit(): void {
@@ -27,4 +26,5 @@ export class ListTablesComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.subscription?.unsubscribe();
   }
+  getTables = (schemaName: string) => this.store.select(StoreSelectors.tableNamesForSchema(schemaName));
 }

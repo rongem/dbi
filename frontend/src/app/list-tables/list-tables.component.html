@@ -1,6 +1,6 @@
 <h2>Schema: {{schemaName}}</h2>
 <div class="card-container">
-    <button type="button" class="card selectable" *ngFor="let table of (tables(schemaName) | async)" [routerLink]="['table', table]">
+    <button type="button" class="card selectable" *ngFor="let table of (getTables(schemaName) | async)" [routerLink]="['table', table]">
         <h2>
             {{table}}
         </h2>
