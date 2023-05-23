@@ -1,5 +1,4 @@
-$main-border-color: $main-color;
-$medium-border-style: 1px $main-border-color solid;
+$medium-border-style: 1px #005 solid;
 
 .dragging {
     background-color: lightgray;
@@ -21,7 +20,7 @@ $medium-border-style: 1px $main-border-color solid;
 }
 
 .right-border {
-    border-right: $medium-border-style !important;
+    border-right: $medium-border-style;
 }
 
 .lower-border {
@@ -35,3 +34,18 @@ $medium-border-style: 1px $main-border-color solid;
 .red-border {
     outline: 2px solid red !important;
 }
+
+th {
+    white-space: nowrap;
+}
+
+.primary::after {
+    content: ' (P)';
+    font-style: italic;
+}
+
+.foreign::after {
+    content: ' (F)';
+    font-style: italic;
+}
+

@@ -1,4 +1,6 @@
-<div></div>
+<div>
+    Wenn Sie in Ihrer Tabelle Daten kopiert haben, können Sie diese hier mit Strg + V einfügen.
+</div>
 <table class="table">
     <thead>
         <tr>
@@ -9,6 +11,7 @@
                 (dragover)="onDragOver($event, i)"
                 (drop)="onDrop(i)"
                 [ngClass]="{dragging: this.sourceIndex === i, target: presumedTargetIndex === i, primary: (getColumn(columns[i]) | async)?.primary, foreign: (getColumn(columns[i]) | async)?.foreignKey}"
+                [attr.title]="getColumnTitle(columns[i]) | async"
                 class="position-relative">
                 {{(getColumn(columns[i]) | async)?.name}}
                 <span class="visually-hidden" *ngIf="(getColumn(columns[i]) | async)?.primary === true">

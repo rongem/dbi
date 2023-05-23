@@ -1,10 +1,11 @@
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { Subscription, withLatestFrom } from 'rxjs';
+import { Subscription, map, take, withLatestFrom } from 'rxjs';
 import * as StoreSelectors from '../lib/store/store.selectors';
 import * as StoreActions from '../lib/store/store.actions';
 import { ClipboardHelper } from '../lib/clipboard-helper.model';
+import { Actions, ofType } from '@ngrx/effects';
 
 @Component({
   selector: 'app-table',
@@ -26,7 +27,7 @@ export class TableComponent implements OnInit, OnDestroy {
   // storage for errors while updating from clipboard
   private errors = new Map<string, string[]>();
   private subscription?: Subscription;
-  constructor(private store: Store, private router: Router, private route: ActivatedRoute) {}
+  constructor(private store: Store, private router: Router, private route: ActivatedRoute, private actions$: Actions) {}
   ngOnInit(): void {
     this.subscription = this.route.params.pipe(withLatestFrom(this.store.select(StoreSelectors.tables))).subscribe(([{schema, table}, tables]) => {
       const targettable = tables.find(t => t.name.toLocaleLowerCase() === (table as string).toLocaleLowerCase() &&
@@ -35,6 +36,13 @@ export class TableComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl('/schemas', {replaceUrl: true});
       } else {
         this.store.dispatch(StoreActions.selectTable(targettable));
+        this.actions$.pipe(
+          ofType(StoreActions.columnsLoaded),
+          take(1),
+        ).subscribe(cols => {
+          this.columns = Array.from(Array(cols.columns.length).keys())
+          console.log(this.columns);
+        });
       }
     });
     // this.schemas.subscribe()
@@ -44,6 +52,29 @@ export class TableComponent implements OnInit, OnDestroy {
   }
 
   getColumn = (columnPosition: number) => this.store.select(StoreSelectors.column(columnPosition));
+
+  getColumnTitle = (columnPosition: number) => this.getColumn(columnPosition).pipe(
+    map(column => {
+      const content: string[] = [];
+      if (column?.primary) {
+        content.push('Primary key');
+      }
+      if (column?.foreignKey) {
+        content.push('Foreign key');
+      }
+      if (column?.unique) {
+        content.push('Unique constraint');
+      }
+      if (column?.hasDefaultValue) {
+        content.push('Default value present');
+      }
+      if (column?.isNullable) {
+        content.push('Null values allowed');
+      }
+      content.push('Allowed Data Types: ' + column?.typeInfo.allowedTypes.join('|'));
+      return content.join(', ');
+    })
+  );
   
   @HostListener('window:paste', ['$event'])
   onPaste(event: ClipboardEvent) {

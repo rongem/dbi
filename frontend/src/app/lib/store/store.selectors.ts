@@ -24,4 +24,4 @@ export const tableNamesForSchema = (schema: string) => createSelector(tables, ta
 
 export const columns = createSelector(appState, state => state.columns?.sort((a, b) => a.ordinalPosition - b.ordinalPosition) ?? []);
 
-export const column = (columnPosition: number) => createSelector(columns, columns => columns.find(c => c.ordinalPosition = columnPosition));
+export const column = (columnPosition: number) => createSelector(columns, columns => columns.find(c => c.ordinalPosition === columnPosition + 1));
