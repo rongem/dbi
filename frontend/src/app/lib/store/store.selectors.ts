@@ -25,3 +25,9 @@ export const tableNamesForSchema = (schema: string) => createSelector(tables, ta
 export const columns = createSelector(appState, state => state.columns?.sort((a, b) => a.ordinalPosition - b.ordinalPosition) ?? []);
 
 export const column = (columnPosition: number) => createSelector(columns, columns => columns.find(c => c.ordinalPosition === columnPosition + 1));
+
+const cellContents = createSelector(appState, state => state.cellContents);
+
+export const rows = createSelector(cellContents, contents => [...new Set(contents.map(c => c.row))].sort());
+
+export const row = (rowNumber: number) => createSelector(cellContents, contents => contents.filter(c => c.row === rowNumber));

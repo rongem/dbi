@@ -6,6 +6,7 @@ import * as StoreSelectors from '../lib/store/store.selectors';
 import * as StoreActions from '../lib/store/store.actions';
 import { ClipboardHelper } from '../lib/clipboard-helper.model';
 import { Actions, ofType } from '@ngrx/effects';
+import { CellContent } from '../lib/models/cellcontent.model';
 
 @Component({
   selector: 'app-table',
@@ -75,6 +76,12 @@ export class TableComponent implements OnInit, OnDestroy {
       return content.join(', ');
     })
   );
+
+  rows() {
+    return this.store.select(StoreSelectors.rows);
+  }
+
+  row = (rowNumber: number) => this.store.select(StoreSelectors.row(rowNumber));
   
   @HostListener('window:paste', ['$event'])
   onPaste(event: ClipboardEvent) {
@@ -100,8 +107,16 @@ export class TableComponent implements OnInit, OnDestroy {
   }
 
   private fillLineContents(lines: string[][]) {
-    for (let line of lines) {
-      
+    const contents: CellContent[] = [];
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      for (let j = 0; j < line.length; j++) {
+        const cellContent = new CellContent(line[j], i, j);
+        contents.push(cellContent);
+      }
+    }
+    if (contents.length > 0) {
+      this.store.dispatch(StoreActions.setCellContents({contents}));
     }
   }
 

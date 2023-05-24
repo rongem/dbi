@@ -2,6 +2,7 @@ import { Action, ActionReducerMap, createReducer, on } from "@ngrx/store";
 import * as StoreActions from './store.actions';
 import { Table } from "../models/rest-backend/table.model";
 import { Column } from "../models/rest-backend/column.model";
+import { CellContent } from "../models/cellcontent.model";
 
 export const STORE = 'STORE';
 
@@ -21,6 +22,7 @@ export interface State {
     tables: Table[];
     selectedTable?: Table;
     columns?: Column[];
+    cellContents: CellContent[];
     userName?: string;
     databaseName?: string;
     error?: string;
@@ -31,6 +33,7 @@ const initialState: State = {
     tables: [],
     notAuthorized: false,
     working: false,
+    cellContents: [],
     userName: undefined,
 };
 
@@ -57,6 +60,7 @@ export function storeReducer(appState: State | undefined, appAction: Action) {
             tablesLoaded: false,
             selectedTable: undefined,
             columns: undefined,
+            cellContents: [],
             working: true,
         })),
         on(StoreActions.tablesLoaded, (state, action) => ({
@@ -64,6 +68,7 @@ export function storeReducer(appState: State | undefined, appAction: Action) {
             tables: [...action.tables],
             selectedTable: undefined,
             columns: undefined,
+            cellContents: [],
             tablesLoaded: true,
             working: false,
         })),
@@ -71,12 +76,18 @@ export function storeReducer(appState: State | undefined, appAction: Action) {
             ...state,
             selectedTable: {...action},
             columns: undefined,
+            cellContents: [],
             working: true,
         })),
         on(StoreActions.columnsLoaded, (state, action) => ({
             ...state,
             columns: [...action.columns],
+            cellContents: [],
             working: false,
+        })),
+        on(StoreActions.setCellContents, (state, action) => ({
+            ...state,
+            cellContents: [...action.contents],
         })),
     )(appState, appAction);
 }

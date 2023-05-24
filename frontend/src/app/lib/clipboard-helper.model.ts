@@ -2,6 +2,7 @@ export class ClipboardHelper {
     static getTableContent(data: DataTransfer): string[][] {
         // first, try html
         let result = data.getData('text/html');
+        ClipboardHelper.sanitize(result);
         if (result.length > 0) {
             const dom = new DOMParser().parseFromString(result, 'text/html');
             const table = dom.querySelector('table');
@@ -52,5 +53,13 @@ export class ClipboardHelper {
             }
         }
         throw new Error('No valid table could be retrieved from clipboard.');
+    }
+
+    private static sanitize(result: string) {
+        const regexTag = /\<(applet|audio|embed|object|script|video|)/gmi
+        const regexAttr = /\<[^>]+\s(on|action|background|cite|code|data|formaction|href|icon|longdesk|manifest|profile|src|usemap)/gmi;
+        if (regexTag.test(result) || regexAttr.test(result)) {
+            throw new Error('Script content is forbidden due to prevention of XSS.');
+        }
     }
 }

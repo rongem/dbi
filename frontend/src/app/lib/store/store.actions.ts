@@ -2,6 +2,7 @@ import { createAction, props } from '@ngrx/store';
 import { User } from '../models/rest-backend/user.model';
 import { Table } from '../models/rest-backend/table.model';
 import { Column } from '../models/rest-backend/column.model';
+import { CellContent } from '../models/cellcontent.model';
 
 export const retrieveUser = createAction('[User] Retrieve user from Backend');
 
@@ -29,4 +30,8 @@ export const selectTable = createAction('[Tables] Select single table',
 
 export const columnsLoaded = createAction('[Columns] Finished loading columns',
     props<{columns: Column[]}>()
+);
+
+export const setCellContents = createAction('[CellContent] Set new content for cells',
+    props<{contents: CellContent[]}>()
 );
