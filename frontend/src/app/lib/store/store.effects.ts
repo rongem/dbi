@@ -40,7 +40,6 @@ export class StoreEffects {
         switchMap(table => this.dbi.loadColumns(table)),
         map(columns => {
             if (columns) {
-                console.log(columns);
                 this.store.dispatch(StoreActions.columnsLoaded({columns}));
             }
         })

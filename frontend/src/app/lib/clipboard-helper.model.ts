@@ -2,6 +2,7 @@ export class ClipboardHelper {
     static getTableContent(data: DataTransfer): string[][] {
         // first, try html
         let result = data.getData('text/html');
+        console.log(result);
         ClipboardHelper.sanitize(result);
         if (result.length > 0) {
             const dom = new DOMParser().parseFromString(result, 'text/html');
@@ -56,10 +57,13 @@ export class ClipboardHelper {
     }
 
     private static sanitize(result: string) {
-        const regexTag = /\<(applet|audio|embed|object|script|video|)/gmi
-        const regexAttr = /\<[^>]+\s(on|action|background|cite|code|data|formaction|href|icon|longdesk|manifest|profile|src|usemap)/gmi;
-        if (regexTag.test(result) || regexAttr.test(result)) {
-            throw new Error('Script content is forbidden due to prevention of XSS.');
+        const regexTag = /\<(applet|audio|embed|object|script|video)/gmi
+        const regexAttr = /\<[^>]+\s(on|action|background="http|cite|code|data|formaction|href="http|icon|longdesk|manifest|profile|src|usemap)/gmi;
+        if (regexTag.test(result)) {
+            throw new Error('Script content is forbidden due to prevention of XSS. Problematic tags found.');
+        }
+        if (regexAttr.test(result)) {
+            throw new Error('Script content is forbidden due to prevention of XSS. problematic attributes found.');
         }
     }
 }

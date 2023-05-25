@@ -1,6 +1,8 @@
 import { createSelector, createFeatureSelector } from '@ngrx/store';
 
 import { State, STORE } from './store.reducer';
+import { CellInformation } from '../models/cellinformation.model';
+import { CellContent } from '../models/cellcontent.model';
 
 const appState = createFeatureSelector<State>(STORE);
 
@@ -28,6 +30,16 @@ export const column = (columnPosition: number) => createSelector(columns, column
 
 const cellContents = createSelector(appState, state => state.cellContents);
 
-export const rows = createSelector(cellContents, contents => [...new Set(contents.map(c => c.row))].sort());
+export const rowNumbers = createSelector(cellContents, contents => [...new Set(contents.map(c => c.row))].sort());
 
-export const row = (rowNumber: number) => createSelector(cellContents, contents => contents.filter(c => c.row === rowNumber));
+export const row = (rowIndex: number) => createSelector(cellContents, contents => contents.filter(c => c.row === rowIndex));
+
+const cellContent = (rowIndex: number, columIndex: number) => createSelector(cellContents, contents => contents.find(c => c.column === columIndex && c.row === rowIndex));
+
+export const cellInformation = (rowIndex: number, columIndex: number, columnDefinitionIndex: number) => 
+    createSelector(cellContent(rowIndex, columIndex), column(columnDefinitionIndex), (cell, column) => {
+        if (!column) return null;
+        if (!cell) cell = new CellContent('', rowIndex, columIndex);
+        return new CellInformation(cell, column);
+    }
+);

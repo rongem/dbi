@@ -10,23 +10,29 @@
                 (dragend)="onDragEnd()"
                 (dragover)="onDragOver($event, i)"
                 (drop)="onDrop(i)"
-                [ngClass]="{dragging: this.sourceIndex === i, target: presumedTargetIndex === i, primary: (getColumn(columns[i]) | async)?.primary, foreign: (getColumn(columns[i]) | async)?.foreignKey}"
-                [attr.title]="getColumnTitle(columns[i]) | async"
+                [ngClass]="{dragging: this.sourceIndex === i, target: presumedTargetIndex === i, primary: (getColumn(column) | async)?.primary, foreign: (getColumn(column) | async)?.foreignKey}"
+                [attr.title]="getColumnTitle(column) | async"
                 class="position-relative">
                 {{(getColumn(columns[i]) | async)?.name}}
-                <span class="visually-hidden" *ngIf="(getColumn(columns[i]) | async)?.primary === true">
+                <span class="visually-hidden" *ngIf="(getColumn(column) | async)?.primary === true">
                     Diese Spalte wird für den Primärschlüssel der Tabelle verwendet.
                 </span>
-                <span class="visually-hidden" *ngIf="(getColumn(columns[i]) | async)?.foreignKey === true">
+                <span class="visually-hidden" *ngIf="(getColumn(column) | async)?.foreignKey === true">
                     Diese Spalte enthält einen Fremdschlüssel auf eine andere Tabelle.
                 </span>
-                <span class="visually-hidden" *ngIf="(getColumn(columns[i]) | async)?.unique === true">
+                <span class="visually-hidden" *ngIf="(getColumn(column) | async)?.unique === true">
                     In dieser Spalte der Tabelle dürfen keine doppelten Einträge vorhanden sein.
                 </span>
            </th>
         </tr>
     </thead>
     <tbody>
+        <tr *ngFor="let rowNumber of (rowNumbers | async)">
+            <td *ngFor="let column of columns; let i = index"
+                [ngClass]="{error: (getCellInformation(rowNumber, i, column) | async)?.containsErrors}">
+                {{getCellInformation(rowNumber, i, column) | async | json}}
+            </td>
+        </tr>
     </tbody>
 </table>
 

@@ -8,14 +8,11 @@ export const selectColumns = async (schema: string, table: string) => {
     const req1 = await requestPromise();
     req1.input('Table_Schema', NVarChar(), schema);
     req1.input('Table_Name', NVarChar(), table);
-    console.log('before');
     const result1 = await req1.query(sqlGetColumnInformationForSchemaAndTable);
-    console.log('middle');
     const req2 = await requestPromise();
     req2.input('Table_Schema', NVarChar(), schema);
     req2.input('Table_Name', NVarChar(), table);
     const result2 = await req2.query(sqlGetColumnKeyInformation);
-    console.log('after');
     const columns: Column[] = result1.recordset.map((r => {
         const c: Column = {
             table: {
@@ -51,7 +48,6 @@ export const selectColumns = async (schema: string, table: string) => {
             if (columnInfo.Foreign === 1) c.foreignKey = true;
             if (columnInfo.Unique === 1) c.unique = true;
         }
-        console.log(c);
         return c;
     }));
     return columns;

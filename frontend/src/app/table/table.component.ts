@@ -42,7 +42,6 @@ export class TableComponent implements OnInit, OnDestroy {
           take(1),
         ).subscribe(cols => {
           this.columns = Array.from(Array(cols.columns.length).keys())
-          console.log(this.columns);
         });
       }
     });
@@ -52,7 +51,10 @@ export class TableComponent implements OnInit, OnDestroy {
     this.subscription?.unsubscribe();
   }
 
-  getColumn = (columnPosition: number) => this.store.select(StoreSelectors.column(columnPosition));
+  getColumn = (columnIndex: number) => this.store.select(StoreSelectors.column(columnIndex));
+
+  getCellInformation = (rowIndex: number, columIndex: number, columnDefinitionIndex: number) =>
+    this.store.select(StoreSelectors.cellInformation(rowIndex, columIndex, columnDefinitionIndex));
 
   getColumnTitle = (columnPosition: number) => this.getColumn(columnPosition).pipe(
     map(column => {
@@ -77,14 +79,15 @@ export class TableComponent implements OnInit, OnDestroy {
     })
   );
 
-  rows() {
-    return this.store.select(StoreSelectors.rows);
+  get rowNumbers() {
+    return this.store.select(StoreSelectors.rowNumbers);
   }
 
   row = (rowNumber: number) => this.store.select(StoreSelectors.row(rowNumber));
   
   @HostListener('window:paste', ['$event'])
   onPaste(event: ClipboardEvent) {
+    console.log('paste');
     event.stopPropagation();
     try {
       if (event.clipboardData) {
@@ -116,6 +119,7 @@ export class TableComponent implements OnInit, OnDestroy {
       }
     }
     if (contents.length > 0) {
+      console.log(contents);
       this.store.dispatch(StoreActions.setCellContents({contents}));
     }
   }
