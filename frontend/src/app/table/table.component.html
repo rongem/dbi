@@ -1,9 +1,11 @@
-<div>
-    Wenn Sie in Ihrer Tabelle Daten kopiert haben, können Sie diese hier mit Strg + V einfügen.
+<div *ngIf="(rowCount | async) === 0">
+    After copyiing your table content to clipboard, paste it here with Ctrl + V.
 </div>
+<button type="button" *ngIf="(rowCount | async)! > 0 && (tableContainsErrors | async) === false">Start import</button>
 <table class="table">
     <thead>
         <tr>
+            <th style="padding:0;"></th>
             <th *ngFor="let column of columns; let i = index"
                 draggable="true"
                 (dragstart)="onDragStart($event, i)"
@@ -28,9 +30,16 @@
     </thead>
     <tbody>
         <tr *ngFor="let rowNumber of (rowNumbers | async)">
+            <td>
+                <div class="error-sign" *ngIf="(getRowContainsErrors(rowNumber) | async) === true">!</div>
+                <span class="visually-hidden">
+                    Diese Zeile enthält fehlerhafte Daten.
+                </span>
+            </td>
             <td *ngFor="let column of columns; let i = index"
-                [ngClass]="{error: (getCellInformation(rowNumber, i, column) | async)?.containsErrors}">
-                {{getCellInformation(rowNumber, i, column) | async | json}}
+                [ngClass]="{error: (getCellInformation(rowNumber, i, column) | async)?.containsErrors}"
+                [attr.title]="(getCellInformation(rowNumber, i, column) | async)?.errorText">
+                {{(getCellInformation(rowNumber, i, column) | async)?.value}}
             </td>
         </tr>
     </tbody>

@@ -43,3 +43,11 @@ export const cellInformation = (rowIndex: number, columIndex: number, columnDefi
         return new CellInformation(cell, column);
     }
 );
+
+export const rowContainsErrors = (rowIndex: number, translateColumns: number[]) => createSelector(row(rowIndex), columns, (cells, columns) => 
+    cells.some(c => new CellInformation(c, columns[translateColumns[c.column]]).containsErrors)
+);
+
+export const tableContainsErrors = (translateColumns: number[]) => createSelector(cellContents, columns, (cells, columns) => 
+    cells.some(c => new CellInformation(c, columns[translateColumns[c.column]]).containsErrors)
+);

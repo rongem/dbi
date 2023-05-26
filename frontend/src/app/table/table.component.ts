@@ -79,8 +79,16 @@ export class TableComponent implements OnInit, OnDestroy {
     })
   );
 
+  getRowContainsErrors = (rowIndex: number) => this.store.select(StoreSelectors.rowContainsErrors(rowIndex, this.columns));
+
+  get tableContainsErrors() { return this.store.select(StoreSelectors.tableContainsErrors(this.columns)); }
+
   get rowNumbers() {
     return this.store.select(StoreSelectors.rowNumbers);
+  }
+
+  get rowCount() {
+    return this.rowNumbers.pipe(map(r => r.length));
   }
 
   row = (rowNumber: number) => this.store.select(StoreSelectors.row(rowNumber));

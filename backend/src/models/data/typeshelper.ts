@@ -37,14 +37,12 @@ export const getTypeInformation = (sqlType: SqlType) => {
         case 'nchar':
         case 'ntext':
         case 'nvarchar':
+        case 'sql_variant':
         case 'text':
         case 'varchar':
         case 'xml':
         case 'uniqueidentifier':
             allowedTypes = ['string'];
-            break;
-        case 'sql_variant':
-            allowedTypes = ['number', 'string', 'boolean'];
             break;
         case 'date':
         case 'datetime':

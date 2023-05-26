@@ -49,3 +49,13 @@ th {
     font-style: italic;
 }
 
+.error-sign {
+    background-color: coral;
+    border: $medium-border-style;
+    border-radius: 50%;
+    text-align: center;
+    height: 1.1rem;
+    width: 1.1rem;
+    font-weight: bold;
+    position: relative;
+}
