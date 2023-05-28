@@ -102,7 +102,28 @@ it('sends an array with illegal field type', async () => {
         });
 });
 
-it('sends an array with valid objects', async () => {
+it('sends an array with two identical objects', async () => {
+    return request(app).post('/table/test/BoatExt_Authorizations')
+        .set('Accept', 'application/json')
+        .send({
+            rows: [{
+                username: 'test',
+                allowed: false
+            }, {
+                username: 'test',
+                allowed: false
+            }],
+        })
+        .expect(400)
+        .expect('Content-Type', /json/)
+        .then(response => {
+            expect(response.body).toBeDefined();
+            expect(response.body.message).toBeDefined();
+            expect(response.body.message).toContain('Error line 1');
+        });
+});
+
+it('sends an array with two valid objects', async () => {
     return request(app).post('/table/test/BoatExt_Authorizations')
         .set('Accept', 'application/json')
         .send({

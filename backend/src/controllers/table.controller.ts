@@ -13,7 +13,6 @@ export const retrieveTableNames = async () => {
         if (error instanceof HttpError) {
             throw error;
         }
-        console.log('retrievTableNames', error);
         throw new HttpError(500, error.message ?? error.toString());
     }
 }
@@ -26,30 +25,25 @@ export const retrieveAndSendTableColumns = async (req: Request, res: Response, n
         if (error instanceof HttpError) {
             throw error;
         }
-        console.log('retrievTables', error);
-        throw new HttpError(500, error.message ?? error.toString());
+        next(new HttpError(500, error.message ?? error.toString()));
     }
 };
 
 export const saveTableRows = async (req: Request, res: Response, next: NextFunction) => {
-    return importTableRows(req, res, true);
+    return importTableRows(req, res, next, true);
 }
 
 export const testTableRows = async (req: Request, res: Response, next: NextFunction) => {
-    return importTableRows(req, res, false);
+    return importTableRows(req, res, next, false);
 }
 
-const importTableRows = async (req: Request, res: Response, commit: boolean) => {
+const importTableRows = async (req: Request, res: Response, next: NextFunction, commit: boolean) => {
     try {
         const data = await extractParams(req, commit);
         const result = await insertRows(data);
         return res.json({errors: 0});
     } catch (error: any) {
-        if (error instanceof HttpError) {
-            throw error;
-        }
-        console.log('saveTableRows', error);
-        throw new HttpError(500, error.message ?? error.toString());
+        next(new HttpError(400, error.message ?? error.toString()));
     }
 }
 
@@ -57,7 +51,7 @@ const importTableRows = async (req: Request, res: Response, commit: boolean) => 
     const schemaName = req.params['schemaName'];
     const tableName = req.params['tableName'];
     const columns = await selectColumns(schemaName, tableName);
-    const rows = req.body as Row[];
+    const rows = req.body.rows as Row[];
     return { schemaName, tableName, rows, columns, commit };
 }
 
