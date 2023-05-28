@@ -26,7 +26,7 @@ if (env.authMode === 'ntlm') {
 
 // express.json({limit: '50mb'}) -> after route to enhance upload size
 app.use('/tables', getAuthentication, tablesRouter);
-app.use('/table', getAuthentication, tableRouter);
+app.use('/table', express.json({limit: '50mb'}), getAuthentication, tableRouter);
 app.use('/user', getAuthentication, userRouter);
 
 const path = __dirname + '/views';

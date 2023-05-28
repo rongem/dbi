@@ -1,4 +1,4 @@
-import { config, ConnectionPool, Request } from 'mssql';
+import { config, ConnectionPool, Request, Transaction } from 'mssql';
 import { EnvironmentController } from '../controllers/environment.controller';
 import { sqlGetAllTableNamesCurrentUserHasRights } from '../utils/sql.templates';
 
@@ -43,6 +43,16 @@ export const requestPromise = async () => {
     const connection = await pool();
     return new Request(connection);
 };
+
+export const transactionPool = async () => {
+    const connection = await pool();
+    const transaction = new Transaction(connection);
+    return transaction.begin();
+}
+
+export const transactionRequest = async (transaction: Transaction) => {
+    return new Request(transaction)
+}
 
 // preflight check if connection works and all tables and stored procedures exist
 export const checkDatabase = async () => {
