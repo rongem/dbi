@@ -23,20 +23,18 @@ export class TableComponent implements OnInit, OnDestroy {
   presumedTargetIndex: number | undefined;
   // columns for drag and drop column order change
   columns: number[] = [];
-  // what data should be shown with column
-  columnContents: string[] = [];
-  // storage for errors while updating from clipboard
-  private errors = new Map<string, string[]>();
   private subscription?: Subscription;
   constructor(private store: Store, private router: Router, private route: ActivatedRoute, private actions$: Actions) {}
   ngOnInit(): void {
-    this.subscription = this.route.params.pipe(withLatestFrom(this.store.select(StoreSelectors.tables))).subscribe(([{schema, table}, tables]) => {
-      const targettable = tables.find(t => t.name.toLocaleLowerCase() === (table as string).toLocaleLowerCase() &&
+    this.subscription = this.route.params.pipe(
+      withLatestFrom(this.store.select(StoreSelectors.tables))
+    ).subscribe(([{schema, table}, tables]) => {
+      const targetTable = tables.find(t => t.name.toLocaleLowerCase() === (table as string).toLocaleLowerCase() &&
         t.schema.toLocaleLowerCase() === (schema as string).toLocaleLowerCase());
-      if (!targettable) {
+      if (!targetTable) {
         this.router.navigateByUrl('/schemas', {replaceUrl: true});
       } else {
-        this.store.dispatch(StoreActions.selectTable(targettable));
+        this.store.dispatch(StoreActions.selectTable(targetTable));
         this.actions$.pipe(
           ofType(StoreActions.columnsLoaded),
           take(1),
@@ -132,10 +130,6 @@ export class TableComponent implements OnInit, OnDestroy {
     }
   }
 
-  stopPropagation(event: Event) {
-    event.stopPropagation();
-  }
-
   onDragStart(event: DragEvent, index: number) {
     // set index when starting drag&drop
     this.sourceIndex = index;
@@ -174,7 +168,7 @@ export class TableComponent implements OnInit, OnDestroy {
     this.sourceIndex = undefined;
   }
 
-  onCellClick(event: FocusEvent) {
+  /*onCellClick(event: FocusEvent) {
     let colIndex = -1;
     let rowIndex = -1;
     if (event.type === 'focus' && event.target instanceof HTMLTableCellElement) {
@@ -184,6 +178,6 @@ export class TableComponent implements OnInit, OnDestroy {
   }
 
   private getRowIndex = (cell: HTMLTableCellElement) => (cell.parentElement as HTMLTableRowElement).rowIndex;
-
+*/
 }
 

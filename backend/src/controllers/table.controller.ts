@@ -40,10 +40,14 @@ export const testTableRows = async (req: Request, res: Response, next: NextFunct
 const importTableRows = async (req: Request, res: Response, next: NextFunction, commit: boolean) => {
     try {
         const data = await extractParams(req, commit);
-        const result = await insertRows(data);
-        return res.json({errors: 0});
+        const rowsInserted = await insertRows(data);
+        return res.json({rowsInserted});
     } catch (error: any) {
-        next(new HttpError(400, error.message ?? error.toString()));
+        if (error instanceof HttpError) {
+            next(error);
+        } else {
+            next(new HttpError(400, error.message ?? error.toString()));
+        }
     }
 }
 

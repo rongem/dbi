@@ -119,7 +119,12 @@ it('sends an array with two identical objects', async () => {
         .then(response => {
             expect(response.body).toBeDefined();
             expect(response.body.message).toBeDefined();
-            expect(response.body.message).toContain('Error line 1');
+            expect(response.body.message).toContain('Errors during import');
+            expect(response.body.data).toBeDefined();
+            expect(response.body.data.length).toBeDefined();
+            expect(response.body.data.length).toBe(1);
+            expect(response.body.data[0].line).toBe(1);
+            expect(response.body.data[0].msg).toContain('PRIMARY KEY');
         });
 });
 
@@ -134,6 +139,20 @@ it('sends an array with two valid objects', async () => {
                 username: 'test1',
                 allowed: false
             }],
+        })
+        .expect(200);
+});
+
+jest.setTimeout(300000);
+it('sends an array with a lot of valid objects', async () => {
+    const rows = [];
+    for (let i = 0; i < 10000; i++) {
+        rows.push({username: 'test' + i.toString(), allowed: true});
+    }
+    return request(app).post('/table/test/BoatExt_Authorizations')
+        .set('Accept', 'application/json')
+        .send({
+            rows,
         })
         .expect(200);
 });

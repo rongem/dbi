@@ -3,6 +3,8 @@ import { User } from '../models/rest-backend/user.model';
 import { Table } from '../models/rest-backend/table.model';
 import { Column } from '../models/rest-backend/column.model';
 import { CellContent } from '../models/cellcontent.model';
+import { RowContainer } from '../models/rest-backend/row-container.model';
+import { ErrorList } from '../models/rest-backend/errorlist.model';
 
 export const retrieveUser = createAction('[User] Retrieve user from Backend');
 
@@ -35,3 +37,17 @@ export const columnsLoaded = createAction('[Columns] Finished loading columns',
 export const setCellContents = createAction('[CellContent] Set new content for cells',
     props<{contents: CellContent[]}>()
 );
+
+export const testRowsInBackend = createAction('[Rows] Test rows in backend',
+    props<{content: RowContainer}>()
+);
+
+export const importRowsInBackend = createAction('[Rows] Import rows in backend',
+    props<{content: RowContainer}>()
+);
+
+export const setRowErrors = createAction('[Rows] Set list of row errors',
+    props<{errors: ErrorList[]}>()
+);
+
+export const backendTestSuccessful = createAction('[Rows] Test of rows in backend was successful');
