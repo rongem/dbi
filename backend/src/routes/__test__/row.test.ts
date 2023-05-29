@@ -123,7 +123,7 @@ it('sends an array with two identical objects', async () => {
             expect(response.body.data).toBeDefined();
             expect(response.body.data.length).toBeDefined();
             expect(response.body.data.length).toBe(1);
-            expect(response.body.data[0].line).toBe(1);
+            expect(response.body.data[0].row).toBe(1);
             expect(response.body.data[0].msg).toContain('PRIMARY KEY');
         });
 });

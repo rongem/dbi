@@ -22,13 +22,13 @@ export const insertRows = async (data: {schemaName: string, tableName: string, r
         try {
             const result = await insertRow({columns: data.columns, row, sqlCommand, transaction});
             if (result.rowsAffected.length !== 1 || result.rowsAffected[0] !== 1) {
-                errorList.push({line: i, msg: 'No rows inserted', rowContent: row});
+                errorList.push({row: i, msg: 'No rows inserted', rowContent: row});
             } else {
                 rowCounter += result.rowsAffected[0];
             }
         } catch (error: any) {
             if (error instanceof RequestError) {
-                errorList.push({line: i, msg: error.message, rowContent: row});
+                errorList.push({row: i, msg: error.message, rowContent: row});
             } else {
                 transaction.rollback();
                 throw new HttpError(500, error?.message ?? error.toString(), row);

@@ -1,11 +1,12 @@
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
+import { Actions, ofType } from '@ngrx/effects';
 import { Subscription, map, take, withLatestFrom } from 'rxjs';
+
 import * as StoreSelectors from '../lib/store/store.selectors';
 import * as StoreActions from '../lib/store/store.actions';
 import { ClipboardHelper } from '../lib/clipboard-helper.model';
-import { Actions, ofType } from '@ngrx/effects';
 import { CellContent } from '../lib/models/cellcontent.model';
 
 @Component({
@@ -97,30 +98,30 @@ export class TableComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     try {
       if (event.clipboardData) {
-        const lines = ClipboardHelper.getTableContent(event.clipboardData);
-        this.fitLineSize(lines);
-        this.fillLineContents(lines);
+        const rows = ClipboardHelper.getTableContent(event.clipboardData);
+        this.fitRowWidth(rows);
+        this.fillCellContents(rows);
       }
     } catch (error: any) {
       this.store.dispatch(StoreActions.setError(error.message ?? error.toString()));
     }
   }
 
-  private fitLineSize(lines: string[][]) {
-    for (let line of lines) {
+  private fitRowWidth(rows: string[][]) {
+    for (let row of rows) {
       // remove columns that are out of possible insertion range
-      if (line.length > this.columns.length) {
-        line.splice(this.columns.length);
+      if (row.length > this.columns.length) {
+        row.splice(this.columns.length);
       }
     };
   }
 
-  private fillLineContents(lines: string[][]) {
+  private fillCellContents(rows: string[][]) {
     const contents: CellContent[] = [];
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      for (let j = 0; j < line.length; j++) {
-        const cellContent = new CellContent(line[j], i, j);
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      for (let j = 0; j < row.length; j++) {
+        const cellContent = new CellContent(row[j], i, j);
         contents.push(cellContent);
       }
     }

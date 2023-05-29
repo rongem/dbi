@@ -1,7 +1,7 @@
 import { Row } from "./row.model";
 
 export interface ImportError {
-    line: number;
+    row: number;
     msg: string;
     rowContent?: Row
 }
