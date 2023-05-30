@@ -43,11 +43,23 @@ export class CellInformation{
     get isString() { return this.stringValue !== undefined; }
     get isEmpty() { return this.value === '' || this.value === undefined || this.value === null; }
 
+    get typedValue() {
+        if (this.isDate) return this.dateValue;
+        if (this.isBoolean) return this.booleanValue;
+        if (this.isNumber) return this.numberValue;
+        return this.stringValue;
+    }
+
+    get name() { return this.columnDefinition.name; }
+    get row() { return this.cellContent.row; }
+    get column() { return this.cellContent.column; }
+    get ordinalPosition() { return this.columnDefinition.ordinalPosition; }
 
     private errorDescriptions: string[] = [];
 
     constructor(private cellContent: CellContent, private columnDefinition: Column) {
-        if (!cellContent || !columnDefinition) throw new Error('Missing values');
+        if (!cellContent) throw new Error('Missing cell content');
+        if (!columnDefinition) throw new Error('Missing column definition for ' + JSON.stringify(cellContent));
         if (this.canContainNumber() && !this.isNumber) {
             this.errorDescriptions.push('Number expected');
         }

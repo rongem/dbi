@@ -2,7 +2,6 @@ export class ClipboardHelper {
     static getTableContent(data: DataTransfer): string[][] {
         // first, try html
         let result = data.getData('text/html');
-        console.log(result);
         ClipboardHelper.sanitize(result);
         if (result.length > 0) {
             const dom = new DOMParser().parseFromString(result, 'text/html');

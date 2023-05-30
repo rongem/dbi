@@ -14,7 +14,7 @@ export class StoreEffects {
         switchMap(() => this.dbi.retrieveUser()),
         map(user => StoreActions.setUser(user)),
         catchError(this.handleError),
-    ), {dispatch: false});
+    ));
 
     setUser$ = createEffect(() => this.actions$.pipe(
         ofType(StoreActions.setUser),

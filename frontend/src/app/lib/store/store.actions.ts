@@ -34,6 +34,10 @@ export const columnsLoaded = createAction('[Columns] Finished loading columns',
     props<{columns: Column[]}>()
 );
 
+export const changeColumnOrder = createAction('[Columns] Changed order of table columns via drag & drop',
+    props<{columnMappings: number[]}>()
+);
+
 export const setCellContents = createAction('[CellContent] Set new content for cells',
     props<{contents: CellContent[]}>()
 );

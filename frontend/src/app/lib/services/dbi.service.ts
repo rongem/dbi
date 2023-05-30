@@ -11,23 +11,13 @@ import { RowContainer } from "../models/rest-backend/row-container.model";
 export class DbiService {
     constructor(private http: HttpClient, private store: Store) {}
 
-    retrieveUser = () => this.http.get<User>('/user').pipe(
-        take(1),
-    );
+    retrieveUser = () => this.http.get<User>('/user').pipe(take(1));
 
-    loadTables = () => this.http.get<Table[]>('/tables').pipe(
-        take(1),
-    )
+    loadTables = () => this.http.get<Table[]>('/tables').pipe(take(1));
 
-    loadColumns = (table: Table) => this.http.get<Column[]>(`/table/${table.schema}/${table.name}`).pipe(
-        take(1),
-    )
+    loadColumns = (table: Table) => this.http.get<Column[]>(`/table/${table.schema}/${table.name}`).pipe(take(1));
 
-    testRows = (content: RowContainer) => this.http.post<{rowsInserted: number}>(`/table/${content.schema}/${content.table}`, {rows: content.rows}).pipe(
-        take(1),
-    )
+    testRows = (content: RowContainer) => this.http.post<{rowsInserted: number}>(`/table/${content.schema}/${content.table}`, {rows: content.rows}).pipe(take(1));
 
-    importRows = (content: RowContainer) => this.http.put<{rowsInserted: number}>(`/table/${content.schema}/${content.table}`, {rows: content.rows}).pipe(
-        take(1),
-    )
+    importRows = (content: RowContainer) => this.http.put<{rowsInserted: number}>(`/table/${content.schema}/${content.table}`, {rows: content.rows}).pipe(take(1));
 }

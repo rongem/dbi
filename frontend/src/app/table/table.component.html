@@ -1,12 +1,12 @@
 <div *ngIf="(rowCount | async) === 0">
-    After copyiing your table content to clipboard, paste it here with Ctrl + V.
+    After copying your table content to clipboard, paste it here with Ctrl + V.
 </div>
-<button type="button" *ngIf="(rowCount | async)! > 0 && (tableContainsErrors | async) === false">Start import</button>
+<button type="button" style="margin: 0.5rem" *ngIf="(canImport | async) === true" (click)="onImport()">Start import</button>
 <table class="table">
     <thead>
         <tr>
             <th style="padding:0;"></th>
-            <th *ngFor="let column of columns; let i = index"
+            <th *ngFor="let column of (columnMappings | async); let i = index"
                 draggable="true"
                 (dragstart)="onDragStart($event, i)"
                 (dragend)="onDragEnd()"
@@ -15,7 +15,7 @@
                 [ngClass]="{dragging: this.sourceIndex === i, target: presumedTargetIndex === i, primary: (getColumn(column) | async)?.primary, foreign: (getColumn(column) | async)?.foreignKey}"
                 [attr.title]="getColumnTitle(column) | async"
                 class="position-relative">
-                {{(getColumn(columns[i]) | async)?.name}}
+                {{(getColumn(column) | async)?.name}}
                 <span class="visually-hidden" *ngIf="(getColumn(column) | async)?.primary === true">
                     Diese Spalte wird für den Primärschlüssel der Tabelle verwendet.
                 </span>
@@ -36,10 +36,10 @@
                     Diese Zeile enthält fehlerhafte Daten.
                 </span>
             </td>
-            <td *ngFor="let column of columns; let i = index"
-                [ngClass]="{error: (getCellInformation(rowNumber, i, column) | async)?.containsErrors}"
-                [attr.title]="(getCellInformation(rowNumber, i, column) | async)?.errorText">
-                {{(getCellInformation(rowNumber, i, column) | async)?.value}}
+            <td *ngFor="let column of (columnMappings | async); let i = index"
+                [ngClass]="{error: (getCellInformation(rowNumber, i) | async)?.containsErrors}"
+                [attr.title]="(getCellInformation(rowNumber, i) | async)?.errorText">
+                {{(getCellInformation(rowNumber, i) | async)?.value}}
             </td>
         </tr>
     </tbody>

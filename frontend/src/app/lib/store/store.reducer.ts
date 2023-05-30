@@ -22,8 +22,9 @@ export interface State {
     working: boolean;
     tables: Table[];
     selectedTable?: Table;
-    columns?: Column[];
+    columnDefinitions?: Column[];
     cellContents: CellContent[];
+    columnMapping: number[];
     userName?: string;
     databaseName?: string;
     error?: string;
@@ -37,6 +38,7 @@ const initialState: State = {
     notAuthorized: false,
     working: false,
     cellContents: [],
+    columnMapping: [],
     userName: undefined,
     rowErrors: [],
     canImport: false,
@@ -69,7 +71,7 @@ export function storeReducer(appState: State | undefined, appAction: Action) {
             tables: [],
             tablesLoaded: false,
             selectedTable: undefined,
-            columns: undefined,
+            columnDefinitions: undefined,
             cellContents: [],
             working: true,
             rowErrors: [],
@@ -79,7 +81,7 @@ export function storeReducer(appState: State | undefined, appAction: Action) {
             ...state,
             tables: [...action.tables],
             selectedTable: undefined,
-            columns: undefined,
+            columnDefinitions: undefined,
             cellContents: [],
             tablesLoaded: true,
             working: false,
@@ -88,7 +90,7 @@ export function storeReducer(appState: State | undefined, appAction: Action) {
         on(StoreActions.selectTable, (state, action) => ({
             ...state,
             selectedTable: {...action},
-            columns: undefined,
+            columnDefinitions: undefined,
             cellContents: [],
             working: true,
             rowErrors: [],
@@ -96,8 +98,16 @@ export function storeReducer(appState: State | undefined, appAction: Action) {
         })),
         on(StoreActions.columnsLoaded, (state, action) => ({
             ...state,
-            columns: [...action.columns],
+            columnDefinitions: [...action.columns],
             cellContents: [],
+            columnMapping: Array.from(Array(action.columns.length).keys()),
+            working: false,
+            rowErrors: [],
+            canImport: false,
+        })),
+        on(StoreActions.changeColumnOrder, (state, action) => ({
+            ...state,
+            columnMapping: [...action.columnMappings],
             working: false,
             rowErrors: [],
             canImport: false,
@@ -128,6 +138,7 @@ export function storeReducer(appState: State | undefined, appAction: Action) {
         on(StoreActions.backendTestSuccessful, (state, action) => ({
             ...state,
             canImport: true,
+            working: false,
         })),
     )(appState, appAction);
 }

@@ -23,7 +23,7 @@
   </ng-container>
 </footer>
 
-<ng-container *ngIf="busy === true">
+<ng-container *ngIf="(busy | async) === true">
   <div class="backdrop"></div>
   <div class="busy">Arbeite...</div>
 </ng-container>

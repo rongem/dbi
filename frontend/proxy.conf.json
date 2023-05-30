@@ -1,0 +1,23 @@
+{
+    "/tables": {
+        "target": "http://localhost:8000",
+        "secure": false,
+        "pathRewrite": {
+            "^/tables": "/table"
+        }
+    },
+    "/table": {
+        "target": "http://localhost:8000",
+        "secure": false,
+        "pathRewrite": {
+            "^/table": "/table"
+        }
+    },
+    "/user": {
+        "target": "http://localhost:8000",
+        "secure": false,
+        "pathRewrite": {
+            "^/user": "/user"
+        }
+    }
+}

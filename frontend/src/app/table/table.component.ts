@@ -2,12 +2,16 @@ import { Component, ElementRef, HostListener, OnDestroy, OnInit, QueryList, View
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { Subscription, map, take, withLatestFrom } from 'rxjs';
+import { Subscription, firstValueFrom, map, take, withLatestFrom } from 'rxjs';
 
 import * as StoreSelectors from '../lib/store/store.selectors';
 import * as StoreActions from '../lib/store/store.actions';
 import { ClipboardHelper } from '../lib/clipboard-helper.model';
 import { CellContent } from '../lib/models/cellcontent.model';
+import { Row } from '../lib/models/rest-backend/row.model';
+import { Column } from '../lib/models/rest-backend/column.model';
+import { CellInformation } from '../lib/models/cellinformation.model';
+import { RowContainer } from '../lib/models/rest-backend/row-container.model';
 
 @Component({
   selector: 'app-table',
@@ -15,45 +19,79 @@ import { CellContent } from '../lib/models/cellcontent.model';
   styleUrls: ['./table.component.scss']
 })
 export class TableComponent implements OnInit, OnDestroy {
-  columnDefinitions = this.store.select(StoreSelectors.columns);
+  columnDefinitions = this.store.select(StoreSelectors.columnDefinitions);
   // table cells for selection
   @ViewChildren('td') cells!: QueryList<ElementRef<HTMLTableCellElement>>;
   // dragging source
   sourceIndex: number | undefined;
   // index of column that dragged column is hovering on
   presumedTargetIndex: number | undefined;
-  // columns for drag and drop column order change
-  columns: number[] = [];
-  private subscription?: Subscription;
+  private schema: string = '';
+  private table: string = '';
+  private subscriptions: Subscription[] = [];
   constructor(private store: Store, private router: Router, private route: ActivatedRoute, private actions$: Actions) {}
   ngOnInit(): void {
-    this.subscription = this.route.params.pipe(
-      withLatestFrom(this.store.select(StoreSelectors.tables))
-    ).subscribe(([{schema, table}, tables]) => {
-      const targetTable = tables.find(t => t.name.toLocaleLowerCase() === (table as string).toLocaleLowerCase() &&
-        t.schema.toLocaleLowerCase() === (schema as string).toLocaleLowerCase());
-      if (!targetTable) {
-        this.router.navigateByUrl('/schemas', {replaceUrl: true});
-      } else {
-        this.store.dispatch(StoreActions.selectTable(targetTable));
-        this.actions$.pipe(
-          ofType(StoreActions.columnsLoaded),
-          take(1),
-        ).subscribe(cols => {
-          this.columns = Array.from(Array(cols.columns.length).keys())
-        });
+    this.subscriptions.push(
+      this.route.params.pipe(
+        withLatestFrom(this.store.select(StoreSelectors.tables))
+      ).subscribe(([{schema, table}, tables]) => {
+        const targetTable = tables.find(t => t.name.toLocaleLowerCase() === table.toString().toLocaleLowerCase() &&
+          t.schema.toLocaleLowerCase() === (schema as string).toLocaleLowerCase());
+        if (!targetTable) {
+          this.router.navigateByUrl('/schemas', {replaceUrl: true});
+        } else {
+          this.schema = schema.toString();
+          this.table = table.toString();
+          this.store.dispatch(StoreActions.selectTable(targetTable));
+        }
+      })
+    );
+    this.subscriptions.push(
+      this.actions$.pipe(
+        ofType(StoreActions.setCellContents, StoreActions.changeColumnOrder),
+        withLatestFrom(
+          this.store.select(StoreSelectors.cellInformations),
+          this.rowNumbers,
+          this.store.select(StoreSelectors.tableContainsErrors),
+        ),
+      ).subscribe(([, cellInformations, rowNumbers, errorPresent]) => {
+        if (errorPresent === false) {
+          const rows: Row[] = this.createRowsForBackend(cellInformations, rowNumbers);
+          this.store.dispatch(StoreActions.testRowsInBackend({content: this.createRowContainer(rows)}));
+        }
+      })
+    );
+  }
+  private createRowContainer(rows: Row[]): RowContainer {
+    return {
+      schema: this.schema,
+      table: this.table,
+      rows,
+    };
+  }
+
+  private createRowsForBackend(cellInformations: CellInformation[], rowNumbers: number[]) {
+    const rows: Row[] = [];
+    for (let rowNumber of rowNumbers) {
+      const cells = cellInformations.filter(c => c.row === rowNumber);
+      rows[rowNumber] = {};
+      for (let cell of cells) {
+        rows[rowNumber][cell.name] = cell.typedValue;
       }
-    });
-    // this.schemas.subscribe()
+    }
+    return rows;
   }
+
   ngOnDestroy(): void {
-    this.subscription?.unsubscribe();
+    for (let sub of this.subscriptions) {
+      sub.unsubscribe();
+    }
   }
 
-  getColumn = (columnIndex: number) => this.store.select(StoreSelectors.column(columnIndex));
+  getColumn = (columnIndex: number) => this.store.select(StoreSelectors.columnDefinition(columnIndex));
 
-  getCellInformation = (rowIndex: number, columIndex: number, columnDefinitionIndex: number) =>
-    this.store.select(StoreSelectors.cellInformation(rowIndex, columIndex, columnDefinitionIndex));
+  getCellInformation = (rowIndex: number, columIndex: number) =>
+    this.store.select(StoreSelectors.cellInformation(rowIndex, columIndex));
 
   getColumnTitle = (columnPosition: number) => this.getColumn(columnPosition).pipe(
     map(column => {
@@ -78,9 +116,12 @@ export class TableComponent implements OnInit, OnDestroy {
     })
   );
 
-  getRowContainsErrors = (rowIndex: number) => this.store.select(StoreSelectors.rowContainsErrors(rowIndex, this.columns));
+  getRowContainsErrors = (rowIndex: number) => this.store.select(StoreSelectors.rowContainsErrors(rowIndex));
 
-  get tableContainsErrors() { return this.store.select(StoreSelectors.tableContainsErrors(this.columns)); }
+  // columns for drag and drop column order change
+  get columnMappings() { return this.store.select(StoreSelectors.columnMappings) };
+
+  get tableContainsErrors() { return this.store.select(StoreSelectors.tableContainsErrors); }
 
   get rowNumbers() {
     return this.store.select(StoreSelectors.rowNumbers);
@@ -90,16 +131,18 @@ export class TableComponent implements OnInit, OnDestroy {
     return this.rowNumbers.pipe(map(r => r.length));
   }
 
-  row = (rowNumber: number) => this.store.select(StoreSelectors.row(rowNumber));
+  get canImport() {
+    return this.store.select(StoreSelectors.canImport);
+  }
   
   @HostListener('window:paste', ['$event'])
-  onPaste(event: ClipboardEvent) {
-    console.log('paste');
+  async onPaste(event: ClipboardEvent) {
     event.stopPropagation();
     try {
       if (event.clipboardData) {
         const rows = ClipboardHelper.getTableContent(event.clipboardData);
-        this.fitRowWidth(rows);
+        const columnMappings = await firstValueFrom(this.columnMappings);
+        this.fitRowWidth(rows, columnMappings);
         this.fillCellContents(rows);
       }
     } catch (error: any) {
@@ -107,11 +150,11 @@ export class TableComponent implements OnInit, OnDestroy {
     }
   }
 
-  private fitRowWidth(rows: string[][]) {
+  private fitRowWidth(rows: string[][], columnMappings: number[]) {
     for (let row of rows) {
       // remove columns that are out of possible insertion range
-      if (row.length > this.columns.length) {
-        row.splice(this.columns.length);
+      if (row.length > columnMappings.length) {
+        row.splice(columnMappings.length);
       }
     };
   }
@@ -126,7 +169,6 @@ export class TableComponent implements OnInit, OnDestroy {
       }
     }
     if (contents.length > 0) {
-      console.log(contents);
       this.store.dispatch(StoreActions.setCellContents({contents}));
     }
   }
@@ -157,16 +199,28 @@ export class TableComponent implements OnInit, OnDestroy {
     }
   }
 
-  onDrop(targetIndex: number) {
+  async onDrop(targetIndex: number) {
     if (this.sourceIndex !== undefined) {
+      const columnMappings = await firstValueFrom(this.columnMappings);
       // remove source index
-      const val = this.columns.splice(this.sourceIndex, 1)[0];
+      const val = columnMappings.splice(this.sourceIndex, 1)[0];
       // put it into new place
-      this.columns.splice(targetIndex, 0, val);
+      columnMappings.splice(targetIndex, 0, val);
+      this.store.dispatch(StoreActions.changeColumnOrder({columnMappings}));
     }
     // clean up temporary variables
     this.presumedTargetIndex = undefined;
     this.sourceIndex = undefined;
+  }
+
+  onImport() {
+    this.store.select(StoreSelectors.cellInformations).pipe(
+      withLatestFrom(this.store.select(StoreSelectors.rowNumbers)),
+      take(1),
+    ).subscribe(([cellInformations, rowNumbers]) => {
+      const rows: Row[] = this.createRowsForBackend(cellInformations, rowNumbers);
+      this.store.dispatch(StoreActions.importRowsInBackend({content: this.createRowContainer(rows)}));
+    });
   }
 
   /*onCellClick(event: FocusEvent) {
