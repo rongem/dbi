@@ -1,6 +1,6 @@
 <header class="toolbar" role="banner">
   <span>{{headerText | async}}</span>
-  <span>Datenbank-Importer v{{version}}</span>
+  <span>Database-Importer v{{version}}</span>
   <div class="spacer"></div>
   <div id="username">
     {{authenticatedUser | async}}
@@ -18,12 +18,12 @@
   <ng-container *ngIf="(notAuthorized | async) === true">
     <div class="backdrop"></div>
     <div class="busy">
-      Sie verfügen über keine Berechtigung zum Importieren in die Datenbank.
+      You don't have sufficient rights to import into database.
     </div>
   </ng-container>
 </footer>
 
 <ng-container *ngIf="(busy | async) === true">
   <div class="backdrop"></div>
-  <div class="busy">Arbeite...</div>
+  <div class="busy">Working...</div>
 </ng-container>

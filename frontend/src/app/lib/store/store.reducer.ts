@@ -30,6 +30,7 @@ export interface State {
     error?: string;
     rowErrors: ErrorList[];
     canImport: boolean;
+    importedRows?: number;
 };
 
 const initialState: State = {
@@ -66,17 +67,6 @@ export function storeReducer(appState: State | undefined, appAction: Action) {
             error: action.error,
             working: false,
         })),
-        on(StoreActions.loadTables, (state, action) => ({
-            ...state,
-            tables: [],
-            tablesLoaded: false,
-            selectedTable: undefined,
-            columnDefinitions: undefined,
-            cellContents: [],
-            working: true,
-            rowErrors: [],
-            canImport: false,
-        })),
         on(StoreActions.tablesLoaded, (state, action) => ({
             ...state,
             tables: [...action.tables],
@@ -86,6 +76,7 @@ export function storeReducer(appState: State | undefined, appAction: Action) {
             tablesLoaded: true,
             working: false,
             canImport: false,
+            importedRows: undefined,
         })),
         on(StoreActions.selectTable, (state, action) => ({
             ...state,
@@ -95,6 +86,7 @@ export function storeReducer(appState: State | undefined, appAction: Action) {
             working: true,
             rowErrors: [],
             canImport: false,
+            importedRows: undefined,
         })),
         on(StoreActions.columnsLoaded, (state, action) => ({
             ...state,
@@ -116,7 +108,6 @@ export function storeReducer(appState: State | undefined, appAction: Action) {
             ...state,
             cellContents: [...action.contents],
             rowErrors: [],
-            canImport: false,
         })),
         on(StoreActions.testRowsInBackend, (state, action) => ({
             ...state,
@@ -139,6 +130,14 @@ export function storeReducer(appState: State | undefined, appAction: Action) {
             ...state,
             canImport: true,
             working: false,
+        })),
+        on(StoreActions.importSuccessful, (state, action) => ({
+            ...state,
+            cellContents: [],
+            rowErrors: [],
+            working: false,
+            canImport: false,
+            importedRows: action.importedRows
         })),
     )(appState, appAction);
 }

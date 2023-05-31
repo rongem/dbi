@@ -1,11 +1,23 @@
+<div class="success" *ngIf="(importedRows | async) !== undefined">
+    <ng-container>
+        Successfully imported 
+    </ng-container>
+    {{importedRows | async}} 
+    <ng-container>
+        rows.
+    </ng-container>
+</div>
 <div *ngIf="(rowCount | async) === 0">
     After copying your table content to clipboard, paste it here with Ctrl + V.
 </div>
-<button type="button" style="margin: 0.5rem" *ngIf="(canImport | async) === true" (click)="onImport()">Start import</button>
+<div class="button-container" *ngIf="(canImport | async) === true">
+    <button type="button" (click)="onImport()">Start import</button>
+</div>
 <table class="table">
     <thead>
         <tr>
             <th style="padding:0;"></th>
+            <th style="padding:0;">#</th>
             <th *ngFor="let column of (columnMappings | async); let i = index"
                 draggable="true"
                 (dragstart)="onDragStart($event, i)"
@@ -17,24 +29,27 @@
                 class="position-relative">
                 {{(getColumn(column) | async)?.name}}
                 <span class="visually-hidden" *ngIf="(getColumn(column) | async)?.primary === true">
-                    Diese Spalte wird für den Primärschlüssel der Tabelle verwendet.
+                    This column is used for the primary key of the table.
                 </span>
                 <span class="visually-hidden" *ngIf="(getColumn(column) | async)?.foreignKey === true">
-                    Diese Spalte enthält einen Fremdschlüssel auf eine andere Tabelle.
+                    This column contains a foreign key pointing to another table.
                 </span>
                 <span class="visually-hidden" *ngIf="(getColumn(column) | async)?.unique === true">
-                    In dieser Spalte der Tabelle dürfen keine doppelten Einträge vorhanden sein.
+                    This column must contain unique entries.
                 </span>
            </th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let rowNumber of (rowNumbers | async)">
-            <td>
+            <td [attr.title]="getRowErrorDescriptions(rowNumber) | async">
                 <div class="error-sign" *ngIf="(getRowContainsErrors(rowNumber) | async) === true">!</div>
                 <span class="visually-hidden">
-                    Diese Zeile enthält fehlerhafte Daten.
+                    This line contains data causing errors.
                 </span>
+            </td>
+            <td class="align-right">
+                {{rowNumber}}
             </td>
             <td *ngFor="let column of (columnMappings | async); let i = index"
                 [ngClass]="{error: (getCellInformation(rowNumber, i) | async)?.containsErrors}"

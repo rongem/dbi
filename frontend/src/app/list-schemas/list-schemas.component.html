@@ -1,6 +1,8 @@
-<h1>Schemas</h1>
-<p>Die Datenbank besitzt mehrere Schemas. In jedem Schema befinden sich Tabellen, die aber erst angezeigt werden, wenn Sie das
-    Schema ausgewählt haben. Bei Fragen zum korrekten Schema wenden Sie sich an Ihren Datenbankbetreuer.</p>
+<h1>Database schemas</h1>
+<p>
+    The database contains multiple schemas. Tables exist in each schema, and they will be displayed after you have selected a schema.
+    If you have any questions about schemas or tables, please ask your database administrator.
+</p>
 <div class="card-container">
     <button type="button" class="card selectable" *ngFor="let schema of (schemas | async)" [routerLink]="['/', 'schema', schema]">
         <h2>{{schema}}</h2>

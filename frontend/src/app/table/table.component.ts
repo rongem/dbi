@@ -2,14 +2,13 @@ import { Component, ElementRef, HostListener, OnDestroy, OnInit, QueryList, View
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
-import { Subscription, firstValueFrom, map, take, withLatestFrom } from 'rxjs';
+import { Subscription, firstValueFrom, map, withLatestFrom } from 'rxjs';
 
 import * as StoreSelectors from '../lib/store/store.selectors';
 import * as StoreActions from '../lib/store/store.actions';
 import { ClipboardHelper } from '../lib/clipboard-helper.model';
 import { CellContent } from '../lib/models/cellcontent.model';
 import { Row } from '../lib/models/rest-backend/row.model';
-import { Column } from '../lib/models/rest-backend/column.model';
 import { CellInformation } from '../lib/models/cellinformation.model';
 import { RowContainer } from '../lib/models/rest-backend/row-container.model';
 
@@ -55,7 +54,7 @@ export class TableComponent implements OnInit, OnDestroy {
           this.store.select(StoreSelectors.tableContainsErrors),
         ),
       ).subscribe(([, cellInformations, rowNumbers, errorPresent]) => {
-        if (errorPresent === false) {
+        if (errorPresent === false && rowNumbers.length > 0) {
           const rows: Row[] = this.createRowsForBackend(cellInformations, rowNumbers);
           this.store.dispatch(StoreActions.testRowsInBackend({content: this.createRowContainer(rows)}));
         }
@@ -118,6 +117,8 @@ export class TableComponent implements OnInit, OnDestroy {
 
   getRowContainsErrors = (rowIndex: number) => this.store.select(StoreSelectors.rowContainsErrors(rowIndex));
 
+  getRowErrorDescriptions = (rowIndex: number) => this.store.select(StoreSelectors.rowErrors(rowIndex)).pipe(map(errors => errors.join('; ')));
+
   // columns for drag and drop column order change
   get columnMappings() { return this.store.select(StoreSelectors.columnMappings) };
 
@@ -133,6 +134,10 @@ export class TableComponent implements OnInit, OnDestroy {
 
   get canImport() {
     return this.store.select(StoreSelectors.canImport);
+  }
+
+  get importedRows() {
+    return this.store.select(StoreSelectors.importedRows);
   }
   
   @HostListener('window:paste', ['$event'])
@@ -213,14 +218,12 @@ export class TableComponent implements OnInit, OnDestroy {
     this.sourceIndex = undefined;
   }
 
-  onImport() {
-    this.store.select(StoreSelectors.cellInformations).pipe(
-      withLatestFrom(this.store.select(StoreSelectors.rowNumbers)),
-      take(1),
-    ).subscribe(([cellInformations, rowNumbers]) => {
-      const rows: Row[] = this.createRowsForBackend(cellInformations, rowNumbers);
-      this.store.dispatch(StoreActions.importRowsInBackend({content: this.createRowContainer(rows)}));
-    });
+  async onImport() {
+    const cellInformations = await firstValueFrom(this.store.select(StoreSelectors.cellInformations));
+    const rowNumbers = await firstValueFrom(this.store.select(StoreSelectors.rowNumbers));
+    const rows: Row[] = this.createRowsForBackend(cellInformations, rowNumbers);
+    const content = this.createRowContainer(rows);
+    this.store.dispatch(StoreActions.importRowsInBackend({content}));
   }
 
   /*onCellClick(event: FocusEvent) {

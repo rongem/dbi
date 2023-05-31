@@ -266,7 +266,29 @@ footer {
     white-space: nowrap;
 }
 
+.success {
+    background-color: lightgreen;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    margin: 0.2rem;
+    &::before {
+        content: '\02611';
+    }
+}
 
+.align-right {
+    text-align: right;
+}
+
+.button-container {
+    padding: 0.8rem;
+    border: 0.25rem solid green;
+    button {
+        margin: unset;
+        width: 100%;
+        padding: 0.5rem;
+    }
+}
 
   /* Responsive Styles */
 @media screen and (max-width: 47.9375rem) {

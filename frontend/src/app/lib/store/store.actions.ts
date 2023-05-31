@@ -20,8 +20,6 @@ export const setError = createAction('[Error] Set error',
     props<{ error?: string }>()
 );
 
-export const loadTables = createAction('[Tables] Load');
-
 export const tablesLoaded = createAction('[Tables] Finished loading tables',
     props<{tables: Table[]}>()
 );
@@ -55,3 +53,7 @@ export const setRowErrors = createAction('[Rows] Set list of row errors',
 );
 
 export const backendTestSuccessful = createAction('[Rows] Test of rows in backend was successful');
+
+export const importSuccessful = createAction('[Rows] Import successful',
+    props<{importedRows: number}>()
+);
