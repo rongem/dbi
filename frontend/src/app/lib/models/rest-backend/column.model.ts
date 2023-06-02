@@ -1,6 +1,6 @@
 import { SqlType } from "./sqltype";
 import { Table } from "./table.model";
-import { tsTypeInfo } from "./tsTypeInfo";
+import { tsTypeInfo } from "./typeshelper";
 
 export interface Column {
     table: Table;
@@ -21,5 +21,10 @@ export interface Column {
     typeInfo: tsTypeInfo;
     primary: boolean;
     foreignKey: boolean;
+    foreignKeyInformation?: {
+        schema: string;
+        table: string;
+        column: string;
+    };
     unique: boolean;
 }

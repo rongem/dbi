@@ -21,5 +21,10 @@ export interface Column {
     typeInfo: tsTypeInfo;
     primary: boolean;
     foreignKey: boolean;
+    foreignKeyInformation?: {
+        schema: string;
+        table: string;
+        column: string;
+    };
     unique: boolean;
 }
