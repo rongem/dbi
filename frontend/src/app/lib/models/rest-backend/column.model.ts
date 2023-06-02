@@ -1,6 +1,6 @@
 import { SqlType } from "./sqltype";
 import { Table } from "./table.model";
-import { tsTypeInfo } from "./typeshelper";
+import { tsTypeInfo } from "./tsTypeInfo";
 
 export interface Column {
     table: Table;
