@@ -2,7 +2,7 @@ import { requestPromise } from '../db';
 import { sqlGetColumnInformationForSchemaAndTable, sqlGetColumnKeyInformation, sqlGetForeignColumnInformation, sqlGetReferantialConstraints } from '../../utils/sql.templates';
 import { Column } from '../data/column.model';
 import { NVarChar } from 'mssql';
-import { getTypeInformation } from '../data/typeshelper';
+import { getTypeInformation } from '../data/tsTypeInfo';
 
 export const selectColumns = async (schema: string, table: string) => {
     const sqlColumns = await fetchColumnData(schema, table);

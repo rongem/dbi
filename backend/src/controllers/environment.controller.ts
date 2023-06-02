@@ -3,19 +3,22 @@ import { authorizationTableName } from "../utils/config.templates";
 export class EnvironmentController {
     private constructor() {
         if (!this.dbName) {
-            throw new Error('Umgebungsvariable DB_NAME wurde nicht gefunden.');
+            throw new Error('Environment variable DB_NAME not configured.');
         }
         if (!this.dbUser) {
-            throw new Error('Umgebungsvariable DB_USER wurde nicht gefunden.');
+            throw new Error('Environment variable DB_USER not configured.');
         }
         if (!this.dbPassword) {
-            throw new Error('Umgebungsvariable DB_PWD wurde nicht gefunden.');
+            throw new Error('Environment variable DB_PWD not configured.');
         }
         if (!this.dbServer) {
-            throw new Error('Umgebungsvariable DB_SERVER wurde nicht gefunden.');
+            throw new Error('Environment variable DB_SERVER not configured.');
         }
         if (!['ntlm', 'none'].includes(this.authMode)) {
-            throw new Error('Ungültige Authentifzierungsmethode: ' + this.authMode);
+            throw new Error('Illegal authentication mode in variable AUTH_MODE: ' + this.authMode);
+        }
+        if (isNaN(+this.dbPort)) {
+            throw new Error('Non numeric value in variable DB_PORT.');
         }
     }
 
