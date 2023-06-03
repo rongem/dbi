@@ -1,10 +1,10 @@
 {
   "name": "dbi-backend",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Database importer backend",
   "main": "app.ts",
   "scripts": {
-    "test": "jest --watchAll --no-cache --detectOpenHandles",
+    "test": "jest --no-cache --detectOpenHandles",
     "dev": "nodemon -r dotenv/config ./src/index.ts",
     "comp": "tsc --declaration",
     "preprod": "tsc && node -r dotenv/config ./dist/index.js",

@@ -10,6 +10,7 @@ import tablesRouter from './routes/tables.routes';
 import tableRouter from './routes/table.routes';
 import userRouter from './routes/user.routes';
 
+
 const app = express();
 
 const env = EnvironmentController.instance;
@@ -29,9 +30,9 @@ app.use('/tables', getAuthentication, tablesRouter);
 app.use('/table', express.json({limit: '50mb'}), getAuthentication, tableRouter);
 app.use('/user', getAuthentication, userRouter);
 
-const path = __dirname + '/views';
-app.use(express.static(path));
-app.get('/', (req, res) => res.sendFile(path + '/index.html'));
+const angularPath = __dirname + '/views';
+app.use(express.static(angularPath));
+app.get('/', (req, res) => res.sendFile(angularPath + '/index.html'));
 app.use('/', error404);
 
 app.use((error: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {

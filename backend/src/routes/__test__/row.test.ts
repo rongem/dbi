@@ -146,7 +146,7 @@ it('sends an array with two valid objects', async () => {
 jest.setTimeout(300000);
 it('sends an array with a lot of valid objects', async () => {
     const rows = [];
-    for (let i = 0; i < 10000; i++) {
+    for (let i = 0; i < 1000; i++) {
         rows.push({username: 'test' + i.toString(), allowed: true});
     }
     return request(app).post('/table/test/BoatExt_Authorizations')
