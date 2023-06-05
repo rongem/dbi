@@ -2,11 +2,11 @@ module.exports = function(grunt) {
     grunt.initConfig({
         bump: {
           options: {
-            files: ['package.json'],
+            files: ['package.json', 'package-lock.json'],
             updateConfigs: [],
             commit: false,
             commitMessage: 'Release v%VERSION%',
-            commitFiles: ['package.json'],
+            commitFiles: ['-a'],
             createTag: false,
             tagName: 'v%VERSION%',
             tagMessage: 'Version %VERSION%',

@@ -1,6 +1,6 @@
 import * as mssql from 'mssql';
 
-import { pool } from '../db';
+import { requestPromise } from '../db';
 import { User } from '../data/user.model';
 import { HttpError } from '../rest-api/httpError.model';
 import { EnvironmentController } from '../../controllers/environment.controller';
@@ -9,14 +9,19 @@ const env = EnvironmentController.instance;
 
 export const readUser = async (name: string): Promise<User> => {
     try {
-        const req = await pool().then(connection => new mssql.Request(connection));
-        req.input('name', mssql.NVarChar(70), name);
+        const req = await requestPromise();
+        req.input('name', mssql.NVarChar(50), name);
         const result = await req.query(`SELECT * FROM ${env.authTableName} WHERE [Username]=@name`);
         if (result.rowsAffected.length === 1 && result.rowsAffected[0] === 0) {
             createUser(name);
             return {name, isAuthorized: false, databaseName: env.dbName};
         }
-        const user: User = { name: result.recordset[0].Username, isAuthorized: result.recordset[0].Allowed, databaseName: env.dbName };
+        const { userKey, allowedKey } = checkIfTableContainsRequiredColumnsCaseInsensitiveAndReturnKeyNames(result.recordset[0]);
+        const user: User = {
+            name: result.recordset[0][userKey],
+            isAuthorized: result.recordset[0][allowedKey],
+            databaseName: env.dbName,
+        };
         return user;
     } catch (error: any) {
         console.log('readUser', error);
@@ -24,13 +29,15 @@ export const readUser = async (name: string): Promise<User> => {
     }
 };
 
+const getDatabaseKey = (object: any, key: string) => Object.keys(object).find(k => k.toLocaleLowerCase() === key.toLocaleLowerCase());
+
 const createUser = async (name: string): Promise<User> => {
     try {
-        const req = await pool().then(connection => new mssql.Request(connection));
+        const req = await requestPromise();
         req.input('name', mssql.NVarChar(70), name);
         const result = await req.query(`INSERT INTO ${env.authTableName} ([Username], [Allowed]) VALUES (@name, 0)`);
         if (result.rowsAffected.length !== 1 || result.rowsAffected[0] !== 1) {
-            throw new Error('INSERT Authorizations: Daten wurden nicht geschrieben.');
+            throw new Error('INSERT Authorizations: Data could not be stored.');
         }
         return {
             name: '',
@@ -42,3 +49,11 @@ const createUser = async (name: string): Promise<User> => {
         throw new HttpError(500, error.message ?? error.toString(), name);
     }
 };
+
+const checkIfTableContainsRequiredColumnsCaseInsensitiveAndReturnKeyNames = (recordset: mssql.IRecordSet<any>) => {
+    const userKey = getDatabaseKey(recordset, 'username');
+    const allowedKey = getDatabaseKey(recordset, 'allowed');
+    if (!userKey || !allowedKey)
+        throw new Error('Authorization table does not have all required columns.');
+    return { userKey, allowedKey };
+}
