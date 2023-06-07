@@ -156,10 +156,14 @@ export class TableComponent implements OnInit, OnDestroy {
   }
 
   private fitRowWidth(rows: string[][], columnMappings: number[]) {
-    for (let row of rows) {
-      // remove columns that are out of possible insertion range
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
       if (row.length > columnMappings.length) {
+        // remove columns that are out of possible insertion range
         row.splice(columnMappings.length);
+      } else if (row.length < columnMappings.length) {
+        // fill up row columns if not enough data has been provided
+        rows[i] = row.concat(Array(columnMappings.length - row.length).fill(''));
       }
     };
   }

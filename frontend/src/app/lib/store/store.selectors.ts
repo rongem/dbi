@@ -43,7 +43,10 @@ const allRowErrors = createSelector(appState, state => state.rowErrors);
 
 export const errorsInRow = (rowIndex: number) => createSelector(allRowErrors, errors => errors.some(e => e.row === rowIndex));
 
-export const rowErrors = (rowIndex: number) => createSelector(allRowErrors, errors => errors.filter(e => e.row === rowIndex));
+export const rowErrors = (rowIndex: number) => createSelector(allRowErrors, cellInformations, (rowErrors, cellInformations) => [
+    ...rowErrors.filter(e => e.row === rowIndex),
+    ...cellInformations.filter(c => c.row === rowIndex && c.containsErrors).map(c => c.name + ': ' + c.errors.join(', ')),
+]);
 
 export const rowContainsErrors = (rowIndex: number) => createSelector(cellInformations, errorsInRow(rowIndex), (cells, errors) => 
     errors || cells.some(c => c.row === rowIndex && c.containsErrors)
