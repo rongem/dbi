@@ -3,6 +3,7 @@ import { Store } from '@ngrx/store';
 import { map } from 'rxjs';
 import packageJson from '../../package.json';
 import * as StoreSelectors from './lib/store/store.selectors';
+import * as StoreActions from './lib/store/store.actions';
 import { retrieveUser } from './lib/store/store.actions';
 @Component({
   selector: 'app-root',
@@ -39,5 +40,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.store.dispatch(retrieveUser());
   }
-;
+  clearError(): void {
+    this.store.dispatch(StoreActions.setError({}));
+  }
 }

@@ -18,7 +18,7 @@ export const readUser = async (name: string): Promise<User> => {
         }
         const { userKey, allowedKey } = checkIfTableContainsRequiredColumnsCaseInsensitiveAndReturnKeyNames(result.recordset[0]);
         const user: User = {
-            name: result.recordset[0][userKey],
+            name: (result.recordset[0][userKey] as string).trim(),
             isAuthorized: result.recordset[0][allowedKey],
             databaseName: env.dbName,
         };

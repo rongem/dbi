@@ -251,6 +251,13 @@ footer {
     display: flex;
     align-items: center;
     line-height: 1.25rem;
+    position: fixed;
+    bottom: 1rem;
+    left: 1rem;
+    button.error {
+        padding: 1rem 4rem;
+        cursor: pointer;
+    }
 }
 
 .center {

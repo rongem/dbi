@@ -12,9 +12,9 @@
 </main>
 
 <footer>
-  <p *ngIf="(errorPresent | async) === true" class="error">
+  <button *ngIf="(errorPresent | async) === true" (click)="clearError()" class="error" title="Clear error">
     {{error | async}}
-  </p>
+  </button>
   <ng-container *ngIf="(notAuthorized | async) === true">
     <div class="backdrop"></div>
     <div class="busy">
