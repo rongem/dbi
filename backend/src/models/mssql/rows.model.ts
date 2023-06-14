@@ -51,7 +51,11 @@ const insertRow = async (data: {columns: Column[]; row: Row; sqlCommand: string;
     const req = await transactionRequest(data.transaction);
     for (let col of data.columns) {
         const key = Object.keys(data.row).find(k => k.toLocaleLowerCase() === col.name.toLocaleLowerCase())!;
-        req.input(createParamNameFromColumnName(col.name), data.row[key]);
+        let value: any = data.row[key];
+        if (value === undefined || value === null) {
+            value = undefined;
+        }
+        req.input(createParamNameFromColumnName(col.name), value);
     }
     return req.query(data.sqlCommand);
 };

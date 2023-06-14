@@ -4,7 +4,7 @@
   "description": "Database importer backend",
   "main": "app.ts",
   "scripts": {
-    "test": "jest --no-cache --detectOpenHandles",
+    "test": "jest --no-cache --detectOpenHandles --covarage=true",
     "dev": "nodemon -r dotenv/config ./src/index.ts",
     "comp": "tsc --declaration",
     "preprod": "tsc && node -r dotenv/config ./dist/index.js",

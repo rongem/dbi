@@ -45,7 +45,10 @@ export class StoreEffects {
         private dbi: DbiService) {}
 
     private handleImportError = (error: HttpErrorResponse) => {
-        const errors = error.error.data as ErrorList[];
+        const errors = error.error?.data?.errors as ErrorList[] ?? [];
+        if (errors.length === 0) {
+            console.log (error);
+        }
         return of(StoreActions.setRowErrors({errors}));
     }
     

@@ -77,7 +77,7 @@ it('sends an array with field name not in table', async () => {
             expect(response.body.data.errors).toBeDefined();
             expect(response.body.data.errors.length).toBeDefined();
             expect(response.body.data.errors.length).toBe(1);
-            expect(response.body.data.errors[0].msg).toContain('Key names of row 0 are different from table');
+            expect(response.body.data.errors[0].msg).toContain('Column xAllowed is not part of the table');
         });
 });
 
@@ -145,7 +145,7 @@ it('sends an array with two valid objects', async () => {
 
 jest.setTimeout(300000);
 it('sends an array with a lot of valid objects', async () => {
-    const rows = [];
+    const rows: {username: string, allowed: boolean}[] = [];
     for (let i = 0; i < 1000; i++) {
         rows.push({username: 'test' + i.toString(), allowed: true});
     }

@@ -1,3 +1,5 @@
+import { ColumnObject } from "../../src/models/data/column-object.model";
+
 export {};
 
 declare global {
@@ -5,6 +7,8 @@ declare global {
         interface Request {
             userName: string;
             userAuthorized: boolean;
+            sqlColumnObject: ColumnObject;
+            sqlColumnNames: string[];
         }
     }
 }
