@@ -16,14 +16,12 @@ export const insertRows = async (data: {schemaName: string, tableName: string, r
         const row = data.rows[i];
         try {
             const result = await insertRow({columns: data.columns, row, schemaName: data.schemaName, tableName: data.tableName, transaction});
-            console.log(result.rowsAffected);
             if (result.rowsAffected.length !== 1 || result.rowsAffected[0] !== 1) {
                 errors.push({row: i, msg: 'No rows inserted', rowContent: row});
             } else {
                 rowCounter += result.rowsAffected[0];
             }
         } catch (error: any) {
-            console.log(error);
             if (error instanceof RequestError) {
                 errors.push({row: i, msg: error.message, rowContent: row});
             } else {
@@ -51,14 +49,11 @@ const insertRow = async (data: {columns: Column[]; row: Row; schemaName: string;
     const paramNames = columnNames.map(createParamDefinitionFromColumnName);
     const paramNamesList = paramNames.join(', ');
     const sqlCommand = `INSERT INTO [${data.schemaName}].[${data.tableName}] ([${columnNamesList}]) VALUES (${paramNamesList});`;
-    console.log(sqlCommand);
     const req = await transactionRequest(data.transaction);
     for (let col of columnNames) {
         const key = Object.keys(data.row).find(k => k.toLocaleLowerCase() === col.toLocaleLowerCase())!;
         let value: any = data.row[key];
-        console.log(col, key, value);
         req.input(createParamNameFromColumnName(col), value);
     }
-    console.log(req.parameters);
     return req.query(sqlCommand);
 };
