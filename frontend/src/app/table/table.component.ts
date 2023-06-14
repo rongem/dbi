@@ -75,7 +75,9 @@ export class TableComponent implements OnInit, OnDestroy {
       const cells = cellInformations.filter(c => c.row === rowNumber);
       rows[rowNumber] = {};
       for (let cell of cells) {
-        rows[rowNumber][cell.name] = cell.typedValue;
+        if (!!cell.typedValue || !cell.canBeEmpty) {
+          rows[rowNumber][cell.name] = cell.typedValue;
+        }
       }
     }
     return rows;

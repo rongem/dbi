@@ -45,7 +45,7 @@ export class CellInformation{
         return new Date(value);
     }
     get stringValue() {
-        return this.canContainString() ? this.value ?? '' : undefined;
+        return this.canContainString() ? this.value ?? undefined : undefined;
     }
     get isBoolean() { return this.booleanValue !== undefined; }
     get isDate() { return this.dateValue !== undefined; }

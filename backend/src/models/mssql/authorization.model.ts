@@ -25,7 +25,7 @@ export const readUser = async (name: string): Promise<User> => {
         return user;
     } catch (error: any) {
         console.log('readUser', error);
-        throw new HttpError(500, error.message ?? error.toString(), name);
+        throw new HttpError(500, error.message ?? error.toString(), {name});
     }
 };
 
@@ -46,7 +46,7 @@ const createUser = async (name: string): Promise<User> => {
         }
     } catch (error: any) {
         console.log('createUser', error);
-        throw new HttpError(500, error.message ?? error.toString(), name);
+        throw new HttpError(500, error.message ?? error.toString(), {name});
     }
 };
 
