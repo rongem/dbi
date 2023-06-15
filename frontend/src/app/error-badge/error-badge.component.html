@@ -1,0 +1,7 @@
+<button class="error-sign" (click)="visibleText = !visibleText">!</button>
+<span class="visually-hidden">
+    This line contains data causing errors.
+</span>
+<div class="error position-absolute" *ngIf="visibleText">
+    {{errorDescription}}
+</div>

@@ -1,0 +1,26 @@
+button {
+    cursor: pointer;
+}
+
+.error {
+    padding: 0.5rem;
+    border: 1px solid black;
+    box-shadow: 4px 4px black;
+    background-color: darkred;
+}
+
+.error-sign {
+    background-color: coral;
+    border: 1px #005 solid;
+    border-radius: 50%;
+    text-align: center;
+    height: 1.1rem;
+    width: 1.1rem;
+    font-weight: bold;
+    margin: 0;
+    display: block;
+}
+
+.position-absolute {
+    position: absolute;
+}

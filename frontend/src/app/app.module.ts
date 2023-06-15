@@ -12,13 +12,15 @@ import { ListSchemasComponent } from './list-schemas/list-schemas.component';
 import { ListTablesComponent } from './list-tables/list-tables.component';
 import { TableComponent } from './table/table.component';
 import { RouterModule } from '@angular/router';
+import { ErrorBadgeComponent } from './error-badge/error-badge.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ListSchemasComponent,
     ListTablesComponent,
-    TableComponent
+    TableComponent,
+    ErrorBadgeComponent
   ],
   imports: [
     BrowserModule,

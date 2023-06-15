@@ -18,6 +18,7 @@ import { RowContainer } from '../lib/models/rest-backend/row-container.model';
   styleUrls: ['./table.component.scss']
 })
 export class TableComponent implements OnInit, OnDestroy {
+  schemasCount = this.store.select(StoreSelectors.schemas).pipe(map(schemas => schemas.length));
   columnDefinitions = this.store.select(StoreSelectors.columnDefinitions);
   // table cells for selection
   @ViewChildren('td') cells!: QueryList<ElementRef<HTMLTableCellElement>>;
@@ -25,7 +26,7 @@ export class TableComponent implements OnInit, OnDestroy {
   sourceIndex: number | undefined;
   // index of column that dragged column is hovering on
   presumedTargetIndex: number | undefined;
-  private schema: string = '';
+  schema: string = '';
   private table: string = '';
   private subscriptions: Subscription[] = [];
   constructor(private store: Store, private router: Router, private route: ActivatedRoute, private actions$: Actions) {}

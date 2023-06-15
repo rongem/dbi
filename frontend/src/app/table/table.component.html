@@ -1,3 +1,18 @@
+<div class="breadcrumb">
+    <ng-container *ngIf="(schemasCount | async)! > 1; else noHome">
+        <a [routerLink]="['/']">
+            Home
+        </a>
+    </ng-container>
+    <ng-template #noHome>
+        Home
+    </ng-template>
+    &rarr;
+    <a [routerLink]="['/', 'schema', schema]">
+        Schema {{schema}}
+    </a>
+</div>
+
 <div class="success" *ngIf="(importedRows | async) !== undefined">
     <ng-container>
         Successfully imported 
@@ -9,6 +24,9 @@
 </div>
 <div *ngIf="(rowCount | async) === 0">
     After copying your table content to clipboard, paste it here with Ctrl + V.
+</div>
+<div *ngIf="(rowCount | async) !== 0">
+    Replace data here with Ctrl + V.
 </div>
 <div class="button-container" *ngIf="(canImport | async) === true">
     <button type="button" (click)="onImport()">Start import</button>
@@ -41,12 +59,9 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let rowNumber of (rowNumbers | async)">
+        <tr *ngFor="let rowNumber of (rowNumbers | async)" [ngClass]="{'position-relative': (getRowContainsErrors(rowNumber) | async) === true}">
             <td [attr.title]="getRowErrorDescriptions(rowNumber) | async">
-                <div class="error-sign" *ngIf="(getRowContainsErrors(rowNumber) | async) === true">!</div>
-                <span class="visually-hidden">
-                    This line contains data causing errors.
-                </span>
+                <app-error-badge *ngIf="(getRowContainsErrors(rowNumber) | async) === true" [errorDescription]="getRowErrorDescriptions(rowNumber) | async"></app-error-badge>
             </td>
             <td class="align-right">
                 {{rowNumber}}

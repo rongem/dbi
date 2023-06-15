@@ -1,3 +1,8 @@
+<div class="breadcrumb" *ngIf="!!(schemas | async) && (schemas | async)!.length > 1">
+    <a [routerLink]="['/']">
+        Home
+    </a>
+</div>
 <h2>Schema: {{schemaName}}</h2>
 <div class="card-container">
     <button type="button" class="card selectable" *ngFor="let table of (getTables(schemaName) | async)" [routerLink]="['table', table]">
