@@ -31,6 +31,8 @@ COPY --from=frontend /usr/app/dist/frontend ./dist/views/
 RUN npm update --location=global
 RUN npm ci --only-production
 
+#user context to run in
+USER node
 # port
 EXPOSE 8000
 # default command
