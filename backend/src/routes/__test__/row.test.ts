@@ -121,10 +121,11 @@ it('sends an array with two identical objects', async () => {
             expect(response.body.message).toBeDefined();
             expect(response.body.message).toContain('Errors during import');
             expect(response.body.data).toBeDefined();
-            expect(response.body.data.length).toBeDefined();
-            expect(response.body.data.length).toBe(1);
-            expect(response.body.data[0].row).toBe(1);
-            expect(response.body.data[0].msg).toContain('PRIMARY KEY');
+            expect(response.body.data.errors).toBeDefined();
+            expect(response.body.data.errors.length).toBeDefined();
+            expect(response.body.data.errors.length).toBe(1);
+            expect(response.body.data.errors[0].row).toBe(1);
+            expect(response.body.data.errors[0].msg).toContain('PRIMARY KEY');
         });
 });
 

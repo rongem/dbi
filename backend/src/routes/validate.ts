@@ -11,6 +11,6 @@ export const validate = (req: Request, res: Response, next: NextFunction) => {
     if (errors.isEmpty()) {
         return next();
     }
-    return next(new HttpError(400, 'Validierungsfehler', { errors }));
+    return next(new HttpError(400, 'Validierungsfehler', errors));
 };
 
