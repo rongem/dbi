@@ -4,22 +4,25 @@ import { retrieveTableNames } from '../controllers/table.controller';
 import { Row } from '../models/data/row.model';
 import { selectColumns } from '../models/mssql/columns.model';
 import { ColumnObject } from '../models/data/column-object.model';
+import { rowsDescriptor, schemaDescriptor, tableDescriptor } from '../utils/params.descriptors';
+import { getLocale } from '../utils/locales.function';
 
 const sqlStringValidator: CustomValidator = (value: string) => `'${value}'` === SqlString.escape(value);
 
-const schemaNameValidator = param('schemaName')
-    .exists().withMessage('SchemaName not present')
-    .notEmpty().withMessage('SchemaName is emtpy')
-    .isString().withMessage('SchemaName must be of type string')
-    .custom(sqlStringValidator).withMessage('SchemaName contains illegal characters')
+
+const schemaNameValidator = param(schemaDescriptor)
+    .exists().withMessage(getLocale().schemaNotPresentError)
+    .notEmpty().withMessage(getLocale().schemaIsEmptyError)
+    .isString().withMessage(getLocale().schemaNotAStringError)
+    .custom(sqlStringValidator).withMessage(getLocale().schemaContainsIllegalCharactersError)
     .bail({level: 'request'})
     .trim();
 
-const tableNameValidator = param('tableName')
-    .exists().withMessage('TableName not present')
-    .notEmpty().withMessage('TableName is empty').bail()
-    .isString().withMessage('TableName must be of type string').bail()
-    .custom(sqlStringValidator).withMessage('TableName contains illegal characters')
+const tableNameValidator = param(tableDescriptor)
+    .exists().withMessage(getLocale().tableNotPresentError)
+    .notEmpty().withMessage(getLocale().tableEmptyError).bail()
+    .isString().withMessage(getLocale().tableNotAStringError).bail()
+    .custom(sqlStringValidator).withMessage(getLocale().tableContainsIllegalCharactersError)
     .bail({level: 'request'})
     .trim()
     .custom(async (value: string, { req}) => {
@@ -27,20 +30,20 @@ const tableNameValidator = param('tableName')
         const tableName = value.toLocaleLowerCase();
         const tables = await retrieveTableNames();
         if (!tables.some(t => t.name.toLocaleLowerCase() === tableName && t.schema.toLocaleLowerCase() === schemaName)) {
-            throw new Error('No table with that name found in that schema');
+            throw new Error(getLocale().tableNotFoundError);
         }
     })
     .bail({level: 'request'});
 
 export const allParamValidators = checkExact([schemaNameValidator, tableNameValidator]);
 
-const tableRowsArrayValidator = body('rows')
-    .isArray().withMessage('rows is not an array').bail({level: 'request'})
-    .isArray({min: 1, max: 10000}).withMessage('rows contains less than 1 oder more than 10000 items').bail({level: 'request'})
+const tableRowsArrayValidator = body(rowsDescriptor)
+    .isArray().withMessage(getLocale().rowsIsNotAnArrayError).bail({level: 'request'})
+    .isArray({min: 1, max: 10000}).withMessage(getLocale().rowNumberExceedsBoundariesError).bail({level: 'request'})
     .custom(async (value: Row[], {req}) => {
-        const sqlColumns = await selectColumns(req.params!['schemaName'], req.params!['tableName']);
+        const sqlColumns = await selectColumns(req.params![schemaDescriptor], req.params![tableDescriptor]);
         if (!sqlColumns || sqlColumns.length === 0) {
-            throw new Error('No table with that name found in that schema');
+            throw new Error(getLocale().tableNotFoundError);
         }
         const sqlColumnObject: ColumnObject = {};
         const sqlColumnNames: string[] = [];
@@ -53,7 +56,7 @@ const tableRowsArrayValidator = body('rows')
         req.sqlColumnNames = sqlColumnNames;
     }).bail({level: 'request'});
 
-const tableRowsContentValidator = body('rows.*')
+const tableRowsContentValidator = body(`${rowsDescriptor}.*`)
     .custom((row: Row, {req}) => {
         const sqlColumnObject = req.sqlColumnObject as ColumnObject;
         const sqlColumnNames = req.sqlColumnNames as string[];
@@ -63,7 +66,7 @@ const tableRowsContentValidator = body('rows.*')
             const sqlColumn = sqlColumnObject[columName];
             const rowKey = rowKeys.find(k => k === columName);
             if (!rowKey && !(sqlColumn.hasDefaultValue || sqlColumn.isNullable)) {
-                errors.push('Required column ' + sqlColumn.name + ' is missing.');
+                errors.push(getLocale().requiredColumnMissingError(sqlColumn.name));
             }
         }
         if (errors.length > 0) {
@@ -78,7 +81,7 @@ const tableRowsContentValidator = body('rows.*')
         const errors: string[] = [];
         for (let key of rowKeys) {
             if (!sqlColumnNames.includes(key.toLocaleLowerCase())) {
-                errors.push('Column ' + key + ' is not part of the table.');
+                errors.push(getLocale().columnIsNotPartOfTheTableError(key));
             } else {
                 const column = sqlColumnObject[key.toLocaleLowerCase()]!;
                 const cell = row[key];

@@ -4,6 +4,7 @@ import { HttpError } from '../models/rest-api/httpError.model';
 import { selectColumns } from '../models/mssql/columns.model';
 import { Row } from '../models/data/row.model';
 import { insertRows } from '../models/mssql/rows.model';
+import { schemaDescriptor, tableDescriptor } from '../utils/params.descriptors';
 
 export const retrieveTableNames = async () => {
     try {
@@ -19,7 +20,7 @@ export const retrieveTableNames = async () => {
 
 export const retrieveAndSendTableColumns = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const columns = await selectColumns(req.params['schemaName'], req.params['tableName']);
+        const columns = await selectColumns(req.params[schemaDescriptor], req.params[tableDescriptor]);
         return res.json(columns);
     } catch (error: any) {
         if (error instanceof HttpError) {
@@ -52,8 +53,8 @@ const importTableRows = async (req: Request, res: Response, next: NextFunction, 
 }
 
  const extractParams = async(req: Request, commit: boolean) => {
-    const schemaName = req.params['schemaName'];
-    const tableName = req.params['tableName'];
+    const schemaName = req.params[schemaDescriptor];
+    const tableName = req.params[tableDescriptor];
     const columns = await selectColumns(schemaName, tableName);
     const rows = req.body.rows as Row[];
     return { schemaName, tableName, rows, columns, commit };

@@ -4,6 +4,7 @@ import { requestPromise } from '../db';
 import { User } from '../data/user.model';
 import { HttpError } from '../rest-api/httpError.model';
 import { EnvironmentController } from '../../controllers/environment.controller';
+import { getLocale } from '../../utils/locales.function';
 
 const env = EnvironmentController.instance;
 
@@ -54,6 +55,6 @@ const checkIfTableContainsRequiredColumnsCaseInsensitiveAndReturnKeyNames = (rec
     const userKey = getDatabaseKey(recordset, 'username');
     const allowedKey = getDatabaseKey(recordset, 'allowed');
     if (!userKey || !allowedKey)
-        throw new Error('Authorization table does not have all required columns.');
+        throw new Error(getLocale().illegalColumnsInRequestError);
     return { userKey, allowedKey };
 }

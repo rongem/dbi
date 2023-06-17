@@ -5,6 +5,7 @@ import { HttpError } from '../models/rest-api/httpError.model';
 import { EnvironmentController } from './environment.controller';
 import { serverError } from './error.controller';
 import { User } from '../models/data/user.model';
+import { getLocale } from '../utils/locales.function';
 
 
 export const getAuthentication = (req: Request, res: Response, next: NextFunction) => {
@@ -17,13 +18,13 @@ export const getAuthentication = (req: Request, res: Response, next: NextFunctio
     }
     let name: string;
     if (!req.ntlm) {
-        throw new HttpError(401, 'Fehlende Authentifizierung');
+        throw new HttpError(401, getLocale().missingAuthenticationError);
     }
     const domain = !req.ntlm.DomainName || req.ntlm.DomainName === '.' ? req.ntlm.Workstation : req.ntlm.DomainName;
     name = domain + '\\' + req.ntlm.UserName;
     req.userName = name;
     getUser(name).catch(async (error: Error) => {
-        if (error.message !== 'Ungültige Authentifizierung') {
+        if (error.message !== getLocale().illegalAuthenticationError) {
             throw error;
         }
         return {name: '', isAuthorized: false} as User;

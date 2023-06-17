@@ -1,6 +1,7 @@
 import request from 'supertest';
 
 import { app } from '../../app';
+import { getLocale } from '../../utils/locales.function';
 
 it('sends object with wrong data', async () => {
     return request(app).post('/table/test/BoatExt_Authorizations')
@@ -15,7 +16,7 @@ it('sends object with wrong data', async () => {
             expect(response.body.data.errors).toBeDefined();
             expect(response.body.data.errors.length).toBeDefined();
             expect(response.body.data.errors.length).toBe(1);
-            expect(response.body.data.errors[0].msg).toContain('rows is not an array');
+            expect(response.body.data.errors[0].msg).toContain(getLocale().rowsIsNotAnArrayError);
         });
 });
 
@@ -33,7 +34,7 @@ it('sends an empty array', async () => {
             expect(response.body.data.errors).toBeDefined();
             expect(response.body.data.errors.length).toBeDefined();
             expect(response.body.data.errors.length).toBe(1);
-            expect(response.body.data.errors[0].msg).toContain('rows contains less than 1 oder more than 10000 items');
+            expect(response.body.data.errors[0].msg).toContain(getLocale().rowNumberExceedsBoundariesError);
         });
 });
 
@@ -77,7 +78,7 @@ it('sends an array with field name not in table', async () => {
             expect(response.body.data.errors).toBeDefined();
             expect(response.body.data.errors.length).toBeDefined();
             expect(response.body.data.errors.length).toBe(1);
-            expect(response.body.data.errors[0].msg).toContain('Column xAllowed is not part of the table');
+            expect(response.body.data.errors[0].msg).toContain(getLocale().columnIsNotPartOfTheTableError('xAllowed'));
         });
 });
 
@@ -98,7 +99,7 @@ it('sends an array with illegal field type', async () => {
             expect(response.body.data.errors).toBeDefined();
             expect(response.body.data.errors.length).toBeDefined();
             expect(response.body.data.errors.length).toBe(1);
-            expect(response.body.data.errors[0].msg).toContain('Type string is not allowed for column Allowed');
+            expect(response.body.data.errors[0].msg).toContain(getLocale().typeIsNotAllowedForColumError('string', 'Allowed'));
         });
 });
 

@@ -1,25 +1,9 @@
 import { authorizationTableName } from "../utils/config.templates";
+import { checkRequiredVariables } from "./environment.function";
 
 export class EnvironmentController {
     private constructor() {
-        if (!this.dbName) {
-            throw new Error('Environment variable DB_NAME not configured.');
-        }
-        if (!this.dbUser) {
-            throw new Error('Environment variable DB_USER not configured.');
-        }
-        if (!this.dbPassword) {
-            throw new Error('Environment variable DB_PWD not configured.');
-        }
-        if (!this.dbServer) {
-            throw new Error('Environment variable DB_SERVER not configured.');
-        }
-        if (!['ntlm', 'none'].includes(this.authMode)) {
-            throw new Error('Illegal authentication mode in variable AUTH_MODE: ' + this.authMode);
-        }
-        if (isNaN(+this.dbPort)) {
-            throw new Error('Non numeric value in variable DB_PORT.');
-        }
+        checkRequiredVariables(this);
     }
 
     private static _instance = new EnvironmentController();
@@ -60,6 +44,6 @@ export class EnvironmentController {
     }
 
     get locale() {
-        return process.env.LOCALE?.trim() ?? 'en';
+        return process.env.LOCALE?.trim().toLocaleLowerCase() ?? 'en';
     }
 }

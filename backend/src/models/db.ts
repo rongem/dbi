@@ -1,6 +1,7 @@
 import { config, ConnectionPool, Request, Transaction } from 'mssql';
 import { EnvironmentController } from '../controllers/environment.controller';
 import { sqlGetAllTableNamesCurrentUserHasRights } from '../utils/sql.templates';
+import { getLocale } from '../utils/locales.function';
 
 const env = EnvironmentController.instance;
 
@@ -30,10 +31,10 @@ export const pool = async () => {
     if (connectedPool) return connectedPool;
     const p = await poolPromise.connect()
         .then(pool => {
-            if (env.authMode !== 'none') console.debug('Connected to', sqlConfig.server, sqlConfig.options?.instanceName, sqlConfig.database);
+            if (env.authMode !== 'none') console.debug(getLocale().connectedToMessage, sqlConfig.server, sqlConfig.options?.instanceName, sqlConfig.database);
             return pool;
         }).catch(err => {
-            console.error('Database Connection Failed! Bad Config: ', err)
+            console.error(getLocale().databaseConnectionError, err)
             throw new Error(err);
         });
     return connectedPool = p;
@@ -63,7 +64,7 @@ export const checkDatabase = async () => {
             (r.TABLE_SCHEMA as string + '.' + r.TABLE_NAME as string).toLocaleLowerCase(),
         ]).flat();
         if (!result.includes(env.authTableName.toLocaleLowerCase())) {
-            throw new Error('Missing table "' + env.authTableName + '" from variable AUTH_TABLENAME.');
+            throw new Error(getLocale().missingTableError(env.authTableName));
         }
     } catch (error: any) {
         console.log(error);

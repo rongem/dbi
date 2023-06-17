@@ -4,6 +4,7 @@ import { Row } from "../data/row.model";
 import { transactionPool, transactionRequest } from "../db";
 import { HttpError } from "../rest-api/httpError.model";
 import { ImportError } from "../data/importerror.model";
+import { getLocale } from '../../utils/locales.function';
 
 const createParamNameFromColumnName = (n: string): string => n.replace(' ', '_');
 const createParamDefinitionFromColumnName = (n: string) => '@' + createParamNameFromColumnName(n);
@@ -17,7 +18,7 @@ export const insertRows = async (data: {schemaName: string, tableName: string, r
         try {
             const result = await insertRow({columns: data.columns, row, schemaName: data.schemaName, tableName: data.tableName, transaction});
             if (result.rowsAffected.length !== 1 || result.rowsAffected[0] !== 1) {
-                errors.push({row: i, msg: 'No rows inserted', rowContent: row});
+                errors.push({row: i, msg: getLocale().noRowsInsertedError, rowContent: row});
             } else {
                 rowCounter += result.rowsAffected[0];
             }
@@ -32,7 +33,7 @@ export const insertRows = async (data: {schemaName: string, tableName: string, r
     }
     if (errors.length > 0) {
         transaction.rollback();
-        throw new HttpError(400, 'Errors during import', {errors});
+        throw new HttpError(400, getLocale().importError, {errors});
     }
     if (data.commit) {
         await transaction.commit();
