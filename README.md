@@ -13,6 +13,7 @@ The database importer will use an sql authentication to connect to the database,
 - DB_PWD (database password)
 - AUTH_MODE (use ntlm or leave blank)
 - AUTH_TABLENAME (defaults to _Authorizations, table with two columns, username and allowed, that is used for authorizations of NTLM users to use the tool)
+- LOCALE (defaults to en, de is also possible; sets frontend language and locale)
 
 The node http server inside the container will listen on port 8000. It is a good idea to use a reverse proxy with SSL inside your infrastructure.
 
