@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file source-language="en-US" datatype="plaintext" original="ng2.template">
+    <body>
+      <trans-unit id="3213583875023506421" datatype="html">
+        <source> Database-Importer v </source>
+        <target> Datenbank-Importer v </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">4,6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2745972262208474294" datatype="html">
+        <source>Clear error</source>
+        <target>Fehler ausblenden</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6590247399280919767" datatype="html">
+        <source> You don&apos;t have sufficient rights to import into database. </source>
+        <target> Sie verf&uuml;gen nicht &uuml;ber das Recht, Daten in die Datenbank zu importieren. </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">25,27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7828688976004781183" datatype="html">
+        <source>Working...</source>
+        <target>Besch&auml;ftigt...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/app.component.html</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8457071842126342875" datatype="html">
+        <source> This line contains data causing errors.
+</source>
+        <target> Diese Zeile ent&auml;lt Daten, die Fehler verursachen.
+</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/error-badge/error-badge.component.html</context>
+          <context context-type="linenumber">2,4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4753818334674175473" datatype="html">
+        <source>An error occured</source>
+        <target>Es ist ein Fehler aufgetreten</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/error-badge/error-badge.component.ts</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3419381240700113589" datatype="html">
+        <source>Missing cell content</source>
+        <target>Kein Inhalt f&uuml;r die Zelle vorhanden</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/lib/models/cellinformation.model.ts</context>
+          <context context-type="linenumber">72</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2635811943838137716" datatype="html">
+        <source>Missing column definition for </source>
+        <target>Es fehlt eine Spaltendefinition f&uuml;r</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/lib/models/cellinformation.model.ts</context>
+          <context context-type="linenumber">73</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1815326180532737526" datatype="html">
+        <source>Nulls and empty values are not allowed.</source>
+        <target>Null bzw. leere Werte sind nicht gestattet.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/lib/models/cellinformation.model.ts</context>
+          <context context-type="linenumber">76</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8189205608135148093" datatype="html">
+        <source>Number expected</source>
+        <target>Es wird eine Zahl erwartet</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/lib/models/cellinformation.model.ts</context>
+          <context context-type="linenumber">80</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="371291164113948563" datatype="html">
+        <target>Es wird ein Datum erwartet</target>
+        <source>Date expected</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/lib/models/cellinformation.model.ts</context>
+          <context context-type="linenumber">83</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4829557395863984706" datatype="html">
+        <source>Boolean expected</source>
+        <target>Es wird ein boolescher Wert erwartet</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/lib/models/cellinformation.model.ts</context>
+          <context context-type="linenumber">86</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1583827930929983489" datatype="html">
+        <source>String expected</source>
+        <target>Es wird ein String (Text) erwartet</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/lib/models/cellinformation.model.ts</context>
+          <context context-type="linenumber">89</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3098292224427054140" datatype="html">
+        <source>Column: </source>
+        <target>Spalte: </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/lib/store/store.selectors.ts</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="760986369763309193" datatype="html">
+        <source>, </source>
+        <target>, </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/lib/store/store.selectors.ts</context>
+          <context context-type="linenumber">48</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/table/table.component.ts</context>
+          <context context-type="linenumber">117</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="6830717579913694821" datatype="html">
+        <source>Database schemas</source>
+        <target>Datenbank-Schemas</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/list-schemas/list-schemas.component.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4053706186158813425" datatype="html">
+        <source> The database contains multiple schemas. Tables exist in each schema, and they will be displayed after you have selected a schema. If you have any questions about schemas or tables, please ask your database administrator.
+</source>
+        <target>Die Datenbank enth&auml;lt mehrere Schemas. In jedem Schema existieren Tabellen, die angezeigt werden, nachdem Sie ein Schema ausgew&auml;hlt haben. Wenn Sie Fragen zu Schemas oder Tabellen haben, fragen Sie Ihren Datenbank-Administrator.
+</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/list-schemas/list-schemas.component.html</context>
+          <context context-type="linenumber">2,5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2821179408673282599" datatype="html">
+        <source>Home</source>
+        <target>Oberste Ebene</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/list-tables/list-tables.component.html</context>
+          <context context-type="linenumber">2</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/table/table.component.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/table/table.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3358456137960315954" datatype="html">
+        <source>Schema: </source>
+        <target>Schema: </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/list-tables/list-tables.component.html</context>
+          <context context-type="linenumber">5</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/table/table.component.html</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4660520030905903157" datatype="html">
+        <source> Successfully imported </source>
+        <target> Es wurden </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/table/table.component.html</context>
+          <context context-type="linenumber">14,16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2709970904386891343" datatype="html">
+        <source> rows. </source>
+        <target> Zeilen erfolgreich importiert. </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/table/table.component.html</context>
+          <context context-type="linenumber">18,20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1256824019709048230" datatype="html">
+        <source> After copying your table content to clipboard, paste it here with Ctrl + V.
+</source>
+        <target> Nachdem Sie Ihre Tabelle in die Zwischenablage kopiert haben, k&ouml;nnen Sie sie hier mit Strg + V einf&uuml;gen.
+</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/table/table.component.html</context>
+          <context context-type="linenumber">22,24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2663969642179834514" datatype="html">
+        <source> Replace data here with Ctrl + V.
+</source>
+        <target> Sie k&ouml;nnen Daten mit Strg + V ersetzen.
+</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/table/table.component.html</context>
+          <context context-type="linenumber">25,27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1949593436669444105" datatype="html">
+        <source>Start import</source>
+        <target>Import starten</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/table/table.component.html</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3774763304641776763" datatype="html">
+        <source> This column is used for the primary key of the table. </source>
+        <target> Diese Spalte wird f&uuml;r den Prim&auml;rschl&uuml;ssel der Tabelle verwendet. </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/table/table.component.html</context>
+          <context context-type="linenumber">46,48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8161902586255069632" datatype="html">
+        <source> This column contains a foreign key pointing to another table. </source>
+        <target> Diese Spalte enth&auml;t einen Fremdschl&uuml;ssel, der auf eine andere Tabelle verweist. </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/table/table.component.html</context>
+          <context context-type="linenumber">49,51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7910526086225119964" datatype="html">
+        <source> This column must contain unique entries. </source>
+        <target> Diese Spalte muss eindeutige Werte enthalten. </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/table/table.component.html</context>
+          <context context-type="linenumber">52,54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5250469092579050645" datatype="html">
+        <source>Primary key</source>
+        <target>Prim&auml;rschl&uuml;ssel</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/table/table.component.ts</context>
+          <context context-type="linenumber">102</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2678132969804737535" datatype="html">
+        <source>Foreign key</source>
+        <target>Fremdschl&uuml;ssel</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/table/table.component.ts</context>
+          <context context-type="linenumber">105</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="9207871123262039003" datatype="html">
+        <source>Unique constraint</source>
+        <target>Eineutigkeitsregel</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/table/table.component.ts</context>
+          <context context-type="linenumber">108</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4736966976573312569" datatype="html">
+        <source>Default value present</source>
+        <target>Standardwert vorhanden</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/table/table.component.ts</context>
+          <context context-type="linenumber">111</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5329170979297364909" datatype="html">
+        <source>Null values allowed</source>
+        <target>Null zugelassen</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/table/table.component.ts</context>
+          <context context-type="linenumber">114</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2517012978374871464" datatype="html">
+        <source>Allowed Data Types: </source>
+        <target>Erlaubte Datentypen: </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/table/table.component.ts</context>
+          <context context-type="linenumber">116</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

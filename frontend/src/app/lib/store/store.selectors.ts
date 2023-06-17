@@ -45,7 +45,7 @@ export const errorsInRow = (rowIndex: number) => createSelector(allRowErrors, er
 
 export const rowErrors = (rowIndex: number) => createSelector(allRowErrors, cellInformations, (rowErrors, cellInformations) => [
     ...rowErrors.filter(e => e.row === rowIndex),
-    ...cellInformations.filter(c => c.row === rowIndex && c.containsErrors).map(c => 'Column: ' + c.name + ': ' + c.errors.join(', ')),
+    ...cellInformations.filter(c => c.row === rowIndex && c.containsErrors).map(c => $localize `Column: ` + c.name + ': ' + c.errors.join($localize `, `)),
 ]);
 
 export const rowContainsErrors = (rowIndex: number) => createSelector(cellInformations, errorsInRow(rowIndex), (cells, errors) => 

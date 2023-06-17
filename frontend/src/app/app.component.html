@@ -1,6 +1,11 @@
 <header class="toolbar" role="banner">
   <span>{{headerText | async}}</span>
-  <span>Database-Importer v{{version}}</span>
+  <span>
+    <ng-container i18n>
+      Database-Importer v
+    </ng-container>
+    {{version}}
+  </span>
   <div class="spacer"></div>
   <div id="username">
     {{authenticatedUser | async}}
@@ -12,12 +17,12 @@
 </main>
 
 <footer>
-  <button *ngIf="(errorPresent | async) === true" (click)="clearError()" class="error" title="Clear error">
+  <button *ngIf="(errorPresent | async) === true" (click)="clearError()" class="error" title="Clear error" i18n-title>
     {{error | async}}
   </button>
   <ng-container *ngIf="(notAuthorized | async) === true">
     <div class="backdrop"></div>
-    <div class="busy">
+    <div class="busy" i18n>
       You don't have sufficient rights to import into database.
     </div>
   </ng-container>
@@ -25,5 +30,5 @@
 
 <ng-container *ngIf="(busy | async) === true">
   <div class="backdrop"></div>
-  <div class="busy">Working...</div>
+  <div class="busy" i18n>Working...</div>
 </ng-container>

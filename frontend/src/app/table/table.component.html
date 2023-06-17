@@ -1,35 +1,32 @@
 <div class="breadcrumb">
     <ng-container *ngIf="(schemasCount | async)! > 1; else noHome">
-        <a [routerLink]="['/']">
-            Home
-        </a>
+        <a [routerLink]="['/']" i18n>Home</a>
     </ng-container>
-    <ng-template #noHome>
-        Home
-    </ng-template>
+    <ng-template #noHome i18n>Home</ng-template>
     &rarr;
     <a [routerLink]="['/', 'schema', schema]">
-        Schema {{schema}}
+        <ng-container i18n>Schema: </ng-container>
+        {{schema}}
     </a>
 </div>
 
 <div class="success" *ngIf="(importedRows | async) !== undefined">
-    <ng-container>
+    <ng-container i18n>
         Successfully imported 
     </ng-container>
     {{importedRows | async}} 
-    <ng-container>
+    <ng-container i18n>
         rows.
     </ng-container>
 </div>
-<div *ngIf="(rowCount | async) === 0">
+<div *ngIf="(rowCount | async) === 0" i18n>
     After copying your table content to clipboard, paste it here with Ctrl + V.
 </div>
-<div *ngIf="(rowCount | async) !== 0">
+<div *ngIf="(rowCount | async) !== 0" i18n>
     Replace data here with Ctrl + V.
 </div>
 <div class="button-container" *ngIf="(canImport | async) === true">
-    <button type="button" (click)="onImport()">Start import</button>
+    <button type="button" (click)="onImport()" i18n>Start import</button>
 </div>
 <table class="table">
     <thead>
@@ -46,13 +43,13 @@
                 [attr.title]="getColumnTitle(column) | async"
                 class="position-relative">
                 {{(getColumn(column) | async)?.name}}
-                <span class="visually-hidden" *ngIf="(getColumn(column) | async)?.primary === true">
+                <span class="visually-hidden" *ngIf="(getColumn(column) | async)?.primary === true" i18n>
                     This column is used for the primary key of the table.
                 </span>
-                <span class="visually-hidden" *ngIf="(getColumn(column) | async)?.foreignKey === true">
+                <span class="visually-hidden" *ngIf="(getColumn(column) | async)?.foreignKey === true" i18n>
                     This column contains a foreign key pointing to another table.
                 </span>
-                <span class="visually-hidden" *ngIf="(getColumn(column) | async)?.unique === true">
+                <span class="visually-hidden" *ngIf="(getColumn(column) | async)?.unique === true" i18n>
                     This column must contain unique entries.
                 </span>
            </th>

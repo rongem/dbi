@@ -1,9 +1,10 @@
 <div class="breadcrumb" *ngIf="!!(schemas | async) && (schemas | async)!.length > 1">
-    <a [routerLink]="['/']">
-        Home
-    </a>
+    <a [routerLink]="['/']" i18n>Home</a>
 </div>
-<h2>Schema: {{schemaName}}</h2>
+<h2>
+    <ng-container i18n>Schema: </ng-container>
+    {{schemaName}}
+</h2>
 <div class="card-container">
     <button type="button" class="card selectable" *ngFor="let table of (getTables(schemaName) | async)" [routerLink]="['table', table]">
         <h2>

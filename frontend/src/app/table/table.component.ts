@@ -99,22 +99,22 @@ export class TableComponent implements OnInit, OnDestroy {
     map(column => {
       const content: string[] = [];
       if (column?.primary) {
-        content.push('Primary key');
+        content.push($localize `Primary key`);
       }
       if (column?.foreignKey) {
-        content.push('Foreign key');
+        content.push($localize `Foreign key`);
       }
       if (column?.unique) {
-        content.push('Unique constraint');
+        content.push($localize `Unique constraint`);
       }
       if (column?.hasDefaultValue) {
-        content.push('Default value present');
+        content.push($localize `Default value present`);
       }
       if (column?.isNullable) {
-        content.push('Null values allowed');
+        content.push($localize `Null values allowed`);
       }
-      content.push('Allowed Data Types: ' + column?.typeInfo.allowedTypes.join('|'));
-      return content.join(', ');
+      content.push($localize `Allowed Data Types: ` + column?.typeInfo.allowedTypes.join(`|`));
+      return content.join($localize `, `);
     })
   );
 
