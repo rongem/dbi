@@ -36,5 +36,5 @@ USER node
 # port
 EXPOSE 8000
 # default command
-CMD ["npm", "start"]
+CMD ["node", "dist/index.js"]
 

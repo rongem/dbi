@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
 import express = require('express');
 import ntlm = require('express-ntlm');
+import fs = require('fs');
 
 import { error404 } from './controllers/error.controller';
 import { HttpError } from './models/rest-api/httpError.model';
@@ -30,8 +31,12 @@ app.use('/tables', getAuthentication, tablesRouter);
 app.use('/table', express.json({limit: '50mb'}), getAuthentication, tableRouter);
 app.use('/user', getAuthentication, userRouter);
 
-const angularPath = __dirname + '/views';
-app.use(express.static(angularPath));
+const basePath = __dirname + '/views/';
+let localePath = 'en';
+if (fs.existsSync(basePath + env.locale)) localePath = env.locale;
+const angularPath = basePath + localePath;
+
+app.use(express.static(basePath));
 app.get('/', (req, res) => res.sendFile(angularPath + '/index.html'));
 app.use('/', error404);
 

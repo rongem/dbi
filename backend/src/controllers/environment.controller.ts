@@ -58,4 +58,8 @@ export class EnvironmentController {
     get authTableName() {
         return process.env.AUTH_TABLENAME?.trim() ?? authorizationTableName;
     }
+
+    get locale() {
+        return process.env.LOCALE?.trim() ?? 'en';
+    }
 }
