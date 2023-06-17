@@ -12,7 +12,7 @@
   </div>
 </header>
 
-<main class="content" role="main">
+<main class="content" role="main" *ngIf="(notAuthorized | async) === false">
   <router-outlet></router-outlet>
 </main>
 
