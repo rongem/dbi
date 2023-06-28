@@ -2,6 +2,6 @@ import { Row } from "./row.model";
 
 export interface ErrorList {
     row: number;
-    errorMessage: string;
+    msg: string;
     rowContent?: Row
 }
