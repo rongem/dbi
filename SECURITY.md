@@ -8,3 +8,4 @@
 
 ## Reporting a Vulnerability
 
+Please use the issues function.
