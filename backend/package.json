@@ -1,6 +1,6 @@
 {
   "name": "dbi-backend",
-  "version": "0.3.11",
+  "version": "0.3.12",
   "description": "Database importer backend",
   "main": "app.ts",
   "scripts": {
