@@ -33,7 +33,7 @@
     "@types/express-ntlm": "^2.3.3",
     "@types/jest": "^29.5.1",
     "@types/mssql": "^9.1.0",
-    "@types/node": "^18.16.9",
+    "@types/node": "^20.10.1",
     "@types/supertest": "^2.0.12",
     "@types/tsqlstring": "^1.0.0",
     "dotenv": "^16.0.3",
