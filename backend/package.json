@@ -1,6 +1,6 @@
 {
   "name": "dbi-backend",
-  "version": "0.3.29",
+  "version": "0.3.30",
   "description": "Database importer backend",
   "main": "app.ts",
   "scripts": {
@@ -34,7 +34,7 @@
     "@types/jest": "^29.5.1",
     "@types/mssql": "^9.1.0",
     "@types/node": "^20.10.1",
-    "@types/supertest": "^2.0.12",
+    "@types/supertest": "^6.0.0",
     "@types/tsqlstring": "^1.0.0",
     "dotenv": "^16.0.3",
     "grunt": "^1.6.1",
