@@ -1,2 +1,2 @@
-docker build . -t rongem/dbi --no-cache
+docker build . -t rongem/dbi --no-cache --network=host
 docker push rongem/dbi:latest
