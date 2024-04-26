@@ -4,7 +4,7 @@ WORKDIR /usr/app
 
 # install dependencies
 COPY ./backend/package*.json ./
-RUN npm install
+RUN npm install --verbose
 COPY ./backend/ ./
 RUN npm run comp
 
@@ -14,7 +14,7 @@ WORKDIR /usr/app
 
 # install dependencies
 COPY ./frontend/package*.json ./
-RUN npm install
+RUN npm install --verbose
 COPY ./frontend/ ./
 RUN npm run build
 
