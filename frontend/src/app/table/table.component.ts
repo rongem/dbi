@@ -1,5 +1,5 @@
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
 import { Subscription, firstValueFrom, map, withLatestFrom } from 'rxjs';
@@ -11,11 +11,15 @@ import { CellContent } from '../lib/models/cellcontent.model';
 import { Row } from '../lib/models/rest-backend/row.model';
 import { CellInformation } from '../lib/models/cellinformation.model';
 import { RowContainer } from '../lib/models/rest-backend/row-container.model';
+import { NgIf, NgFor, NgClass, AsyncPipe } from '@angular/common';
+import { ErrorBadgeComponent } from '../error-badge/error-badge.component';
 
 @Component({
-  selector: 'app-table',
-  templateUrl: './table.component.html',
-  styleUrls: ['./table.component.scss']
+    selector: 'app-table',
+    templateUrl: './table.component.html',
+    styleUrls: ['./table.component.scss'],
+    standalone: true,
+    imports: [NgIf, RouterLink, NgFor, NgClass, ErrorBadgeComponent, AsyncPipe]
 })
 export class TableComponent implements OnInit, OnDestroy {
   schemasCount = this.store.select(StoreSelectors.schemas).pipe(map(schemas => schemas.length));

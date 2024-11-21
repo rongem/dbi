@@ -38,10 +38,7 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": [],
-            "localize": [
-              "de", "en"
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -57,7 +54,8 @@
                   "maximumError": "4kb"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "localize": true
             },
             "development": {
               "buildOptimizer": false,

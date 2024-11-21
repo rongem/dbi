@@ -8,8 +8,8 @@ describe('ErrorBadgeComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ErrorBadgeComponent]
-    });
+    imports: [ErrorBadgeComponent]
+});
     fixture = TestBed.createComponent(ErrorBadgeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

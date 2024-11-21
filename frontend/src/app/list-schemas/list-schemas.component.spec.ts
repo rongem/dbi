@@ -8,8 +8,8 @@ describe('ListSchemasComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ListSchemasComponent]
-    });
+    imports: [ListSchemasComponent]
+});
     fixture = TestBed.createComponent(ListSchemasComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
