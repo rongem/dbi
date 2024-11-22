@@ -4,7 +4,7 @@ WORKDIR /usr/app
 
 # install dependencies
 COPY ./backend/package*.json ./
-RUN npm install --verbose
+RUN npm install
 COPY ./backend/ ./
 RUN npm run comp
 
@@ -14,7 +14,8 @@ WORKDIR /usr/app
 
 # install dependencies
 COPY ./frontend/package*.json ./
-RUN npm install --verbose
+RUN npm config set strict-ssl false
+RUN npm install
 COPY ./frontend/ ./
 RUN npm run build
 
