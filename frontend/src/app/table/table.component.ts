@@ -18,7 +18,6 @@ import { ErrorBadgeComponent } from '../error-badge/error-badge.component';
     selector: 'app-table',
     templateUrl: './table.component.html',
     styleUrls: ['./table.component.scss'],
-    standalone: true,
     imports: [NgIf, RouterLink, NgFor, NgClass, ErrorBadgeComponent, AsyncPipe]
 })
 export class TableComponent implements OnInit, OnDestroy {

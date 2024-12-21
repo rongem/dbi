@@ -8,7 +8,6 @@ import { NgIf, NgFor, AsyncPipe } from '@angular/common';
     selector: 'app-list-tables',
     templateUrl: './list-tables.component.html',
     styleUrls: ['./list-tables.component.scss'],
-    standalone: true,
     imports: [NgIf, RouterLink, NgFor, AsyncPipe]
 })
 export class ListTablesComponent implements OnInit, OnDestroy {

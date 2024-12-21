@@ -5,7 +5,6 @@ import { NgIf } from '@angular/common';
     selector: 'app-error-badge',
     templateUrl: './error-badge.component.html',
     styleUrls: ['./error-badge.component.scss'],
-    standalone: true,
     imports: [NgIf]
 })
 export class ErrorBadgeComponent {

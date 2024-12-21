@@ -6,9 +6,10 @@ import * as StoreSelectors from './lib/store/store.selectors';
 import * as StoreActions from './lib/store/store.actions';
 import { retrieveUser } from './lib/store/store.actions';
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.scss'],
+    standalone: false
 })
 export class AppComponent implements OnInit {
   title = 'Datenbank-Importer';

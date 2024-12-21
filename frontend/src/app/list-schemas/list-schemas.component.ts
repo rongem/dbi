@@ -9,7 +9,6 @@ import { NgFor, AsyncPipe } from '@angular/common';
     selector: 'app-list-schemas',
     templateUrl: './list-schemas.component.html',
     styleUrls: ['./list-schemas.component.scss'],
-    standalone: true,
     imports: [NgFor, RouterLink, AsyncPipe]
 })
 export class ListSchemasComponent implements OnInit, OnDestroy {
