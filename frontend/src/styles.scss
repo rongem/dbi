@@ -1,6 +1,7 @@
+@use "sass:color";
 $main-blue: #1976d2;
-$light-blue: lighten($main-blue, 45%);
-$dark-blue: darken($main-blue, 20%);
+$light-blue: color.adjust($main-blue, $lightness: 45%);
+$dark-blue: color.adjust($main-blue, $lightness: -20%);
 
 h1,
 h2,
