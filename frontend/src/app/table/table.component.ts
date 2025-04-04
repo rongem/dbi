@@ -157,7 +157,9 @@ export class TableComponent implements OnInit, OnDestroy {
         this.fillCellContents(rows);
       }
     } catch (error: any) {
-      this.store.dispatch(StoreActions.setError(error.message ?? error.toString()));
+      console.error(error.message);
+      console.error(error.toString());
+      this.store.dispatch(StoreActions.setError({error: error.message ?? error.toString()}));
     }
   }
 
