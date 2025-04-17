@@ -21,7 +21,7 @@ export const retrieveTableNames = async () => {
 export const retrieveAndSendTableColumns = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const columns = await selectColumns(req.params[schemaDescriptor], req.params[tableDescriptor]);
-        return res.json(columns);
+        res.json(columns);
     } catch (error: any) {
         if (error instanceof HttpError) {
             throw error;
@@ -42,7 +42,7 @@ const importTableRows = async (req: Request, res: Response, next: NextFunction, 
     try {
         const data = await extractParams(req, commit);
         const rowsInserted = await insertRows(data);
-        return res.json({rowsInserted});
+        res.json({rowsInserted});
     } catch (error: any) {
         if (error instanceof HttpError) {
             next(error);

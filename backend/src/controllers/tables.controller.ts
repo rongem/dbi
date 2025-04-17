@@ -5,7 +5,7 @@ import { HttpError } from '../models/rest-api/httpError.model';
 export const retrieveTables = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const tables = await selectTables();
-        return res.json(tables);
+        res.json(tables);
     } catch (error: any) {
         if (error instanceof HttpError) {
             throw error;
