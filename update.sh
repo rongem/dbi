@@ -20,4 +20,5 @@ grunt bump
 npm install
 npm run test
 npm outdated
+echo Done!
 read -n 1
