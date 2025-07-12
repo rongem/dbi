@@ -36,7 +36,7 @@
     "@types/node": "^24.0.1",
     "@types/supertest": "^6.0.0",
     "@types/tsqlstring": "^1.0.0",
-    "dotenv": "^16.0.3",
+    "dotenv": "^17.2.0",
     "grunt": "^1.6.1",
     "grunt-bump": "^0.8.0",
     "jest": "^30.0.0",
