@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, viewChildren } from '@angular/core';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
@@ -24,7 +24,7 @@ export class TableComponent implements OnInit, OnDestroy {
   schemasCount = this.store.select(StoreSelectors.schemas).pipe(map(schemas => schemas.length));
   columnDefinitions = this.store.select(StoreSelectors.columnDefinitions);
   // table cells for selection
-  @ViewChildren('td') cells!: QueryList<ElementRef<HTMLTableCellElement>>;
+  readonly cells = viewChildren<ElementRef<HTMLTableCellElement>>('td');
   // dragging source
   sourceIndex: number | undefined;
   // index of column that dragged column is hovering on

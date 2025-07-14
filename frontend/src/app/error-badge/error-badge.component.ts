@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 
 @Component({
@@ -8,6 +8,6 @@ import { Component, Input } from '@angular/core';
     imports: []
 })
 export class ErrorBadgeComponent {
-  @Input() errorDescription: string | null = $localize `An error occured`;
+  readonly errorDescription = input<string | null>($localize `An error occured`);
   visibleText = false;
 }
