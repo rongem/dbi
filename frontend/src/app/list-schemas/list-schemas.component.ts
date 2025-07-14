@@ -3,13 +3,13 @@ import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import * as StoreSelectors from '../lib/store/store.selectors';
-import { NgFor, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
     selector: 'app-list-schemas',
     templateUrl: './list-schemas.component.html',
     styleUrls: ['./list-schemas.component.scss'],
-    imports: [NgFor, RouterLink, AsyncPipe]
+    imports: [RouterLink, AsyncPipe]
 })
 export class ListSchemasComponent implements OnInit, OnDestroy {
   schemas = this.store.select(StoreSelectors.schemas);

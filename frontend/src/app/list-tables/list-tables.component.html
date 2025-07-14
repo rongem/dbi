@@ -1,14 +1,18 @@
-<div class="breadcrumb" *ngIf="!!(schemas | async) && (schemas | async)!.length > 1">
+@if (!!(schemas | async) && (schemas | async)!.length > 1) {
+  <div class="breadcrumb">
     <a [routerLink]="['/']" i18n>Home</a>
-</div>
+  </div>
+}
 <h2>
-    <ng-container i18n>Schema: </ng-container>
-    {{schemaName}}
+  <ng-container i18n>Schema: </ng-container>
+  {{schemaName}}
 </h2>
 <div class="card-container">
-    <button type="button" class="card selectable" *ngFor="let table of (getTables(schemaName) | async)" [routerLink]="['table', table]">
-        <h2>
-            {{table}}
-        </h2>
+  @for (table of (getTables(schemaName) | async); track table) {
+    <button type="button" class="card selectable" [routerLink]="['table', table]">
+      <h2>
+        {{table}}
+      </h2>
     </button>
+  }
 </div>

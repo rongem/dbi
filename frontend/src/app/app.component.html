@@ -12,23 +12,27 @@
   </div>
 </header>
 
-<main class="content" role="main" *ngIf="(notAuthorized | async) === false">
-  <router-outlet></router-outlet>
-</main>
+@if ((notAuthorized | async) === false) {
+  <main class="content" role="main">
+    <router-outlet></router-outlet>
+  </main>
+}
 
 <footer>
-  <button *ngIf="(errorPresent | async) === true" (click)="clearError()" class="error" title="Clear error" i18n-title>
-    {{error | async}}
-  </button>
-  <ng-container *ngIf="(notAuthorized | async) === true">
+  @if ((errorPresent | async) === true) {
+    <button (click)="clearError()" class="error" title="Clear error" i18n-title>
+      {{error | async}}
+    </button>
+  }
+  @if ((notAuthorized | async) === true) {
     <div class="backdrop"></div>
     <div class="busy" i18n>
       You don't have sufficient rights to import into database.
     </div>
-  </ng-container>
+  }
 </footer>
 
-<ng-container *ngIf="(busy | async) === true">
+@if ((busy | async) === true) {
   <div class="backdrop"></div>
   <div class="busy" i18n>Working...</div>
-</ng-container>
+}

@@ -11,14 +11,14 @@ import { CellContent } from '../lib/models/cellcontent.model';
 import { Row } from '../lib/models/rest-backend/row.model';
 import { CellInformation } from '../lib/models/cellinformation.model';
 import { RowContainer } from '../lib/models/rest-backend/row-container.model';
-import { NgIf, NgFor, NgClass, AsyncPipe } from '@angular/common';
+import { NgClass, AsyncPipe } from '@angular/common';
 import { ErrorBadgeComponent } from '../error-badge/error-badge.component';
 
 @Component({
     selector: 'app-table',
     templateUrl: './table.component.html',
     styleUrls: ['./table.component.scss'],
-    imports: [NgIf, RouterLink, NgFor, NgClass, ErrorBadgeComponent, AsyncPipe]
+    imports: [RouterLink, NgClass, ErrorBadgeComponent, AsyncPipe]
 })
 export class TableComponent implements OnInit, OnDestroy {
   schemasCount = this.store.select(StoreSelectors.schemas).pipe(map(schemas => schemas.length));

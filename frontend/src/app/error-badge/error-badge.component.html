@@ -2,6 +2,8 @@
 <span class="visually-hidden" i18n>
     This line contains data causing errors.
 </span>
-<div class="error position-absolute" *ngIf="visibleText">
+@if (visibleText) {
+  <div class="error position-absolute">
     {{errorDescription}}
-</div>
+  </div>
+}

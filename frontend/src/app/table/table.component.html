@@ -1,74 +1,97 @@
 <div class="breadcrumb">
-    <ng-container *ngIf="(schemasCount | async)! > 1; else noHome">
-        <a [routerLink]="['/']" i18n>Home</a>
-    </ng-container>
-    <ng-template #noHome i18n>Home</ng-template>
-    &rarr;
-    <a [routerLink]="['/', 'schema', schema]">
-        <ng-container i18n>Schema: </ng-container>
-        {{schema}}
-    </a>
+  @if ((schemasCount | async)! > 1) {
+    <a [routerLink]="['/']" i18n>Home</a>
+  } @else {
+    <ng-container i18n>Home</ng-container>
+  }
+  &rarr;
+  <a [routerLink]="['/', 'schema', schema]">
+    <ng-container i18n>Schema: </ng-container>
+    {{schema}}
+  </a>
 </div>
 
-<div class="success" *ngIf="(importedRows | async) !== undefined">
+@if ((importedRows | async) !== undefined) {
+  <div class="success">
     <ng-container i18n>
         Successfully imported 
     </ng-container>
-    {{importedRows | async}} 
+    {{importedRows | async}}
     <ng-container i18n>
         rows.
     </ng-container>
-</div>
-<div *ngIf="(rowCount | async) === 0" i18n>
+  </div>
+}
+@if ((rowCount | async) === 0) {
+  <div i18n>
     After copying your table content to clipboard, paste it here with Ctrl + V.
 </div>
-<div *ngIf="(rowCount | async) !== 0" i18n>
+}
+@if ((rowCount | async) !== 0) {
+  <div i18n>
     Replace data here with Ctrl + V.
 </div>
-<div class="button-container" *ngIf="(canImport | async) === true">
+}
+@if ((canImport | async) === true) {
+  <div class="button-container">
     <button type="button" (click)="onImport()" i18n>Start import</button>
-</div>
+  </div>
+}
 <table class="table">
-    <thead>
-        <tr>
-            <th style="padding:0;"></th>
-            <th style="padding:0;">#</th>
-            <th *ngFor="let column of (columnMappings | async); let i = index"
-                draggable="true"
-                (dragstart)="onDragStart($event, i)"
-                (dragend)="onDragEnd()"
-                (dragover)="onDragOver($event, i)"
-                (drop)="onDrop(i)"
-                [ngClass]="{dragging: this.sourceIndex === i, target: presumedTargetIndex === i, primary: (getColumn(column) | async)?.primary, foreign: (getColumn(column) | async)?.foreignKey}"
-                [attr.title]="getColumnTitle(column) | async"
-                class="position-relative">
-                {{(getColumn(column) | async)?.name}}
-                <span class="visually-hidden" *ngIf="(getColumn(column) | async)?.primary === true" i18n>
+  <thead>
+    <tr>
+      <th style="padding:0;"></th>
+      <th style="padding:0;">#</th>
+      @for (column of (columnMappings | async); track column; let i = $index) {
+        <th
+          draggable="true"
+          (dragstart)="onDragStart($event, i)"
+          (dragend)="onDragEnd()"
+          (dragover)="onDragOver($event, i)"
+          (drop)="onDrop(i)"
+          [ngClass]="{dragging: this.sourceIndex === i, target: presumedTargetIndex === i, primary: (getColumn(column) | async)?.primary, foreign: (getColumn(column) | async)?.foreignKey}"
+          [attr.title]="getColumnTitle(column) | async"
+          class="position-relative">
+          {{(getColumn(column) | async)?.name}}
+          @if ((getColumn(column) | async)?.primary === true) {
+            <span class="visually-hidden" i18n>
                     This column is used for the primary key of the table.
                 </span>
-                <span class="visually-hidden" *ngIf="(getColumn(column) | async)?.foreignKey === true" i18n>
+          }
+          @if ((getColumn(column) | async)?.foreignKey === true) {
+            <span class="visually-hidden" i18n>
                     This column contains a foreign key pointing to another table.
                 </span>
-                <span class="visually-hidden" *ngIf="(getColumn(column) | async)?.unique === true" i18n>
+          }
+          @if ((getColumn(column) | async)?.unique === true) {
+            <span class="visually-hidden" i18n>
                     This column must contain unique entries.
                 </span>
-           </th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let rowNumber of (rowNumbers | async)" [ngClass]="{'position-relative': (getRowContainsErrors(rowNumber) | async) === true}">
-            <td [attr.title]="getRowErrorDescriptions(rowNumber) | async">
-                <app-error-badge *ngIf="(getRowContainsErrors(rowNumber) | async) === true" [errorDescription]="getRowErrorDescriptions(rowNumber) | async"></app-error-badge>
-            </td>
-            <td class="align-right">
-                {{rowNumber}}
-            </td>
-            <td *ngFor="let column of (columnMappings | async); let i = index"
-                [ngClass]="{error: (getCellInformation(rowNumber, i) | async)?.containsErrors}"
-                [attr.title]="(getCellInformation(rowNumber, i) | async)?.errorText">
-                {{(getCellInformation(rowNumber, i) | async)?.typedValue}}
-            </td>
-        </tr>
-    </tbody>
+          }
+        </th>
+      }
+    </tr>
+  </thead>
+  <tbody>
+    @for (rowNumber of (rowNumbers | async); track rowNumber) {
+      <tr [ngClass]="{'position-relative': (getRowContainsErrors(rowNumber) | async) === true}">
+        <td [attr.title]="getRowErrorDescriptions(rowNumber) | async">
+          @if ((getRowContainsErrors(rowNumber) | async) === true) {
+            <app-error-badge [errorDescription]="getRowErrorDescriptions(rowNumber) | async"></app-error-badge>
+          }
+        </td>
+        <td class="align-right">
+          {{rowNumber}}
+        </td>
+        @for (column of (columnMappings | async); track column; let i = $index) {
+          <td
+            [ngClass]="{error: (getCellInformation(rowNumber, i) | async)?.containsErrors}"
+            [attr.title]="(getCellInformation(rowNumber, i) | async)?.errorText">
+            {{(getCellInformation(rowNumber, i) | async)?.typedValue}}
+          </td>
+        }
+      </tr>
+    }
+  </tbody>
 </table>
 
