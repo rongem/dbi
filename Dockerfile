@@ -28,7 +28,7 @@ COPY ./backend/package*.json ./
 # copy node express backend
 COPY --from=backend /usr/app/dist ./dist/
 # copy angular frontend
-COPY --from=frontend /usr/app/dist/frontend ./dist/views/
+COPY --from=frontend /usr/app/dist/frontend/browser/ ./dist/views/
 RUN npm update --location=global
 RUN npm ci --only-production
 
