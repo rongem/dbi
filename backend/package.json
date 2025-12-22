@@ -1,6 +1,6 @@
 {
   "name": "dbi-backend",
-  "version": "0.3.109",
+  "version": "0.3.110",
   "description": "Database importer backend",
   "main": "app.ts",
   "scripts": {
@@ -37,8 +37,6 @@
     "@types/supertest": "^6.0.0",
     "@types/tsqlstring": "^1.0.0",
     "dotenv": "^17.2.0",
-    "grunt": "^1.6.1",
-    "grunt-bump": "^0.8.0",
     "jest": "^30.0.0",
     "supertest": "^7.0.0",
     "ts-jest": "^29.1.0",
