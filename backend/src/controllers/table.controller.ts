@@ -20,7 +20,7 @@ export const retrieveTableNames = async () => {
 
 export const retrieveAndSendTableColumns = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const columns = await selectColumns(req.params[schemaDescriptor], req.params[tableDescriptor]);
+        const columns = await selectColumns(req.params[schemaDescriptor] as string, req.params[tableDescriptor] as string);
         res.json(columns);
     } catch (error: any) {
         if (error instanceof HttpError) {
@@ -53,9 +53,9 @@ const importTableRows = async (req: Request, res: Response, next: NextFunction, 
 }
 
  const extractParams = async(req: Request, commit: boolean) => {
-    const schemaName = req.params[schemaDescriptor];
-    const tableName = req.params[tableDescriptor];
-    const columns = await selectColumns(schemaName, tableName);
+    const schemaName = req.params[schemaDescriptor] as string;
+    const tableName = req.params[tableDescriptor] as string;
+    const columns = await selectColumns(schemaName as string, tableName as string);
     const rows = req.body.rows as Row[];
     return { schemaName, tableName, rows, columns, commit };
 }
