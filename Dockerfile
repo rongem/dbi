@@ -29,8 +29,8 @@ COPY ./backend/package*.json ./
 COPY --from=backend /usr/app/dist ./dist/
 # copy angular frontend
 COPY --from=frontend /usr/app/dist/frontend/browser/ ./dist/views/
-RUN npm update --location=global
-RUN npm ci --only-production
+RUN npm update -g
+RUN npm ci
 
 #user context to run in
 USER node
