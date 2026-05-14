@@ -1,7 +1,6 @@
-if [ "$1" == "-g" ]; then
-	echo Updating global libraries
-	npm update --location=global
-fi
+echo Updating global libraries
+npm outdated -g
+npm update -g
 cd frontend
 echo Updating @angular
 ng update @angular/cli @angular/core @ngrx/store
