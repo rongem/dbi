@@ -1,6 +1,6 @@
 {
   "name": "dbi-backend",
-  "version": "0.3.130",
+  "version": "0.3.131",
   "description": "Database importer backend",
   "main": "app.ts",
   "scripts": {
@@ -50,5 +50,8 @@
     "express-validator": "^7.0.1",
     "mssql": "^12.0.0",
     "tsqlstring": "^1.0.1"
+  },
+  "allowScripts": {
+    "unrs-resolver@1.12.2": true
   }
 }
