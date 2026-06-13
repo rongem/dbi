@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { HttpError } from '../models/rest-api/httpError.model';
-import { getLocale } from '../utils/locales.function';
+import { HttpError } from '../models/rest-api/httpError.model.js';
+import { getLocale } from '../utils/locales.function.js';
 
 export function error404(req: Request, res: Response, next: NextFunction) {
     res.sendStatus(404);

@@ -1,10 +1,10 @@
 import { RequestError, Transaction } from "mssql";
-import { Column } from "../data/column.model";
-import { Row } from "../data/row.model";
-import { transactionPool, transactionRequest } from "../db";
-import { HttpError } from "../rest-api/httpError.model";
-import { ImportError } from "../data/importerror.model";
-import { getLocale } from '../../utils/locales.function';
+import { Column } from "../data/column.model.js";
+import { Row } from "../data/row.model.js";
+import { transactionPool, transactionRequest } from "../db.js";
+import { HttpError } from "../rest-api/httpError.model.js";
+import { ImportError } from "../data/importerror.model.js";
+import { getLocale } from '../../utils/locales.function.js';
 
 const createParamNameFromColumnName = (n: string): string => n.replace(' ', '_');
 const createParamDefinitionFromColumnName = (n: string) => '@' + createParamNameFromColumnName(n);

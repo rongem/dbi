@@ -1,4 +1,4 @@
-import { SqlType } from "./sqltype";
+import { SqlType } from "./sqltype.js";
 
 export interface tsTypeInfo {
     sqlType: SqlType;

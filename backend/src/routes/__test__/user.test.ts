@@ -1,6 +1,6 @@
 import request from 'supertest';
 
-import { app } from '../../app';
+import { app } from '../../app.js';
 
 it('get authenticated user', async () => {
     return request(app).get('/user')

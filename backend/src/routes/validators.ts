@@ -1,11 +1,11 @@
 import { CustomValidator, body, param, checkExact } from 'express-validator';
 import SqlString from 'tsqlstring'
-import { retrieveTableNames } from '../controllers/table.controller';
-import { Row } from '../models/data/row.model';
-import { selectColumns } from '../models/mssql/columns.model';
-import { ColumnObject } from '../models/data/column-object.model';
-import { rowsDescriptor, schemaDescriptor, tableDescriptor } from '../utils/params.descriptors';
-import { getLocale } from '../utils/locales.function';
+import { retrieveTableNames } from '../controllers/table.controller.js';
+import { Row } from '../models/data/row.model.js';
+import { selectColumns } from '../models/mssql/columns.model.js';
+import { ColumnObject } from '../models/data/column-object.model.js';
+import { rowsDescriptor, schemaDescriptor, tableDescriptor } from '../utils/params.descriptors.js';
+import { getLocale } from '../utils/locales.function.js';
 
 const sqlStringValidator: CustomValidator = (value: string) => `'${value}'` === SqlString.escape(value);
 

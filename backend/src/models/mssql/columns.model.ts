@@ -1,8 +1,8 @@
-import { requestPromise } from '../db';
-import { sqlGetColumnInformationForSchemaAndTable, sqlGetColumnKeyInformation, sqlGetForeignColumnInformation, sqlGetReferantialConstraints } from '../../utils/sql.templates';
-import { Column } from '../data/column.model';
 import { NVarChar } from 'mssql';
-import { getTypeInformation } from '../data/tsTypeInfo';
+import { requestPromise } from '../db.js';
+import { sqlGetColumnInformationForSchemaAndTable, sqlGetColumnKeyInformation, sqlGetForeignColumnInformation, sqlGetReferantialConstraints } from '../../utils/sql.templates.js';
+import { Column } from '../data/column.model.js';
+import { getTypeInformation } from '../data/tsTypeInfo.js';
 
 export const selectColumns = async (schema: string, table: string) => {
     const sqlColumns = await fetchColumnData(schema, table);

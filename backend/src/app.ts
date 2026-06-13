@@ -3,13 +3,13 @@ import express = require('express');
 import ntlm = require('express-ntlm');
 import fs = require('fs');
 
-import { error404 } from './controllers/error.controller';
-import { HttpError } from './models/rest-api/httpError.model';
-import { EnvironmentController } from './controllers/environment.controller';
-import { getAuthentication } from './controllers/auth.controller';
-import tablesRouter from './routes/tables.routes';
-import tableRouter from './routes/table.routes';
-import userRouter from './routes/user.routes';
+import { error404 } from './controllers/error.controller.js';
+import { HttpError } from './models/rest-api/httpError.model.js';
+import { EnvironmentController } from './controllers/environment.controller.js';
+import { getAuthentication } from './controllers/auth.controller.js';
+import tablesRouter from './routes/tables.routes.js';
+import tableRouter from './routes/table.routes.js';
+import userRouter from './routes/user.routes.js';
 
 
 const app = express();

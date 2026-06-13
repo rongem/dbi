@@ -1,5 +1,5 @@
-import { authorizationTableName } from "../utils/config.templates";
-import { checkRequiredVariables } from "./environment.function";
+import { authorizationTableName } from "../utils/config.templates.js";
+import { checkRequiredVariables } from "./environment.function.js";
 
 export class EnvironmentController {
     private constructor() {

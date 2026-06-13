@@ -1,4 +1,4 @@
-import { Row } from "./row.model";
+import { Row } from "./row.model.js";
 
 export interface ImportError {
     row: number;

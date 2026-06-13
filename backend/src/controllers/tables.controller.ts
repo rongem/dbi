@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
-import { selectTables } from '../models/mssql/tables.model';
-import { HttpError } from '../models/rest-api/httpError.model';
+import { selectTables } from '../models/mssql/tables.model.js';
+import { HttpError } from '../models/rest-api/httpError.model.js';
 
 export const retrieveTables = async (req: Request, res: Response, next: NextFunction) => {
     try {

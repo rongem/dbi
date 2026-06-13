@@ -1,5 +1,5 @@
-import { EnvironmentController } from "../controllers/environment.controller";
-import { Locales } from "../models/localization/locales.interface";
+import { EnvironmentController } from "../controllers/environment.controller.js";
+import { Locales } from "../models/localization/locales.interface.js";
 
 export const getLocale = () => {
     let name = EnvironmentController.instance.locale;

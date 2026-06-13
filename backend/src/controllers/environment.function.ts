@@ -1,5 +1,5 @@
-import { getLocale } from '../utils/locales.function';
-import { EnvironmentController } from './environment.controller';
+import { getLocale } from '../utils/locales.function.js';
+import { EnvironmentController } from './environment.controller.js';
 
 export const checkRequiredVariables = (env: EnvironmentController) => {
     if (!env.dbName) {

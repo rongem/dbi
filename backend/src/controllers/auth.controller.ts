@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { readUser } from '../models/mssql/authorization.model';
-import { HttpError } from '../models/rest-api/httpError.model';
-import { EnvironmentController } from './environment.controller';
-import { serverError } from './error.controller';
-import { User } from '../models/data/user.model';
-import { getLocale } from '../utils/locales.function';
+import { readUser } from '../models/mssql/authorization.model.js';
+import { HttpError } from '../models/rest-api/httpError.model.js';
+import { EnvironmentController } from './environment.controller.js';
+import { serverError } from './error.controller.js';
+import { User } from '../models/data/user.model.js';
+import { getLocale } from '../utils/locales.function.js';
 
 
 export const getAuthentication = (req: Request, res: Response, next: NextFunction) => {

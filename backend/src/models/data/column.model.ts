@@ -1,6 +1,6 @@
-import { SqlType } from "./sqltype";
-import { Table } from "./table.model";
-import { tsTypeInfo } from "./tsTypeInfo";
+import { SqlType } from "./sqltype.js";
+import { Table } from "./table.model.js";
+import { tsTypeInfo } from "./tsTypeInfo.js";
 
 export interface Column {
     table: Table;

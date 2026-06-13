@@ -1,10 +1,10 @@
 import * as mssql from 'mssql';
 
-import { requestPromise } from '../db';
-import { User } from '../data/user.model';
-import { HttpError } from '../rest-api/httpError.model';
-import { EnvironmentController } from '../../controllers/environment.controller';
-import { getLocale } from '../../utils/locales.function';
+import { requestPromise } from '../db.js';
+import { User } from '../data/user.model.js';
+import { HttpError } from '../rest-api/httpError.model.js';
+import { EnvironmentController } from '../../controllers/environment.controller.js';
+import { getLocale } from '../../utils/locales.function.js';
 
 const env = EnvironmentController.instance;
 

@@ -1,7 +1,7 @@
-import { requestPromise } from '../db';
-import { sqlGetAllTableNamesCurrentUserHasRights } from '../../utils/sql.templates';
-import { Table } from '../data/table.model';
-import { EnvironmentController } from '../../controllers/environment.controller';
+import { requestPromise } from '../db.js';
+import { sqlGetAllTableNamesCurrentUserHasRights } from '../../utils/sql.templates.js';
+import { Table } from '../data/table.model.js';
+import { EnvironmentController } from '../../controllers/environment.controller.js';
 
 export const selectTables = async () => {
     const req = await requestPromise();

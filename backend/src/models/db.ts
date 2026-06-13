@@ -1,7 +1,7 @@
 import { config, ConnectionPool, Request, Transaction } from 'mssql';
-import { EnvironmentController } from '../controllers/environment.controller';
-import { sqlGetAllTableNamesCurrentUserHasRights } from '../utils/sql.templates';
-import { getLocale } from '../utils/locales.function';
+import { EnvironmentController } from '../controllers/environment.controller.js';
+import { sqlGetAllTableNamesCurrentUserHasRights } from '../utils/sql.templates.js';
+import { getLocale } from '../utils/locales.function.js';
 
 const env = EnvironmentController.instance;
 

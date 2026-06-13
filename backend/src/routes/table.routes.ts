@@ -1,7 +1,7 @@
 import express from 'express';
-import { retrieveAndSendTableColumns, saveTableRows, testTableRows } from '../controllers/table.controller';
-import { validate } from './validate';
-import { allParamValidators, tableImportValidator } from './validators';
+import { retrieveAndSendTableColumns, saveTableRows, testTableRows } from '../controllers/table.controller.js';
+import { validate } from './validate.js';
+import { allParamValidators, tableImportValidator } from './validators.js';
 
 const router = express.Router();
 

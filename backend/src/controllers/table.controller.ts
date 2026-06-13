@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { selectTables } from '../models/mssql/tables.model';
-import { HttpError } from '../models/rest-api/httpError.model';
-import { selectColumns } from '../models/mssql/columns.model';
-import { Row } from '../models/data/row.model';
-import { insertRows } from '../models/mssql/rows.model';
-import { schemaDescriptor, tableDescriptor } from '../utils/params.descriptors';
+import { selectTables } from '../models/mssql/tables.model.js';
+import { HttpError } from '../models/rest-api/httpError.model.js';
+import { selectColumns } from '../models/mssql/columns.model.js';
+import { Row } from '../models/data/row.model.js';
+import { insertRows } from '../models/mssql/rows.model.js';
+import { schemaDescriptor, tableDescriptor } from '../utils/params.descriptors.js';
 
 export const retrieveTableNames = async () => {
     try {

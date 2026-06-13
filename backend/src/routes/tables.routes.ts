@@ -1,5 +1,5 @@
 import express from 'express';
-import { retrieveTables } from '../controllers/tables.controller';
+import { retrieveTables } from '../controllers/tables.controller.js';
 
 const router = express.Router();
 

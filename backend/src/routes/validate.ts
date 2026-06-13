@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
 
-import { HttpError } from '../models/rest-api/httpError.model';
-import { getLocale } from '../utils/locales.function';
+import { HttpError } from '../models/rest-api/httpError.model.js';
+import { getLocale } from '../utils/locales.function.js';
 
 export const validate = (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
