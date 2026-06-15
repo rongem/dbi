@@ -21,6 +21,7 @@ RUN npm run build
 
 # specify base image for production
 FROM node:lts-alpine
+RUN apk update && apk upgrade --no-cache
 WORKDIR /usr/app
 
 # install dependencies
