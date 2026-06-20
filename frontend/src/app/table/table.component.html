@@ -49,7 +49,7 @@
           (dragend)="onDragEnd()"
           (dragover)="onDragOver($event, i)"
           (drop)="onDrop(i)"
-          [ngClass]="{dragging: this.sourceIndex === i, target: presumedTargetIndex === i, primary: (getColumn(column) | async)?.primary, foreign: (getColumn(column) | async)?.foreignKey}"
+          [ngClass]="{dragging: this.sourceIndex === i, target: presumedTargetIndex === i, primary: $safeNavigationMigration((getColumn(column) | async)?.primary), foreign: $safeNavigationMigration((getColumn(column) | async)?.foreignKey)}"
           [attr.title]="getColumnTitle(column) | async"
           class="position-relative">
           {{(getColumn(column) | async)?.name}}
@@ -85,7 +85,7 @@
         </td>
         @for (column of (columnMappings | async); track column; let i = $index) {
           <td
-            [ngClass]="{error: (getCellInformation(rowNumber, i) | async)?.containsErrors}"
+            [ngClass]="{error: $safeNavigationMigration((getCellInformation(rowNumber, i) | async)?.containsErrors)}"
             [attr.title]="(getCellInformation(rowNumber, i) | async)?.errorText">
             {{(getCellInformation(rowNumber, i) | async)?.typedValue}}
           </td>

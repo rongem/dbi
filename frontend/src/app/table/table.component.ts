@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, viewChildren } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, viewChildren, ChangeDetectionStrategy } from '@angular/core';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Actions, ofType } from '@ngrx/effects';
@@ -18,6 +18,7 @@ import { ErrorBadgeComponent } from '../error-badge/error-badge.component';
     selector: 'app-table',
     templateUrl: './table.component.html',
     styleUrls: ['./table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [RouterLink, NgClass, ErrorBadgeComponent, AsyncPipe]
 })
 export class TableComponent implements OnInit, OnDestroy {

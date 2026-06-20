@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription, map, withLatestFrom } from 'rxjs';
@@ -8,6 +8,7 @@ import { AsyncPipe } from '@angular/common';
     selector: 'app-list-tables',
     templateUrl: './list-tables.component.html',
     styleUrls: ['./list-tables.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [RouterLink, AsyncPipe]
 })
 export class ListTablesComponent implements OnInit, OnDestroy {

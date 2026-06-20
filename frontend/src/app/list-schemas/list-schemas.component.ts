@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
@@ -9,6 +9,7 @@ import { AsyncPipe } from '@angular/common';
     selector: 'app-list-schemas',
     templateUrl: './list-schemas.component.html',
     styleUrls: ['./list-schemas.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     imports: [RouterLink, AsyncPipe]
 })
 export class ListSchemasComponent implements OnInit, OnDestroy {

@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { appReducer } from './lib/store/store.reducer';
-import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { StoreEffects } from './lib/store/store.effects';
 import { ListSchemasComponent } from './list-schemas/list-schemas.component';
 import { ListTablesComponent } from './list-tables/list-tables.component';
@@ -30,7 +30,7 @@ import { ErrorBadgeComponent } from './error-badge/error-badge.component';
     ],
     providers: [
         Title,
-        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClient(withXhr(), withInterceptorsFromDi()),
     ]
 })
 export class AppModule { }
