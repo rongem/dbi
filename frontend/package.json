@@ -1,6 +1,6 @@
 {
   "name": "dbi-frontend",
-  "version": "0.3.133",
+  "version": "0.3.134",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -11,14 +11,14 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "^22.0.5",
-    "@angular/common": "^22.0.5",
-    "@angular/compiler": "^22.0.5",
-    "@angular/core": "^22.0.5",
-    "@angular/forms": "^22.0.5",
-    "@angular/platform-browser": "^22.0.5",
-    "@angular/platform-browser-dynamic": "^22.0.5",
-    "@angular/router": "^22.0.5",
+    "@angular/animations": "^22.0.6",
+    "@angular/common": "^22.0.6",
+    "@angular/compiler": "^22.0.6",
+    "@angular/core": "^22.0.6",
+    "@angular/forms": "^22.0.6",
+    "@angular/platform-browser": "^22.0.6",
+    "@angular/platform-browser-dynamic": "^22.0.6",
+    "@angular/router": "^22.0.6",
     "@ngrx/effects": "^21.0.1",
     "@ngrx/operators": "^21.0.1",
     "@ngrx/store": "^21.0.1",
@@ -29,14 +29,15 @@
   "devDependencies": {
     "@angular/build": "^22.0.5",
     "@angular/cli": "~22.0.5",
-    "@angular/compiler-cli": "^22.0.5",
-    "@angular/localize": "^22.0.5",
+    "@angular/compiler-cli": "^22.0.6",
+    "@angular/localize": "^22.0.6",
     "typescript": "~6.0.3"
   },
   "allowScripts": {
     "@parcel/watcher@2.5.6": true,
-    "esbuild@0.27.3": true,
-    "lmdb@3.5.1": true,
-    "msgpackr-extract@3.0.4": true
+    "msgpackr-extract@3.0.4": true,
+    "esbuild@0.28.1": true,
+    "esbuild@0.27.7": true,
+    "lmdb@3.5.4": true
   }
 }
