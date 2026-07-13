@@ -1,4 +1,8 @@
-import { config, ConnectionPool, Request, Transaction } from 'mssql';
+// import { config, ConnectionPool, Request, Transaction } from 'mssql';
+import sql from 'mssql';
+import type { config } from 'mssql'; // Typen-Imports sind für Node zur Laufzeit unsichtbar
+
+const { ConnectionPool, Request, Transaction } = sql;
 import { EnvironmentController } from '../controllers/environment.controller.js';
 import { sqlGetAllTableNamesCurrentUserHasRights } from '../utils/sql.templates.js';
 import { getLocale } from '../utils/locales.function.js';
@@ -23,13 +27,18 @@ const sqlConfig: config = {
     }
 }
 
-const poolPromise = new ConnectionPool(sqlConfig);
+// const poolPromise = new ConnectionPool(sqlConfig);
+let poolPromise: Promise<sql.ConnectionPool> | null = null;
 
-let connectedPool: ConnectionPool;
+
+let connectedPool: sql.ConnectionPool;
 
 export const pool = async () => {
     if (connectedPool) return connectedPool;
-    const p = await poolPromise.connect()
+    if (!poolPromise) {
+        poolPromise = new ConnectionPool(sqlConfig).connect();
+    }
+    const p = await poolPromise
         .then(pool => {
             if (env.authMode !== 'none') console.debug(getLocale().connectedToMessage, sqlConfig.server, sqlConfig.options?.instanceName, sqlConfig.database);
             return pool;
@@ -51,7 +60,7 @@ export const transactionPool = async () => {
     return transaction.begin();
 }
 
-export const transactionRequest = async (transaction: Transaction) => {
+export const transactionRequest = async (transaction: sql.Transaction) => {
     return new Request(transaction)
 }
 

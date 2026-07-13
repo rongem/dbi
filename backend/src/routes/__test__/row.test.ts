@@ -16,7 +16,7 @@ it('sends object with wrong data', async () => {
             expect(response.body.data.errors).toBeDefined();
             expect(response.body.data.errors.length).toBeDefined();
             expect(response.body.data.errors.length).toBe(1);
-            expect(response.body.data.errors[0].msg).toContain(getLocale().rowsIsNotAnArrayError);
+            expect(response.body.data.errors[0].msg).toContain(getLocale(EnvironmentController.instance.locale).rowsIsNotAnArrayError);
         });
 });
 
@@ -34,7 +34,7 @@ it('sends an empty array', async () => {
             expect(response.body.data.errors).toBeDefined();
             expect(response.body.data.errors.length).toBeDefined();
             expect(response.body.data.errors.length).toBe(1);
-            expect(response.body.data.errors[0].msg).toContain(getLocale().rowNumberExceedsBoundariesError);
+            expect(response.body.data.errors[0].msg).toContain(getLocale(EnvironmentController.instance.locale).rowNumberExceedsBoundariesError);
         });
 });
 
@@ -78,7 +78,7 @@ it('sends an array with field name not in table', async () => {
             expect(response.body.data.errors).toBeDefined();
             expect(response.body.data.errors.length).toBeDefined();
             expect(response.body.data.errors.length).toBe(1);
-            expect(response.body.data.errors[0].msg).toContain(getLocale().columnIsNotPartOfTheTableError('xAllowed'));
+            expect(response.body.data.errors[0].msg).toContain(getLocale(EnvironmentController.instance.locale).columnIsNotPartOfTheTableError('xAllowed'));
         });
 });
 
@@ -99,7 +99,7 @@ it('sends an array with illegal field type', async () => {
             expect(response.body.data.errors).toBeDefined();
             expect(response.body.data.errors.length).toBeDefined();
             expect(response.body.data.errors.length).toBe(1);
-            expect(response.body.data.errors[0].msg).toContain(getLocale().typeIsNotAllowedForColumError('string', 'Allowed'));
+            expect(response.body.data.errors[0].msg).toContain(getLocale(EnvironmentController.instance.locale).typeIsNotAllowedForColumError('string', 'Allowed'));
         });
 });
 

@@ -1,10 +1,11 @@
-import { RequestError, Transaction } from "mssql";
+import * as sql from "mssql";
 import { Column } from "../data/column.model.js";
 import { Row } from "../data/row.model.js";
 import { transactionPool, transactionRequest } from "../db.js";
 import { HttpError } from "../rest-api/httpError.model.js";
 import { ImportError } from "../data/importerror.model.js";
 import { getLocale } from '../../utils/locales.function.js';
+import { EnvironmentController } from "../../controllers/environment.controller.js";
 
 const createParamNameFromColumnName = (n: string): string => n.replace(' ', '_');
 const createParamDefinitionFromColumnName = (n: string) => '@' + createParamNameFromColumnName(n);
@@ -18,12 +19,12 @@ export const insertRows = async (data: {schemaName: string, tableName: string, r
         try {
             const result = await insertRow({columns: data.columns, row, schemaName: data.schemaName, tableName: data.tableName, transaction});
             if (result.rowsAffected.length !== 1 || result.rowsAffected[0] !== 1) {
-                errors.push({row: i, msg: getLocale().noRowsInsertedError, rowContent: row});
+                errors.push({row: i, msg: getLocale(EnvironmentController.instance.locale).noRowsInsertedError, rowContent: row});
             } else {
                 rowCounter += result.rowsAffected[0];
             }
         } catch (error: any) {
-            if (error instanceof RequestError) {
+            if (error instanceof sql.RequestError) {
                 errors.push({row: i, msg: error.message, rowContent: row});
             } else {
                 transaction.rollback();
@@ -33,7 +34,7 @@ export const insertRows = async (data: {schemaName: string, tableName: string, r
     }
     if (errors.length > 0) {
         transaction.rollback();
-        throw new HttpError(400, getLocale().importError, {errors});
+        throw new HttpError(400, getLocale(EnvironmentController.instance.locale).importError, {errors});
     }
     if (data.commit) {
         await transaction.commit();
@@ -43,7 +44,7 @@ export const insertRows = async (data: {schemaName: string, tableName: string, r
     return rowCounter;
 };
 
-const insertRow = async (data: {columns: Column[]; row: Row; schemaName: string; tableName: string; transaction: Transaction }) => {
+const insertRow = async (data: {columns: Column[]; row: Row; schemaName: string; tableName: string; transaction: sql.Transaction }) => {
     const rowKeys = Object.keys(data.row).map(k => k.toLocaleLowerCase());
     const columnNames = data.columns.map(c => c.name).filter(c => rowKeys.includes(c.toLocaleLowerCase()));
     const columnNamesList = columnNames.join('], [');

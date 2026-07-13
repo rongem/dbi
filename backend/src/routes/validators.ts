@@ -6,23 +6,24 @@ import { selectColumns } from '../models/mssql/columns.model.js';
 import { ColumnObject } from '../models/data/column-object.model.js';
 import { rowsDescriptor, schemaDescriptor, tableDescriptor } from '../utils/params.descriptors.js';
 import { getLocale } from '../utils/locales.function.js';
+import { EnvironmentController } from '../controllers/environment.controller.js';
 
 const sqlStringValidator: CustomValidator = (value: string) => `'${value}'` === SqlString.escape(value);
 
 
 const schemaNameValidator = param(schemaDescriptor)
-    .exists().withMessage(getLocale().schemaNotPresentError)
-    .notEmpty().withMessage(getLocale().schemaIsEmptyError)
-    .isString().withMessage(getLocale().schemaNotAStringError)
-    .custom(sqlStringValidator).withMessage(getLocale().schemaContainsIllegalCharactersError)
+    .exists().withMessage(getLocale(EnvironmentController.instance.locale).schemaNotPresentError)
+    .notEmpty().withMessage(getLocale(EnvironmentController.instance.locale).schemaIsEmptyError)
+    .isString().withMessage(getLocale(EnvironmentController.instance.locale).schemaNotAStringError)
+    .custom(sqlStringValidator).withMessage(getLocale(EnvironmentController.instance.locale).schemaContainsIllegalCharactersError)
     .bail({level: 'request'})
     .trim();
 
 const tableNameValidator = param(tableDescriptor)
-    .exists().withMessage(getLocale().tableNotPresentError)
-    .notEmpty().withMessage(getLocale().tableEmptyError).bail()
-    .isString().withMessage(getLocale().tableNotAStringError).bail()
-    .custom(sqlStringValidator).withMessage(getLocale().tableContainsIllegalCharactersError)
+    .exists().withMessage(getLocale(EnvironmentController.instance.locale).tableNotPresentError)
+    .notEmpty().withMessage(getLocale(EnvironmentController.instance.locale).tableEmptyError).bail()
+    .isString().withMessage(getLocale(EnvironmentController.instance.locale).tableNotAStringError).bail()
+    .custom(sqlStringValidator).withMessage(getLocale(EnvironmentController.instance.locale).tableContainsIllegalCharactersError)
     .bail({level: 'request'})
     .trim()
     .custom(async (value: string, { req}) => {
@@ -30,7 +31,7 @@ const tableNameValidator = param(tableDescriptor)
         const tableName = value.toLocaleLowerCase();
         const tables = await retrieveTableNames();
         if (!tables.some(t => t.name.toLocaleLowerCase() === tableName && t.schema.toLocaleLowerCase() === schemaName)) {
-            throw new Error(getLocale().tableNotFoundError);
+            throw new Error(getLocale(EnvironmentController.instance.locale).tableNotFoundError);
         }
     })
     .bail({level: 'request'});
@@ -38,12 +39,12 @@ const tableNameValidator = param(tableDescriptor)
 export const allParamValidators = checkExact([schemaNameValidator, tableNameValidator]);
 
 const tableRowsArrayValidator = body(rowsDescriptor)
-    .isArray().withMessage(getLocale().rowsIsNotAnArrayError).bail({level: 'request'})
-    .isArray({min: 1, max: 10000}).withMessage(getLocale().rowNumberExceedsBoundariesError).bail({level: 'request'})
+    .isArray().withMessage(getLocale(EnvironmentController.instance.locale).rowsIsNotAnArrayError).bail({level: 'request'})
+    .isArray({min: 1, max: 10000}).withMessage(getLocale(EnvironmentController.instance.locale).rowNumberExceedsBoundariesError).bail({level: 'request'})
     .custom(async (value: Row[], {req}) => {
         const sqlColumns = await selectColumns(req.params![schemaDescriptor], req.params![tableDescriptor]);
         if (!sqlColumns || sqlColumns.length === 0) {
-            throw new Error(getLocale().tableNotFoundError);
+            throw new Error(getLocale(EnvironmentController.instance.locale).tableNotFoundError);
         }
         const sqlColumnObject: ColumnObject = {};
         const sqlColumnNames: string[] = [];
@@ -66,7 +67,7 @@ const tableRowsContentValidator = body(`${rowsDescriptor}.*`)
             const sqlColumn = sqlColumnObject[columName];
             const rowKey = rowKeys.find(k => k === columName);
             if (!rowKey && !(sqlColumn.hasDefaultValue || sqlColumn.isNullable)) {
-                errors.push(getLocale().requiredColumnMissingError(sqlColumn.name));
+                errors.push(getLocale(EnvironmentController.instance.locale).requiredColumnMissingError(sqlColumn.name));
             }
         }
         if (errors.length > 0) {
@@ -81,7 +82,7 @@ const tableRowsContentValidator = body(`${rowsDescriptor}.*`)
         const errors: string[] = [];
         for (let key of rowKeys) {
             if (!sqlColumnNames.includes(key.toLocaleLowerCase())) {
-                errors.push(getLocale().columnIsNotPartOfTheTableError(key));
+                errors.push(getLocale(EnvironmentController.instance.locale).columnIsNotPartOfTheTableError(key));
             } else {
                 const column = sqlColumnObject[key.toLocaleLowerCase()]!;
                 const cell = row[key];

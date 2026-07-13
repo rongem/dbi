@@ -1,4 +1,4 @@
-import * as mssql from 'mssql';
+import sql from 'mssql';
 
 import { requestPromise } from '../db.js';
 import { User } from '../data/user.model.js';
@@ -7,11 +7,12 @@ import { EnvironmentController } from '../../controllers/environment.controller.
 import { getLocale } from '../../utils/locales.function.js';
 
 const env = EnvironmentController.instance;
+const { TYPES } = sql;
 
 export const readUser = async (name: string): Promise<User> => {
     try {
         const req = await requestPromise();
-        req.input('name', mssql.NVarChar(50), name);
+        req.input('name', TYPES.NVarChar(50), name);
         const result = await req.query(`SELECT * FROM ${env.authTableName} WHERE [Username]=@name`);
         if (result.rowsAffected.length === 1 && result.rowsAffected[0] === 0) {
             createUser(name);
@@ -35,7 +36,7 @@ const getDatabaseKey = (object: any, key: string) => Object.keys(object).find(k 
 const createUser = async (name: string): Promise<User> => {
     try {
         const req = await requestPromise();
-        req.input('name', mssql.NVarChar(70), name);
+        req.input('name', TYPES.NVarChar(70), name);
         const result = await req.query(`INSERT INTO ${env.authTableName} ([Username], [Allowed]) VALUES (@name, 0)`);
         if (result.rowsAffected.length !== 1 || result.rowsAffected[0] !== 1) {
             throw new Error('INSERT Authorizations: Data could not be stored.');
@@ -51,10 +52,10 @@ const createUser = async (name: string): Promise<User> => {
     }
 };
 
-const checkIfTableContainsRequiredColumnsCaseInsensitiveAndReturnKeyNames = (recordset: mssql.IRecordSet<any>) => {
+const checkIfTableContainsRequiredColumnsCaseInsensitiveAndReturnKeyNames = (recordset: sql.IRecordSet<any>) => {
     const userKey = getDatabaseKey(recordset, 'username');
     const allowedKey = getDatabaseKey(recordset, 'allowed');
     if (!userKey || !allowedKey)
-        throw new Error(getLocale().illegalColumnsInRequestError);
+        throw new Error(getLocale(EnvironmentController.instance.locale).illegalColumnsInRequestError);
     return { userKey, allowedKey };
 }

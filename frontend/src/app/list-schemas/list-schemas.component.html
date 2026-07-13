@@ -4,7 +4,7 @@
     If you have any questions about schemas or tables, please ask your database administrator.
 </p>
 <div class="card-container">
-  @for (schema of (schemas | async); track schema) {
+  @for (schema of schemas(); track schema) {
     <button type="button" class="card selectable" [routerLink]="['/', 'schema', schema]">
       <h2>{{schema}}</h2>
     </button>

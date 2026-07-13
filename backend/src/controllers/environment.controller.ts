@@ -6,8 +6,11 @@ export class EnvironmentController {
         checkRequiredVariables(this);
     }
 
-    private static _instance = new EnvironmentController();
+    private static _instance: EnvironmentController | null = null;
     static get instance() {
+        if (!this._instance) {
+            this._instance = new EnvironmentController();
+        }
         return this._instance;
     }
 

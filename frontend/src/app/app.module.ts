@@ -3,11 +3,7 @@ import { BrowserModule, Title } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { StoreModule } from '@ngrx/store';
-import { EffectsModule } from '@ngrx/effects';
-import { appReducer } from './lib/store/store.reducer';
 import { provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
-import { StoreEffects } from './lib/store/store.effects';
 import { ListSchemasComponent } from './list-schemas/list-schemas.component';
 import { ListTablesComponent } from './list-tables/list-tables.component';
 import { TableComponent } from './table/table.component';
@@ -21,8 +17,6 @@ import { ErrorBadgeComponent } from './error-badge/error-badge.component';
         BrowserModule,
         AppRoutingModule,
         RouterModule,
-        StoreModule.forRoot(appReducer),
-        EffectsModule.forRoot([StoreEffects]),
         ListSchemasComponent,
         ListTablesComponent,
         TableComponent,

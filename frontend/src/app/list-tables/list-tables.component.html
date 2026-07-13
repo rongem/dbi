@@ -1,4 +1,4 @@
-@if (!!(schemas | async) && (schemas | async)!.length > 1) {
+@if (schemas().length > 1) {
   <div class="breadcrumb">
     <a [routerLink]="['/']" i18n>Home</a>
   </div>
@@ -8,7 +8,7 @@
   {{schemaName}}
 </h2>
 <div class="card-container">
-  @for (table of (getTables(schemaName) | async); track table) {
+  @for (table of getTables(schemaName)(); track table) {
     <button type="button" class="card selectable" [routerLink]="['table', table]">
       <h2>
         {{table}}

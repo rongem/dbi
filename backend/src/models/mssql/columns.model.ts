@@ -1,8 +1,11 @@
-import { NVarChar } from 'mssql';
+import sql, { NVarChar } from 'mssql';
+
 import { requestPromise } from '../db.js';
 import { sqlGetColumnInformationForSchemaAndTable, sqlGetColumnKeyInformation, sqlGetForeignColumnInformation, sqlGetReferantialConstraints } from '../../utils/sql.templates.js';
 import { Column } from '../data/column.model.js';
 import { getTypeInformation } from '../data/tsTypeInfo.js';
+
+const { TYPES } = sql;
 
 export const selectColumns = async (schema: string, table: string) => {
     const sqlColumns = await fetchColumnData(schema, table);
@@ -88,22 +91,22 @@ async function fetchColumnKeyInformations(schema: string, table: string) {
 
 async function createTableRequest(schema: string, table: string) {
     const req = await requestPromise();
-    req.input('Table_Schema', NVarChar(), schema);
-    req.input('Table_Name', NVarChar(), table);
+    req.input('Table_Schema', TYPES.NVarChar, schema);
+    req.input('Table_Name', TYPES.NVarChar, table);
     return req;
 }
 
 async function fetchReferantialContraints(schema: string) {
     const req = await requestPromise();
-    req.input('Table_Schema', NVarChar(), schema);
+    req.input('Table_Schema', TYPES.NVarChar, schema);
     const result = await req.query(sqlGetReferantialConstraints);
     return result;
 }
 
 async function fetchForeignColumnInformation(schema: string, constraint: string) {
     const req = await requestPromise();
-    req.input('Constraint_Schema', NVarChar(), schema);
-    req.input('Constraint_Name', NVarChar(), constraint);
+    req.input('Constraint_Schema', TYPES.NVarChar, schema);
+    req.input('Constraint_Name', TYPES.NVarChar, constraint);
     const result = await req.query(sqlGetForeignColumnInformation);
     return result;
 }

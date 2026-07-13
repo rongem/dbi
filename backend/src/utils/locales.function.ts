@@ -1,11 +1,6 @@
 import { EnvironmentController } from "../controllers/environment.controller.js";
 import { Locales } from "../models/localization/locales.interface.js";
 
-export const getLocale = () => {
-    let name = EnvironmentController.instance.locale;
-    return locales[name] ?? locales['en'];
-}
-
 const locales: Locales = {
     'en': {
         environmentDbNameMissingError: 'Environment variable DB_NAME not configured.',
@@ -73,4 +68,10 @@ const locales: Locales = {
         columnIsNotPartOfTheTableError: (name: string) => `Spalte ${name} ist nicht Teil der Tabelle.`,
         typeIsNotAllowedForColumError: (type: string, columnName: string) => `Typ ${type} passt nicht zur Spalte ${columnName}.`
     },
+};
+
+export const getLocale = (localeName?: string) => {
+    let name = localeName || 'en';
+    return locales[name];
 }
+

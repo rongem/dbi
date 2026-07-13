@@ -1,33 +1,38 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, computed } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { Subscription, map, withLatestFrom } from 'rxjs';
-import * as StoreSelectors from '../lib/store/store.selectors';
-import { AsyncPipe } from '@angular/common';
+import { Subscription } from 'rxjs';
+import { AppStore } from '../lib/store/app-store.service';
+
 @Component({
     selector: 'app-list-tables',
     templateUrl: './list-tables.component.html',
     styleUrls: ['./list-tables.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [RouterLink, AsyncPipe]
+    imports: [RouterLink]
 })
 export class ListTablesComponent implements OnInit, OnDestroy {
-  schemas = this.store.select(StoreSelectors.schemas).pipe(map(schemas => schemas.map(s => s.toLocaleLowerCase())));
+  readonly schemas = computed(() => this.store.schemas().map((schema) => schema.toLocaleLowerCase()));
   schemaName = '';
-    
+
   private subscription?: Subscription;
-  constructor(private store: Store, private router: Router, private route: ActivatedRoute) {}
+  constructor(private readonly store: AppStore, private readonly router: Router, private readonly route: ActivatedRoute) {}
+
   ngOnInit(): void {
-    this.subscription = this.route.params.pipe(withLatestFrom(this.schemas)).subscribe(([{schema}, schemas]) => {
-      if(!schemas.includes(schema.toLocaleLowerCase())) {
+    this.subscription = this.route.params.subscribe(({schema}) => {
+      const normalizedSchemas = this.schemas();
+      if (!normalizedSchemas.includes(schema.toLocaleLowerCase())) {
         this.router.navigateByUrl('/schemas', {replaceUrl: true});
       } else {
         this.schemaName = schema;
       }
     });
   }
+
   ngOnDestroy(): void {
     this.subscription?.unsubscribe();
   }
-  getTables = (schemaName: string) => this.store.select(StoreSelectors.tableNamesForSchema(schemaName));
+
+  getTables(schemaName: string) {
+    return this.store.tableNamesForSchema(schemaName);
+  }
 }

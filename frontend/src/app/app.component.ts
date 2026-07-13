@@ -1,10 +1,7 @@
-import { ChangeDetectorRef, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { map } from 'rxjs';
+import { ChangeDetectionStrategy, Component, OnInit, computed } from '@angular/core';
 import packageJson from '../../package.json';
-import * as StoreSelectors from './lib/store/store.selectors';
-import * as StoreActions from './lib/store/store.actions';
-import { retrieveUser } from './lib/store/store.actions';
+import { AppStore } from './lib/store/app-store.service';
+
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
@@ -15,34 +12,20 @@ import { retrieveUser } from './lib/store/store.actions';
 export class AppComponent implements OnInit {
   title = 'Datenbank-Importer';
   version = packageJson.version;
-  get busy() {
-    return this.store.select(StoreSelectors.working);
-  };
-  get error() {
-    return this.store.select(StoreSelectors.error);
-  }
-  get errorPresent() {
-    return this.error.pipe(map(error => !!error));
-  }
+  readonly busy = this.store.working;
+  readonly error = this.store.error;
+  readonly errorPresent = computed(() => !!this.error());
+  readonly authenticatedUser = this.store.userName;
+  readonly notAuthorized = this.store.notAuthorized;
+  readonly headerText = this.store.databaseName;
 
-  get authenticatedUser() {
-    return this.store.select(StoreSelectors.userName);
-  }
+  constructor(private readonly store: AppStore) {}
 
-  get notAuthorized() {
-    return this.store.select(StoreSelectors.notAuthorized);
-  }
-
-  get headerText() {
-    return this.store.select(StoreSelectors.databaseName);
-  }
-
-  constructor(private cd: ChangeDetectorRef, private store: Store) {}
-  
   ngOnInit(): void {
-    this.store.dispatch(retrieveUser());
+    this.store.retrieveUser();
   }
+
   clearError(): void {
-    this.store.dispatch(StoreActions.setError({}));
+    this.store.clearError();
   }
 }

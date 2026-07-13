@@ -18,13 +18,13 @@ export const getAuthentication = (req: Request, res: Response, next: NextFunctio
     }
     let name: string;
     if (!req.ntlm) {
-        throw new HttpError(401, getLocale().missingAuthenticationError);
+        throw new HttpError(401, getLocale(EnvironmentController.instance.locale).missingAuthenticationError);
     }
     const domain = !req.ntlm.DomainName || req.ntlm.DomainName === '.' ? req.ntlm.Workstation : req.ntlm.DomainName;
     name = domain + '\\' + req.ntlm.UserName;
     req.userName = name;
     getUser(name).catch(async (error: Error) => {
-        if (error.message !== getLocale().illegalAuthenticationError) {
+        if (error.message !== getLocale(EnvironmentController.instance.locale).illegalAuthenticationError) {
             throw error;
         }
         return {name: '', isAuthorized: false} as User;

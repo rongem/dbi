@@ -2,6 +2,8 @@ import { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
 import express = require('express');
 import ntlm = require('express-ntlm');
 import fs = require('fs');
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 import { error404 } from './controllers/error.controller.js';
 import { HttpError } from './models/rest-api/httpError.model.js';
@@ -31,7 +33,7 @@ app.use('/tables', getAuthentication, tablesRouter);
 app.use('/table', express.json({limit: '50mb'}), getAuthentication, tableRouter);
 app.use('/user', getAuthentication, userRouter);
 
-const basePath = __dirname + '/views/';
+const basePath = path.join(fileURLToPath(import.meta.url), '../views/');
 let localePath = 'en';
 if (fs.existsSync(basePath + env.locale)) localePath = env.locale;
 const angularPath = basePath + localePath;

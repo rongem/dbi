@@ -1,5 +1,5 @@
 <header class="toolbar" role="banner">
-  <span>{{headerText | async}}</span>
+  <span>{{headerText()}}</span>
   <span>
     <ng-container i18n>
       Database-Importer v
@@ -8,23 +8,23 @@
   </span>
   <div class="spacer"></div>
   <div id="username">
-    {{authenticatedUser | async}}
+    {{authenticatedUser()}}
   </div>
 </header>
 
-@if ((notAuthorized | async) === false) {
+@if (!notAuthorized()) {
   <main class="content" role="main">
     <router-outlet></router-outlet>
   </main>
 }
 
 <footer>
-  @if ((errorPresent | async) === true) {
+  @if (errorPresent()) {
     <button (click)="clearError()" class="error" title="Clear error" i18n-title>
-      {{error | async}}
+      {{error()}}
     </button>
   }
-  @if ((notAuthorized | async) === true) {
+  @if (notAuthorized()) {
     <div class="backdrop"></div>
     <div class="busy" i18n>
       You don't have sufficient rights to import into database.
@@ -32,7 +32,7 @@
   }
 </footer>
 
-@if ((busy | async) === true) {
+@if (busy()) {
   <div class="backdrop"></div>
   <div class="busy" i18n>Working...</div>
 }
