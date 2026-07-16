@@ -3,7 +3,7 @@ npm outdated -g
 npm update -g
 cd frontend
 echo Updating @angular
-ng update @angular/cli @angular/core @ngrx/store
+ng update @angular/cli @angular/core
 echo Updating other libraries
 npm update
 npm audit fix
