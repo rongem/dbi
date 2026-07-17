@@ -1,3 +1,5 @@
+# **deprecated**
+
 # MSSQL Database importer (dbi)
 You need a quick approach to allow users importing lots of data from Excel oder CSV into a MSSQL database table? This tool may be what you are looking for.
 - No need to install MSSQL Management Studio or write an application or configure complex optional datasources.
