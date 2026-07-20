@@ -6,6 +6,7 @@ export type RuntimeConfig = {
     dbPassword: string;
     dbServer: string;
     dbPort: string;
+    appPort: string;
     dbInstance: string;
     authMode: string;
     authTableName: string;
@@ -18,6 +19,7 @@ export const readRuntimeConfig = (): RuntimeConfig => ({
     dbPassword: process.env.DB_PWD?.trim() ?? '',
     dbServer: process.env.DB_SERVER?.trim() ?? '',
     dbPort: process.env.DB_PORT?.trim() ?? '1433',
+    appPort: process.env.PORT?.trim() ?? '8000',
     dbInstance: process.env.DB_INSTANCE?.trim() ?? '',
     authMode: process.env.AUTH_MODE?.trim().toLocaleLowerCase() ?? 'ntlm',
     authTableName: process.env.AUTH_TABLENAME?.trim() ?? authorizationTableName,

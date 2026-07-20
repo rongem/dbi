@@ -21,4 +21,7 @@ export const validateRuntimeConfig = (config: RuntimeConfig = readRuntimeConfig(
     if (isNaN(+config.dbPort)) {
         throw new Error(getLocale().environmentDbPortError);
     }
+    if (isNaN(+config.appPort)) {
+        throw new Error('Non numeric value in variable PORT.');
+    }
 };
