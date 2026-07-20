@@ -6,6 +6,7 @@ const { ConnectionPool, Request, Transaction } = sql;
 import { readRuntimeConfig } from '../config/runtime-config.js';
 import { sqlGetAllTableNamesCurrentUserHasRights } from '../utils/sql.templates.js';
 import { getLocale } from '../utils/locales.function.js';
+import { logger } from '../utils/logger.js';
 
 export const createSqlConfig = (): config => {
     const env = readRuntimeConfig();
@@ -46,10 +47,10 @@ export const pool = async () => {
         .then(pool => {
             const env = readRuntimeConfig();
             const sqlConfig = createSqlConfig();
-            if (env.authMode !== 'none') console.debug(getLocale().connectedToMessage, sqlConfig.server, sqlConfig.options?.instanceName, sqlConfig.database);
+            if (env.authMode !== 'none') logger.info('database_connected', {server: sqlConfig.server, instanceName: sqlConfig.options?.instanceName, database: sqlConfig.database});
             return pool;
         }).catch(err => {
-            console.error(getLocale().databaseConnectionError, err)
+            logger.error('database_connection_failed', {message: getLocale().databaseConnectionError, error: err instanceof Error ? err.message : String(err)});
             throw new Error(err);
         });
     return connectedPool = p;
@@ -83,7 +84,7 @@ export const checkDatabase = async () => {
             throw new Error(getLocale().missingTableError(env.authTableName));
         }
     } catch (error: any) {
-        console.log(error);
+        logger.warn('database_check_failed', {error: error instanceof Error ? error.message : String(error)});
         return false;
     }
     return true;

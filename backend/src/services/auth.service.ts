@@ -10,8 +10,19 @@ export type NtlmIdentity = {
     UserName?: string;
 };
 
-export const resolveAuthenticatedUser = async (ntlm?: NtlmIdentity): Promise<User> => {
-    const env = readRuntimeConfig();
+type AuthServiceDependencies = {
+    readConfig?: typeof readRuntimeConfig;
+    readUserFn?: typeof readUser;
+};
+
+const getDependencies = (dependencies?: AuthServiceDependencies) => ({
+    readConfig: dependencies?.readConfig ?? readRuntimeConfig,
+    readUserFn: dependencies?.readUserFn ?? readUser,
+});
+
+export const resolveAuthenticatedUser = async (ntlm?: NtlmIdentity, dependencies?: AuthServiceDependencies): Promise<User> => {
+    const { readConfig, readUserFn } = getDependencies(dependencies);
+    const env = readConfig();
     if (env.authMode === 'none') {
         return {name: 'none', isAuthorized: true, databaseName: env.dbName};
     }
@@ -21,7 +32,7 @@ export const resolveAuthenticatedUser = async (ntlm?: NtlmIdentity): Promise<Use
     const domain = !ntlm.DomainName || ntlm.DomainName === '.' ? ntlm.Workstation : ntlm.DomainName;
     const userName = `${domain}\\${ntlm.UserName}`;
     try {
-        return await readUser(userName);
+        return await readUserFn(userName);
     } catch (error: unknown) {
         if (error instanceof Error && error.message === getLocale(env.locale).illegalAuthenticationError) {
             return {name: '', isAuthorized: false, databaseName: env.dbName};
@@ -30,6 +41,7 @@ export const resolveAuthenticatedUser = async (ntlm?: NtlmIdentity): Promise<Use
     }
 };
 
-export const getUserAuthorization = async (name: string): Promise<User> => {
-    return readUser(name);
+export const getUserAuthorization = async (name: string, dependencies?: AuthServiceDependencies): Promise<User> => {
+    const { readUserFn } = getDependencies(dependencies);
+    return readUserFn(name);
 };

@@ -6,9 +6,10 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 import { readRuntimeConfig } from './config/runtime-config.js';
-import { error404 } from './controllers/error.controller.js';
+import { error404, sendErrorResponse } from './controllers/error.controller.js';
 import { HttpError } from './models/rest-api/httpError.model.js';
 import { getAuthentication } from './controllers/auth.controller.js';
+import healthRouter from './routes/health.routes.js';
 import tablesRouter from './routes/tables.routes.js';
 import tableRouter from './routes/table.routes.js';
 import userRouter from './routes/user.routes.js';
@@ -29,6 +30,7 @@ if (env.authMode === 'ntlm') {
 }
 
 // express.json({limit: '50mb'}) -> after route to enhance upload size
+app.use('/', healthRouter);
 app.use('/tables', getAuthentication, tablesRouter);
 app.use('/table', express.json({limit: '50mb'}), getAuthentication, tableRouter);
 app.use('/user', getAuthentication, userRouter);
@@ -46,11 +48,7 @@ app.use('/', error404);
 
 app.use((error: any, req: Request, res: Response, next: NextFunction) => {
     try {
-        const isHttpError = error instanceof HttpError;
-        const status = isHttpError ? error.httpStatusCode : 500;
-        const message = isHttpError ? error.message : error?.toString?.() ?? String(error);
-        const data = isHttpError && error.data ? error.data : undefined;
-        res.status(status).json({message, data});
+        sendErrorResponse(res, error);
     } catch (handlerErr: any) {
         const message = typeof error === 'string' ? error : JSON.stringify(error, Object.getOwnPropertyNames(error));
         res.status(500).json({message: message || 'Unknown error', data: {handlerError: String(handlerErr)}});

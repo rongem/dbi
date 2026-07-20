@@ -5,6 +5,7 @@ import { requestPromise } from '../db.js';
 import { User } from '../data/user.model.js';
 import { HttpError } from '../rest-api/httpError.model.js';
 import { getLocale } from '../../utils/locales.function.js';
+import { logger } from '../../utils/logger.js';
 
 const { TYPES } = sql;
 
@@ -26,7 +27,7 @@ export const readUser = async (name: string): Promise<User> => {
         };
         return user;
     } catch (error: any) {
-        console.log('readUser', error);
+        logger.error('read_user_failed', {name, error: error instanceof Error ? error.message : String(error)});
         throw new HttpError(500, error.message ?? error.toString(), {name});
     }
 };
@@ -48,7 +49,7 @@ const createUser = async (name: string): Promise<User> => {
             databaseName: env.dbName,
         }
     } catch (error: any) {
-        console.log('createUser', error);
+        logger.error('create_user_failed', {name, error: error instanceof Error ? error.message : String(error)});
         throw new HttpError(500, error.message ?? error.toString(), {name});
     }
 };

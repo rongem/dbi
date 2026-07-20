@@ -4,6 +4,7 @@ import { requestPromise } from '../db.js';
 import { sqlGetColumnInformationForSchemaAndTable, sqlGetColumnKeyInformation, sqlGetForeignColumnInformation, sqlGetReferantialConstraints } from '../../utils/sql.templates.js';
 import { Column } from '../data/column.model.js';
 import { getTypeInformation } from '../data/tsTypeInfo.js';
+import { logger } from '../../utils/logger.js';
 
 const { TYPES } = sql;
 
@@ -35,7 +36,7 @@ export const selectColumns = async (schema: string, table: string) => {
                             schema: foreignColumn.recordset[0].TABLE_SCHEMA,
                         }
                     } else {
-                        console.error(foreignColumn.recordset);
+                        logger.warn('foreign_column_lookup_ambiguous', {recordset: foreignColumn.recordset});
                     }
                 }
             }

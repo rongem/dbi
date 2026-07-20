@@ -8,15 +8,26 @@ type TableImportRequest = {
     rows: Row[];
 };
 
-const executeTableImport = async (data: TableImportRequest, commit: boolean) => {
-    const columns = await getTableColumns(data.schemaName, data.tableName);
-    return insertRows({...data, columns, commit});
+type TableImportDependencies = {
+    getColumns?: typeof getTableColumns;
+    insertRowsFn?: typeof insertRows;
 };
 
-export const previewTableImport = async (data: TableImportRequest) => {
-    return executeTableImport(data, false);
+const getDependencies = (dependencies?: TableImportDependencies) => ({
+    getColumns: dependencies?.getColumns ?? getTableColumns,
+    insertRowsFn: dependencies?.insertRowsFn ?? insertRows,
+});
+
+const executeTableImport = async (data: TableImportRequest, commit: boolean, dependencies?: TableImportDependencies) => {
+    const { getColumns, insertRowsFn } = getDependencies(dependencies);
+    const columns = await getColumns(data.schemaName, data.tableName);
+    return insertRowsFn({...data, columns, commit});
 };
 
-export const commitTableImport = async (data: TableImportRequest) => {
-    return executeTableImport(data, true);
+export const previewTableImport = async (data: TableImportRequest, dependencies?: TableImportDependencies) => {
+    return executeTableImport(data, false, dependencies);
+};
+
+export const commitTableImport = async (data: TableImportRequest, dependencies?: TableImportDependencies) => {
+    return executeTableImport(data, true, dependencies);
 };
