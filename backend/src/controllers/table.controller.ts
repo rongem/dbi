@@ -11,7 +11,7 @@ export const retrieveTableNames = async () => {
         const tables = await selectTables();
         return tables;
     } catch (error: any) {
-        if (error instanceof HttpError) {
+        if (error && typeof error === 'object' && 'httpStatusCode' in error) {
             throw error;
         }
         throw new HttpError(500, error.message ?? error.toString());
@@ -23,7 +23,7 @@ export const retrieveAndSendTableColumns = async (req: Request, res: Response, n
         const columns = await selectColumns(req.params[schemaDescriptor] as string, req.params[tableDescriptor] as string);
         res.json(columns);
     } catch (error: any) {
-        if (error instanceof HttpError) {
+        if (error && typeof error === 'object' && 'httpStatusCode' in error) {
             throw error;
         }
         next(new HttpError(500, error.message ?? error.toString()));
@@ -44,7 +44,7 @@ const importTableRows = async (req: Request, res: Response, next: NextFunction, 
         const rowsInserted = await insertRows(data);
         res.json({rowsInserted});
     } catch (error: any) {
-        if (error instanceof HttpError) {
+        if (error && typeof error === 'object' && 'httpStatusCode' in error) {
             next(error);
         } else {
             next(new HttpError(400, error.message ?? error.toString()));
@@ -52,7 +52,7 @@ const importTableRows = async (req: Request, res: Response, next: NextFunction, 
     }
 }
 
- const extractParams = async(req: Request, commit: boolean) => {
+const extractParams = async(req: Request, commit: boolean) => {
     const schemaName = req.params[schemaDescriptor] as string;
     const tableName = req.params[tableDescriptor] as string;
     const columns = await selectColumns(schemaName as string, tableName as string);

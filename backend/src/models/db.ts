@@ -20,6 +20,8 @@ const sqlConfig: config = {
         min: 0,
         idleTimeoutMillis: 30000
     },
+    // increase default request timeout from 15s to 60s for tests
+    requestTimeout: 60000,
     options: {
         instanceName: env.dbInstance,
         encrypt: false, // for azure
@@ -60,8 +62,8 @@ export const transactionPool = async () => {
     return transaction.begin();
 }
 
-export const transactionRequest = async (transaction: sql.Transaction) => {
-    return new Request(transaction)
+export const transactionRequest = async (transaction: sql.Transaction, overrides?: { requestTimeout?: number }) => {
+    return new (Request as any)(transaction, overrides);
 }
 
 // preflight check if connection works and all tables and stored procedures exist

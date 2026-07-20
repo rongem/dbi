@@ -1,8 +1,5 @@
-// import { database } from '../models/db';
 import path from 'path';
-// import { app } from '../app';
 
-require('dotenv').config({path: path.resolve('./src/test/.env')});
 
 beforeAll(async () => {
     expect(process.env.DB_USER).toBeDefined();

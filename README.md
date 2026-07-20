@@ -1,5 +1,3 @@
-# **deprecated**
-
 # MSSQL Database importer (dbi)
 You need a quick approach to allow users importing lots of data from Excel oder CSV into a MSSQL database table? This tool may be what you are looking for.
 - No need to install MSSQL Management Studio or write an application or configure complex optional datasources.
@@ -58,5 +56,3 @@ Sounds complicated? Just try, it's quity simple to handle, and works with all ki
 - Column expecting binary data won't allow an import if they are not nullable.
 - Each import is a transaction, so it will work all at once or won't work at all.
 
-# Container
-You'll find the docker container on docker hub at https://hub.docker.com/r/rongem/dbi

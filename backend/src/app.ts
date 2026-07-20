@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
-import express = require('express');
-import ntlm = require('express-ntlm');
-import fs = require('fs');
+import { Request, Response, NextFunction } from 'express';
+import express from 'express';
+import ntlm from 'express-ntlm';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -33,7 +33,9 @@ app.use('/tables', getAuthentication, tablesRouter);
 app.use('/table', express.json({limit: '50mb'}), getAuthentication, tableRouter);
 app.use('/user', getAuthentication, userRouter);
 
-const basePath = path.join(fileURLToPath(import.meta.url), '../views/');
+const filename = typeof __filename !== 'undefined' ? __filename : fileURLToPath(import.meta.url);
+const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(filename);
+const basePath = path.join(dirname, '../views');
 let localePath = 'en';
 if (fs.existsSync(basePath + env.locale)) localePath = env.locale;
 const angularPath = basePath + localePath;
@@ -42,11 +44,17 @@ app.use(express.static(basePath));
 app.get('/', (req, res) => res.sendFile(angularPath + '/index.html'));
 app.use('/', error404);
 
-app.use((error: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {
-    const status = error instanceof HttpError ? error.httpStatusCode : 500;
-    const message = error instanceof HttpError ? error.message : error.toString();
-    const data = error instanceof HttpError && error.data ? error.data : undefined;
-    res.status(status).json({message, data});
+app.use((error: any, req: Request, res: Response, next: NextFunction) => {
+    try {
+        const isHttpError = error instanceof HttpError;
+        const status = isHttpError ? error.httpStatusCode : 500;
+        const message = isHttpError ? error.message : error?.toString?.() ?? String(error);
+        const data = isHttpError && error.data ? error.data : undefined;
+        res.status(status).json({message, data});
+    } catch (handlerErr: any) {
+        const message = typeof error === 'string' ? error : JSON.stringify(error, Object.getOwnPropertyNames(error));
+        res.status(500).json({message: message || 'Unknown error', data: {handlerError: String(handlerErr)}});
+    }
 });
 
 export { app };

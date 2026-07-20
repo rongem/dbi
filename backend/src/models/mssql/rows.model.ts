@@ -24,16 +24,16 @@ export const insertRows = async (data: {schemaName: string, tableName: string, r
                 rowCounter += result.rowsAffected[0];
             }
         } catch (error: any) {
-            if (error instanceof sql.RequestError) {
+            if (error && error.name === 'RequestError') {
                 errors.push({row: i, msg: error.message, rowContent: row});
             } else {
-                transaction.rollback();
+                await transaction.rollback();
                 throw new HttpError(500, error?.message ?? error.toString(), {row});
             }
         }
     }
     if (errors.length > 0) {
-        transaction.rollback();
+        await transaction.rollback();
         throw new HttpError(400, getLocale(EnvironmentController.instance.locale).importError, {errors});
     }
     if (data.commit) {
@@ -51,11 +51,11 @@ const insertRow = async (data: {columns: Column[]; row: Row; schemaName: string;
     const paramNames = columnNames.map(createParamDefinitionFromColumnName);
     const paramNamesList = paramNames.join(', ');
     const sqlCommand = `INSERT INTO [${data.schemaName}].[${data.tableName}] ([${columnNamesList}]) VALUES (${paramNamesList});`;
-    const req = await transactionRequest(data.transaction);
+    const req = await transactionRequest(data.transaction, { requestTimeout: 60000 });
     for (let col of columnNames) {
         const key = Object.keys(data.row).find(k => k.toLocaleLowerCase() === col.toLocaleLowerCase())!;
         let value: any = data.row[key];
         req.input(createParamNameFromColumnName(col), value);
     }
-    return req.query(sqlCommand);
+    return await req.query(sqlCommand);
 };
