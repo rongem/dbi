@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { HttpError } from '../models/rest-api/httpError.model.js';
-import { executeTableImport } from '../services/table-import.service.js';
+import type { Row } from '../models/data/row.model.js';
+import { commitTableImport, previewTableImport } from '../services/table-import.service.js';
 import { getTableColumns } from '../services/table.service.js';
 import { schemaDescriptor, tableDescriptor } from '../utils/params.descriptors.js';
 
@@ -16,23 +17,27 @@ export const retrieveAndSendTableColumns = async (req: Request, res: Response, n
     }
 };
 
-export const saveTableRows = async (req: Request, res: Response, next: NextFunction) => {
-    return handleImportTableRows(req, res, next, true);
+export const previewTableRows = async (req: Request, res: Response, next: NextFunction) => {
+    return handleImportTableRows(req, res, next, previewTableImport);
 }
 
-export const testTableRows = async (req: Request, res: Response, next: NextFunction) => {
-    return handleImportTableRows(req, res, next, false);
+export const commitTableRows = async (req: Request, res: Response, next: NextFunction) => {
+    return handleImportTableRows(req, res, next, commitTableImport);
 }
 
-const handleImportTableRows = async (req: Request, res: Response, next: NextFunction, commit: boolean) => {
+const handleImportTableRows = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+    importTableRows: (data: {schemaName: string; tableName: string; rows: Row[]}) => Promise<number>,
+) => {
     try {
         const schemaName = req.params[schemaDescriptor] as string;
         const tableName = req.params[tableDescriptor] as string;
-        const rowsInserted = await executeTableImport({
+        const rowsInserted = await importTableRows({
             schemaName,
             tableName,
             rows: req.body.rows,
-            commit,
         });
         res.json({rowsInserted});
     } catch (error: any) {
