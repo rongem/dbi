@@ -1,7 +1,7 @@
 import { getLocale } from '../utils/locales.function.js';
-import { EnvironmentController } from './environment.controller.js';
+import type { RuntimeConfig } from '../config/runtime-config.js';
 
-export const checkRequiredVariables = (env: EnvironmentController) => {
+export const checkRequiredVariables = (env: RuntimeConfig) => {
     if (!env.dbName) {
         throw new Error(getLocale().environmentDbNameMissingError);
     }

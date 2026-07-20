@@ -1,4 +1,3 @@
-import { EnvironmentController } from "../controllers/environment.controller.js";
 import { Locales } from "../models/localization/locales.interface.js";
 
 const locales: Locales = {

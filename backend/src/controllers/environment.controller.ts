@@ -1,9 +1,9 @@
-import { authorizationTableName } from "../utils/config.templates.js";
+import { readRuntimeConfig } from '../config/runtime-config.js';
 import { checkRequiredVariables } from "./environment.function.js";
 
 export class EnvironmentController {
-    private constructor() {
-        checkRequiredVariables(this);
+    private constructor() { 
+        checkRequiredVariables(readRuntimeConfig());
     }
 
     private static _instance: EnvironmentController | null = null;
@@ -15,38 +15,38 @@ export class EnvironmentController {
     }
 
     get dbName() {
-        return process.env.DB_NAME?.trim() ?? '';
+        return readRuntimeConfig().dbName;
     }
 
     get dbUser() {
-        return process.env.DB_USER?.trim() ?? '';
+        return readRuntimeConfig().dbUser;
     }
 
     get dbPassword() {
-        return process.env.DB_PWD?.trim() ?? '';
+        return readRuntimeConfig().dbPassword;
     }
 
     get dbServer() {
-        return process.env.DB_SERVER?.trim() ?? '';
+        return readRuntimeConfig().dbServer;
     }
 
     get dbPort() {
-        return process.env.DB_PORT?.trim() ?? '1433';
+        return readRuntimeConfig().dbPort;
     } 
 
     get dbInstance() {
-        return process.env.DB_INSTANCE?.trim() ?? '';
+        return readRuntimeConfig().dbInstance;
     }
 
     get authMode() {
-        return process.env.AUTH_MODE?.trim().toLocaleLowerCase() ?? 'ntlm';
+        return readRuntimeConfig().authMode;
     }
 
     get authTableName() {
-        return process.env.AUTH_TABLENAME?.trim() ?? authorizationTableName;
+        return readRuntimeConfig().authTableName;
     }
 
     get locale() {
-        return process.env.LOCALE?.trim().toLocaleLowerCase() ?? 'en';
+        return readRuntimeConfig().locale;
     }
 }
