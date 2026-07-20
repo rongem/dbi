@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { selectTables } from '../models/mssql/tables.model.js';
 import { HttpError } from '../models/rest-api/httpError.model.js';
+import { listTables } from '../services/table.service.js';
 
 export const retrieveTables = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const tables = await selectTables();
+        const tables = await listTables();
         res.json(tables);
     } catch (error: any) {
         if (error instanceof HttpError) {

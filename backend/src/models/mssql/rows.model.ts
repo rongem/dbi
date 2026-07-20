@@ -1,16 +1,17 @@
 import * as sql from "mssql";
+import { readRuntimeConfig } from '../../config/runtime-config.js';
 import { Column } from "../data/column.model.js";
 import { Row } from "../data/row.model.js";
 import { transactionPool, transactionRequest } from "../db.js";
 import { HttpError } from "../rest-api/httpError.model.js";
 import { ImportError } from "../data/importerror.model.js";
 import { getLocale } from '../../utils/locales.function.js';
-import { EnvironmentController } from "../../controllers/environment.controller.js";
 
 const createParamNameFromColumnName = (n: string): string => n.replace(' ', '_');
 const createParamDefinitionFromColumnName = (n: string) => '@' + createParamNameFromColumnName(n);
 
 export const insertRows = async (data: {schemaName: string, tableName: string, rows: Row[], columns: Column[], commit: boolean}) => {
+    const env = readRuntimeConfig();
     const transaction = await transactionPool();
     const errors:ImportError[] = [];
     let rowCounter = 0;
@@ -19,7 +20,7 @@ export const insertRows = async (data: {schemaName: string, tableName: string, r
         try {
             const result = await insertRow({columns: data.columns, row, schemaName: data.schemaName, tableName: data.tableName, transaction});
             if (result.rowsAffected.length !== 1 || result.rowsAffected[0] !== 1) {
-                errors.push({row: i, msg: getLocale(EnvironmentController.instance.locale).noRowsInsertedError, rowContent: row});
+                errors.push({row: i, msg: getLocale(env.locale).noRowsInsertedError, rowContent: row});
             } else {
                 rowCounter += result.rowsAffected[0];
             }
@@ -34,7 +35,7 @@ export const insertRows = async (data: {schemaName: string, tableName: string, r
     }
     if (errors.length > 0) {
         await transaction.rollback();
-        throw new HttpError(400, getLocale(EnvironmentController.instance.locale).importError, {errors});
+        throw new HttpError(400, getLocale(env.locale).importError, {errors});
     }
     if (data.commit) {
         await transaction.commit();

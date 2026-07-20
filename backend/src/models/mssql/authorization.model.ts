@@ -1,16 +1,16 @@
 import sql from 'mssql';
 
+import { readRuntimeConfig } from '../../config/runtime-config.js';
 import { requestPromise } from '../db.js';
 import { User } from '../data/user.model.js';
 import { HttpError } from '../rest-api/httpError.model.js';
-import { EnvironmentController } from '../../controllers/environment.controller.js';
 import { getLocale } from '../../utils/locales.function.js';
 
-const env = EnvironmentController.instance;
 const { TYPES } = sql;
 
 export const readUser = async (name: string): Promise<User> => {
     try {
+        const env = readRuntimeConfig();
         const req = await requestPromise();
         req.input('name', TYPES.NVarChar(50), name);
         const result = await req.query(`SELECT * FROM ${env.authTableName} WHERE [Username]=@name`);
@@ -35,6 +35,7 @@ const getDatabaseKey = (object: any, key: string) => Object.keys(object).find(k 
 
 const createUser = async (name: string): Promise<User> => {
     try {
+        const env = readRuntimeConfig();
         const req = await requestPromise();
         req.input('name', TYPES.NVarChar(70), name);
         const result = await req.query(`INSERT INTO ${env.authTableName} ([Username], [Allowed]) VALUES (@name, 0)`);
@@ -53,9 +54,10 @@ const createUser = async (name: string): Promise<User> => {
 };
 
 const checkIfTableContainsRequiredColumnsCaseInsensitiveAndReturnKeyNames = (recordset: sql.IRecordSet<any>) => {
+    const env = readRuntimeConfig();
     const userKey = getDatabaseKey(recordset, 'username');
     const allowedKey = getDatabaseKey(recordset, 'allowed');
     if (!userKey || !allowedKey)
-        throw new Error(getLocale(EnvironmentController.instance.locale).illegalColumnsInRequestError);
+        throw new Error(getLocale(env.locale).illegalColumnsInRequestError);
     return { userKey, allowedKey };
 }

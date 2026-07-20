@@ -1,12 +1,13 @@
 import request from 'supertest';
 
 import { app } from '../app.js';
+import { readRuntimeConfig } from '../config/runtime-config.js';
 import { getLocale } from '../utils/locales.function.js';
-import { EnvironmentController } from '../controllers/environment.controller.js';
 
 const testSchemaName = 'test';
 const testTableName = 'BoatExt_Authorizations';
 const testRowPrefix = `rowtest_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+const locale = getLocale(readRuntimeConfig().locale);
 
 it('sends object with wrong data', async () => {
     const response = await request(app).post(`/table/${testSchemaName}/${testTableName}`)
@@ -20,7 +21,7 @@ it('sends object with wrong data', async () => {
     expect(response.body.data.errors).toBeDefined();
     expect(response.body.data.errors.length).toBeDefined();
     expect(response.body.data.errors.length).toBe(1);
-    expect(response.body.data.errors[0].msg).toContain(getLocale(EnvironmentController.instance.locale).rowsIsNotAnArrayError);
+    expect(response.body.data.errors[0].msg).toContain(locale.rowsIsNotAnArrayError);
 });
 
 it('sends an empty array', async () => {
@@ -35,7 +36,7 @@ it('sends an empty array', async () => {
     expect(response.body.data.errors).toBeDefined();
     expect(response.body.data.errors.length).toBeDefined();
     expect(response.body.data.errors.length).toBe(1);
-    expect(response.body.data.errors[0].msg).toContain(getLocale(EnvironmentController.instance.locale).rowNumberExceedsBoundariesError);
+    expect(response.body.data.errors[0].msg).toContain(locale.rowNumberExceedsBoundariesError);
 });
 
 it('sends an array with unknown field', async () => {
@@ -69,7 +70,7 @@ it('sends an array with field name not in table', async () => {
     expect(response.body.data.errors).toBeDefined();
     expect(response.body.data.errors.length).toBeDefined();
     expect(response.body.data.errors.length).toBe(1);
-    expect(response.body.data.errors[0].msg).toContain(getLocale(EnvironmentController.instance.locale).columnIsNotPartOfTheTableError('xAllowed'));
+    expect(response.body.data.errors[0].msg).toContain(locale.columnIsNotPartOfTheTableError('xAllowed'));
 });
 
 it('sends an array with illegal field type', async () => {
@@ -84,7 +85,7 @@ it('sends an array with illegal field type', async () => {
     expect(response.body.data.errors).toBeDefined();
     expect(response.body.data.errors.length).toBeDefined();
     expect(response.body.data.errors.length).toBe(1);
-    expect(response.body.data.errors[0].msg).toContain(getLocale(EnvironmentController.instance.locale).typeIsNotAllowedForColumError('string', 'Allowed'));
+    expect(response.body.data.errors[0].msg).toContain(locale.typeIsNotAllowedForColumError('string', 'Allowed'));
 });
 
 it('sends an array with two identical objects', async () => {

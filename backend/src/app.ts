@@ -5,9 +5,9 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
+import { readRuntimeConfig } from './config/runtime-config.js';
 import { error404 } from './controllers/error.controller.js';
 import { HttpError } from './models/rest-api/httpError.model.js';
-import { EnvironmentController } from './controllers/environment.controller.js';
 import { getAuthentication } from './controllers/auth.controller.js';
 import tablesRouter from './routes/tables.routes.js';
 import tableRouter from './routes/table.routes.js';
@@ -16,7 +16,7 @@ import userRouter from './routes/user.routes.js';
 
 const app = express();
 
-const env = EnvironmentController.instance;
+const env = readRuntimeConfig();
 
 if (env.authMode === 'ntlm') {
     const ntlmOptions: ntlm.Options = {
