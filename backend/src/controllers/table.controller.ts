@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { HttpError } from '../models/rest-api/httpError.model.js';
-import { getTableColumns, importTableRows as importRows } from '../services/table.service.js';
+import { executeTableImport } from '../services/table-import.service.js';
+import { getTableColumns } from '../services/table.service.js';
 import { schemaDescriptor, tableDescriptor } from '../utils/params.descriptors.js';
 
 export const retrieveAndSendTableColumns = async (req: Request, res: Response, next: NextFunction) => {
@@ -27,7 +28,7 @@ const handleImportTableRows = async (req: Request, res: Response, next: NextFunc
     try {
         const schemaName = req.params[schemaDescriptor] as string;
         const tableName = req.params[tableDescriptor] as string;
-        const rowsInserted = await importRows({
+        const rowsInserted = await executeTableImport({
             schemaName,
             tableName,
             rows: req.body.rows,
