@@ -1,8 +1,8 @@
 import type { User } from '../models/data/user.model.js';
-import { readRuntimeConfig } from '../config/runtime-config.js';
 import { HttpError } from '../models/rest-api/httpError.model.js';
 import { getLocale } from '../utils/locales.function.js';
 import { defaultAuthRepository, type AuthRepository } from '../repositories/auth.repository.js';
+import { getReadConfig, getRepository, type ReadConfigDependency, type RepositoryDependency } from './service-ports.js';
 
 export type NtlmIdentity = {
     DomainName?: string;
@@ -10,18 +10,11 @@ export type NtlmIdentity = {
     UserName?: string;
 };
 
-type AuthServiceDependencies = {
-    readConfig?: typeof readRuntimeConfig;
-    repository?: AuthRepository;
-};
-
-const getDependencies = (dependencies?: AuthServiceDependencies) => ({
-    readConfig: dependencies?.readConfig ?? readRuntimeConfig,
-    repository: dependencies?.repository ?? defaultAuthRepository,
-});
+type AuthServiceDependencies = ReadConfigDependency & RepositoryDependency<AuthRepository>;
 
 export const resolveAuthenticatedUser = async (ntlm?: NtlmIdentity, dependencies?: AuthServiceDependencies): Promise<User> => {
-    const { readConfig, repository } = getDependencies(dependencies);
+    const readConfig = getReadConfig(dependencies);
+    const repository = getRepository(dependencies, defaultAuthRepository);
     const env = readConfig();
     if (env.authMode === 'none') {
         return {name: 'none', isAuthorized: true, databaseName: env.dbName};
@@ -42,6 +35,6 @@ export const resolveAuthenticatedUser = async (ntlm?: NtlmIdentity, dependencies
 };
 
 export const getUserAuthorization = async (name: string, dependencies?: AuthServiceDependencies): Promise<User> => {
-    const { repository } = getDependencies(dependencies);
+    const repository = getRepository(dependencies, defaultAuthRepository);
     return repository.readUser(name);
 };
