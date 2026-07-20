@@ -5,8 +5,8 @@
   "type": "module",
   "main": "app.ts",
   "scripts": {
-    "test:build": "tsc -p tsconfig.node-test.json",
-    "test:run": "node dist-test/test/node-runner.js dist-test/src/routes/row.test.js dist-test/src/routes/table.test.js dist-test/src/routes/tables.test.js dist-test/src/routes/user.test.js",
+    "test:build": "node -e \"require('fs').rmSync('dist-test', { recursive: true, force: true })\" && tsc -p tsconfig.node-test.json",
+    "test:run": "node dist-test/test/node-runner.js",
     "test": "npm run test:build && npm run test:run",
     "dev": "nodemon -r dotenv/config ./src/index.ts",
     "comp": "tsc --declaration",

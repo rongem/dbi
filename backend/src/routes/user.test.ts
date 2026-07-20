@@ -1,6 +1,6 @@
 import request from 'supertest';
 
-import { app } from '../../app.js';
+import { app } from '../app.js';
 
 it('get authenticated user', async () => {
     const response = await request(app)

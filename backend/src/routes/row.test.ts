@@ -1,8 +1,8 @@
 import request from 'supertest';
 
-import { app } from '../../app.js';
-import { getLocale } from '../../utils/locales.function.js';
-import { EnvironmentController } from '../../controllers/environment.controller.js';
+import { app } from '../app.js';
+import { getLocale } from '../utils/locales.function.js';
+import { EnvironmentController } from '../controllers/environment.controller.js';
 
 const testSchemaName = 'test';
 const testTableName = 'BoatExt_Authorizations';
@@ -15,7 +15,6 @@ it('sends object with wrong data', async () => {
         .expect(400)
         .expect('Content-Type', /json/);
 
-    console.log('DEBUG RESPONSE 1', response.status, JSON.stringify(response.body));
     expect(response.body).toBeDefined();
     expect(response.body.data).toBeDefined();
     expect(response.body.data.errors).toBeDefined();
@@ -31,7 +30,6 @@ it('sends an empty array', async () => {
         .expect(400)
         .expect('Content-Type', /json/);
 
-    console.log('DEBUG RESPONSE 2', response.status, JSON.stringify(response.body));
     expect(response.body).toBeDefined();
     expect(response.body.data).toBeDefined();
     expect(response.body.data.errors).toBeDefined();
@@ -50,7 +48,6 @@ it('sends an array with unknown field', async () => {
         .expect(400)
         .expect('Content-Type', /json/);
 
-    console.log('DEBUG RESPONSE 3', response.status, JSON.stringify(response.body));
     expect(response.body).toBeDefined();
     expect(response.body.data).toBeDefined();
     expect(response.body.data.errors).toBeDefined();
@@ -67,7 +64,6 @@ it('sends an array with field name not in table', async () => {
         .expect(400)
         .expect('Content-Type', /json/);
 
-    console.log('DEBUG RESPONSE 4', response.status, JSON.stringify(response.body));
     expect(response.body).toBeDefined();
     expect(response.body.data).toBeDefined();
     expect(response.body.data.errors).toBeDefined();
@@ -83,7 +79,6 @@ it('sends an array with illegal field type', async () => {
         .expect(400)
         .expect('Content-Type', /json/);
 
-    console.log('DEBUG RESPONSE 5', response.status, JSON.stringify(response.body));
     expect(response.body).toBeDefined();
     expect(response.body.data).toBeDefined();
     expect(response.body.data.errors).toBeDefined();
@@ -105,7 +100,6 @@ it('sends an array with two identical objects', async () => {
         .expect(400)
         .expect('Content-Type', /json/);
 
-    console.log('DEBUG RESPONSE 6', response.status, JSON.stringify(response.body));
     expect(response.body).toBeDefined();
     expect(response.body.message).toBeDefined();
     expect(response.body.message).toContain('Errors during import');

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import * as nodeTest from 'node:test';
 import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 
 const envPath = resolve(process.cwd(), './src/test/.env');
 if (existsSync(envPath)) {
@@ -145,13 +145,38 @@ globalThis.describe = nodeTest.describe as any;
 globalThis.beforeEach = nodeTest.beforeEach as any;
 globalThis.afterEach = nodeTest.afterEach as any;
 
-const testFiles = process.argv.slice(2);
+const collectTestFiles = (directory: string): string[] => {
+    const entries = readdirSync(directory, { withFileTypes: true });
+    const files: string[] = [];
+
+    for (const entry of entries) {
+        const fullPath = resolve(directory, entry.name);
+        if (entry.isDirectory()) {
+            files.push(...collectTestFiles(fullPath));
+            continue;
+        }
+        if (entry.isFile() && entry.name.endsWith('.test.js')) {
+            files.push(fullPath);
+        }
+    }
+
+    return files.sort();
+};
+
+const cliTestFiles = process.argv.slice(2).map(file => resolve(process.cwd(), file));
+const discoveredTestRoot = resolve(process.cwd(), 'dist-test/src');
+const testFiles = cliTestFiles.length > 0
+    ? cliTestFiles
+    : existsSync(discoveredTestRoot) && statSync(discoveredTestRoot).isDirectory()
+        ? collectTestFiles(discoveredTestRoot)
+        : [];
+
 if (testFiles.length === 0) {
-    throw new Error('No test files provided to node-runner.ts');
+    throw new Error('No test files found for node-runner.ts');
 }
 
 for (const testFile of testFiles) {
-    const fileUrl = pathToFileURL(resolve(process.cwd(), testFile)).href;
+    const fileUrl = pathToFileURL(testFile).href;
     await import(fileUrl);
 }
 
