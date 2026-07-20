@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import type { Row } from '../models/data/row.model.js';
+import type { TableImportRequestDto } from '../models/dto/table-import.dto.js';
 import { commitTableImport, previewTableImport } from '../services/table-import.service.js';
 import { getTableColumns } from '../services/table.service.js';
 import { schemaDescriptor, tableDescriptor } from '../utils/params.descriptors.js';
@@ -20,15 +21,15 @@ export const commitTableRows = async (req: Request, res: Response) => {
 const handleImportTableRows = async (
     req: Request,
     res: Response,
-    importTableRows: (data: {schemaName: string; tableName: string; rows: Row[]}) => Promise<number>,
+    importTableRows: (data: TableImportRequestDto) => Promise<{rowsInserted: number}>,
 ) => {
     const schemaName = req.params[schemaDescriptor] as string;
     const tableName = req.params[tableDescriptor] as string;
-    const rowsInserted = await importTableRows({
+    const result = await importTableRows({
         schemaName,
         tableName,
         rows: req.body.rows,
     });
-    res.json({rowsInserted});
+    res.json(result);
 }
 

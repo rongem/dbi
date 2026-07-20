@@ -14,21 +14,24 @@ const tableColumn = {
 } as const;
 
 it('previews import without committing', async () => {
-    const calls: Array<{schemaName: string; tableName: string; rows: unknown[]; commit: boolean; columns: unknown[]}> = [];
+    const calls: Array<{schemaName: string; tableName: string; rows: unknown[]; columns: unknown[]; commit: boolean}> = [];
 
     const result = await previewTableImport({
         schemaName: 'dbo',
         tableName: 'Example',
         rows: [{name: 'a'}],
     }, {
-        getColumns: async () => [tableColumn as any],
-        insertRowsFn: async (data) => {
-            calls.push(data as any);
-            return 0;
+        repository: {
+            getTableColumns: async () => [tableColumn as any],
+            insertTableRows: async (data) => {
+                calls.push(data as any);
+                return 0;
+            },
+            listTables: async () => [],
         },
     });
 
-    expect(result).toBe(0);
+    expect(result.rowsInserted).toBe(0);
     expect(calls[0].commit).toBe(false);
 });
 
@@ -40,10 +43,13 @@ it('commits import when requested', async () => {
         tableName: 'Example',
         rows: [{name: 'a'}],
     }, {
-        getColumns: async () => [tableColumn as any],
-        insertRowsFn: async (data) => {
-            commitValue = data.commit;
-            return 1;
+        repository: {
+            getTableColumns: async () => [tableColumn as any],
+            insertTableRows: async (data) => {
+                commitValue = data.commit;
+                return 1;
+            },
+            listTables: async () => [],
         },
     });
 

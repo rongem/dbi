@@ -14,8 +14,10 @@ it('resolves anonymous auth when auth mode is none', async () => {
             authTableName: 'auth',
             locale: 'en',
         }),
-        readUserFn: async () => {
-            throw new Error('should not be called');
+        repository: {
+            readUser: async () => {
+                throw new Error('should not be called');
+            },
         },
     });
 
@@ -36,8 +38,10 @@ it('maps illegal authentication to unauthorized user', async () => {
             authTableName: 'auth',
             locale: 'en',
         }),
-        readUserFn: async () => {
-            throw new Error('Invalid authentication.');
+        repository: {
+            readUser: async () => {
+                throw new Error('Invalid authentication.');
+            },
         },
     });
 
@@ -46,7 +50,9 @@ it('maps illegal authentication to unauthorized user', async () => {
 
 it('returns the requested authorization user', async () => {
     const user = await getUserAuthorization('domain\\michael', {
-        readUserFn: async (name: string) => ({name, isAuthorized: true, databaseName: 'db'}),
+        repository: {
+            readUser: async (name: string) => ({name, isAuthorized: true, databaseName: 'db'}),
+        },
     });
 
     expect(user.name).toBe('domain\\michael');

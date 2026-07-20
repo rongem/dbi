@@ -1,11 +1,16 @@
 import type { Column } from '../models/data/column.model.js';
-import { selectColumns } from '../models/mssql/columns.model.js';
-import { selectTables } from '../models/mssql/tables.model.js';
+import { defaultTableRepository, type TableRepository } from '../repositories/table.repository.js';
 
-export const listTables = async () => {
-    return selectTables();
+type TableServiceDependencies = {
+    repository?: TableRepository;
 };
 
-export const getTableColumns = async (schemaName: string, tableName: string): Promise<Column[]> => {
-    return selectColumns(schemaName, tableName);
+const getRepository = (dependencies?: TableServiceDependencies) => dependencies?.repository ?? defaultTableRepository;
+
+export const listTables = async (dependencies?: TableServiceDependencies) => {
+    return getRepository(dependencies).listTables();
+};
+
+export const getTableColumns = async (schemaName: string, tableName: string, dependencies?: TableServiceDependencies): Promise<Column[]> => {
+    return getRepository(dependencies).getTableColumns(schemaName, tableName);
 };

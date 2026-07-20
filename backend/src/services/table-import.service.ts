@@ -1,33 +1,28 @@
+import type { Column } from '../models/data/column.model.js';
+import type { TableImportRequestDto, TableImportResultDto } from '../models/dto/table-import.dto.js';
 import type { Row } from '../models/data/row.model.js';
-import { insertRows } from '../models/mssql/rows.model.js';
 import { getTableColumns } from './table.service.js';
-
-type TableImportRequest = {
-    schemaName: string;
-    tableName: string;
-    rows: Row[];
-};
+import { defaultTableRepository, type TableRepository } from '../repositories/table.repository.js';
 
 type TableImportDependencies = {
-    getColumns?: typeof getTableColumns;
-    insertRowsFn?: typeof insertRows;
+    repository?: TableRepository;
 };
 
 const getDependencies = (dependencies?: TableImportDependencies) => ({
-    getColumns: dependencies?.getColumns ?? getTableColumns,
-    insertRowsFn: dependencies?.insertRowsFn ?? insertRows,
+    repository: dependencies?.repository ?? defaultTableRepository,
 });
 
-const executeTableImport = async (data: TableImportRequest, commit: boolean, dependencies?: TableImportDependencies) => {
-    const { getColumns, insertRowsFn } = getDependencies(dependencies);
-    const columns = await getColumns(data.schemaName, data.tableName);
-    return insertRowsFn({...data, columns, commit});
+const executeTableImport = async (data: TableImportRequestDto, commit: boolean, dependencies?: TableImportDependencies): Promise<TableImportResultDto> => {
+    const { repository } = getDependencies(dependencies);
+    const columns = await repository.getTableColumns(data.schemaName, data.tableName);
+    const rowsInserted = await repository.insertTableRows({...data, columns, commit});
+    return {rowsInserted};
 };
 
-export const previewTableImport = async (data: TableImportRequest, dependencies?: TableImportDependencies) => {
+export const previewTableImport = async (data: TableImportRequestDto, dependencies?: TableImportDependencies): Promise<TableImportResultDto> => {
     return executeTableImport(data, false, dependencies);
 };
 
-export const commitTableImport = async (data: TableImportRequest, dependencies?: TableImportDependencies) => {
+export const commitTableImport = async (data: TableImportRequestDto, dependencies?: TableImportDependencies): Promise<TableImportResultDto> => {
     return executeTableImport(data, true, dependencies);
 };
