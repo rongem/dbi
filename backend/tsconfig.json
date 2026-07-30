@@ -75,6 +75,6 @@
     "custom_types/**/*"
   ],
   "exclude": [
-    "src/test", "**/__test__"
+    "src/test", "**/__test__", "src/**/*.test.ts", "src/**/*.spec.ts"
   ]
 }

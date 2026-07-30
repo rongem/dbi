@@ -31,7 +31,7 @@
     "@types/node": "^26.1.1",
     "@types/supertest": "^7.2.1",
     "@types/tsqlstring": "^1.0.2",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   },
   "dependencies": {
     "body-parser": "^2.2.0",
