@@ -8,6 +8,7 @@ export interface LocaleMessages {
     missingAuthenticationError: string;
     illegalAuthenticationError: string;
     unknownUrlError: string;
+    internalServerError: string;
     illegalColumnsInRequestError: string;
     noRowsInsertedError: string;
     importError: string;
@@ -25,6 +26,7 @@ export interface LocaleMessages {
     tableNotAStringError: string;
     tableContainsIllegalCharactersError: string;
     tableNotFoundError: string;
+    protectedTableAccessError: (name: string) => string;
     rowsIsNotAnArrayError: string;
     rowNumberExceedsBoundariesError: string;
     requiredColumnMissingError: (name: string) => string;

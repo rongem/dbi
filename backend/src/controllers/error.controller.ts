@@ -25,7 +25,20 @@ const env = readRuntimeConfig();
 export const notFoundError = new HttpError(404, getLocale(env.locale).unknownUrlError);
 
 export const normalizeError = (error: unknown): ErrorResponse => {
+    const locale = getLocale(env.locale);
+
     if (error instanceof HttpError) {
+        if (error.httpStatusCode >= 500) {
+            return {
+                status: 500,
+                body: {
+                    success: false,
+                    error: {
+                        message: locale.internalServerError,
+                    },
+                },
+            };
+        }
         return {
             status: error.httpStatusCode,
             body: {
@@ -44,7 +57,7 @@ export const normalizeError = (error: unknown): ErrorResponse => {
             body: {
                 success: false,
                 error: {
-                    message: error.message,
+                    message: locale.internalServerError,
                 },
             },
         };
@@ -62,6 +75,19 @@ export const normalizeError = (error: unknown): ErrorResponse => {
 };
 
 export const sendErrorResponse = (res: Response, error: unknown) => {
+    const statusCode = error instanceof HttpError ? error.httpStatusCode : 500;
+    const logPayload = {
+        statusCode,
+        error: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+    };
+
+    if (statusCode >= 500) {
+        logger.error('request_failed', logPayload);
+    } else {
+        logger.warn('request_failed', logPayload);
+    }
+
     const normalized = normalizeError(error);
     return res.status(normalized.status).json(normalized.body);
 };

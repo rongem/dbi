@@ -57,3 +57,26 @@ it('commits import when requested', async () => {
 
     expect(commitValue).toBe(true);
 });
+
+it('rejects import into configured authorization table', async () => {
+    try {
+        await previewTableImport({
+            schemaName: 'dbo',
+            tableName: '_Authorizations',
+            rows: [{name: 'a'}],
+        }, {
+            readConfig: () => ({
+                authTableName: '_Authorizations',
+                locale: 'en',
+            } as any),
+            repository: {
+                getTableColumns: async () => [tableColumn as any],
+                insertTableRows: async () => 1,
+                listTables: async () => [],
+            },
+        });
+        expect(true).toBe(false);
+    } catch (error: any) {
+        expect(error.httpStatusCode).toBe(403);
+    }
+});
