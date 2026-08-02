@@ -30,10 +30,10 @@ if (env.authMode === 'ntlm') {
 }
 
 // express.json({limit: '50mb'}) -> after route to enhance upload size
-app.use('/', healthRouter);
-app.use('/tables', getAuthentication, tablesRouter);
-app.use('/table', express.json({limit: '50mb'}), getAuthentication, tableRouter);
-app.use('/user', getAuthentication, userRouter);
+app.use('/api/v1', healthRouter);
+app.use('/api/v1/tables', getAuthentication, tablesRouter);
+app.use('/api/v1/table', express.json({limit: '50mb'}), getAuthentication, tableRouter);
+app.use('/api/v1/user', getAuthentication, userRouter);
 
 const filename = typeof __filename !== 'undefined' ? __filename : fileURLToPath(import.meta.url);
 const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(filename);

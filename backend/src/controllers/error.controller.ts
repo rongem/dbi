@@ -8,8 +8,11 @@ import { logger } from '../utils/logger.js';
 export type ErrorResponse = {
     status: number;
     body: {
-        message: string;
-        data?: unknown;
+        success: false;
+        error: {
+            message: string;
+            details?: unknown;
+        };
     };
 };
 
@@ -26,8 +29,11 @@ export const normalizeError = (error: unknown): ErrorResponse => {
         return {
             status: error.httpStatusCode,
             body: {
-                message: error.message,
-                data: error.data,
+                success: false,
+                error: {
+                    message: error.message,
+                    details: error.data,
+                },
             },
         };
     }
@@ -36,7 +42,10 @@ export const normalizeError = (error: unknown): ErrorResponse => {
         return {
             status: 500,
             body: {
-                message: error.message,
+                success: false,
+                error: {
+                    message: error.message,
+                },
             },
         };
     }
@@ -44,7 +53,10 @@ export const normalizeError = (error: unknown): ErrorResponse => {
     return {
         status: 500,
         body: {
-            message: typeof error === 'string' ? error : String(error),
+            success: false,
+            error: {
+                message: typeof error === 'string' ? error : String(error),
+            },
         },
     };
 };

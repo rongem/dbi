@@ -12,5 +12,8 @@ export const getAuthentication = async (req: Request, res: Response, next: NextF
 
 export const getAuthorization = async (req: Request, res: Response) => {
     const user = await getUserAuthorization(req.userName ?? 'test');
-    res.json(user);
+    res.json({
+        success: true,
+        data: user,
+    });
 };

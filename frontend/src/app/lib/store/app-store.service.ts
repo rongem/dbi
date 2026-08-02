@@ -2,13 +2,14 @@ import { Injectable, computed, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError, map, of } from 'rxjs';
 
-import { DbiService } from '../services/dbi.service';
+import { ApiResponse } from '../models/api-response.model';
 import { CellContent } from '../models/cellcontent.model';
 import { CellInformation } from '../models/cellinformation.model';
 import { Column } from '../models/rest-backend/column.model';
 import { ErrorList } from '../models/rest-backend/errorlist.model';
 import { RowContainer } from '../models/rest-backend/row-container.model';
 import { Table } from '../models/rest-backend/table.model';
+import { DbiService } from '../services/dbi.service';
 
 export interface AppStoreState {
   tablesLoaded: boolean;
@@ -72,7 +73,7 @@ export class AppStore {
     });
 
     this.dbi.retrieveUser().subscribe({
-      next: (user) => this.setUser(user),
+      next: (response) => this.setUser(this.extractData(response, 'user')), 
       error: (error) => this.handleError(error),
     });
   }
@@ -102,7 +103,8 @@ export class AppStore {
     this.updateState({ working: true });
 
     return this.dbi.loadTables().pipe(
-      map((tables) => {
+      map((response) => {
+        const tables = this.extractData(response, 'tables');
         this.updateState({
           tables: [...tables],
           selectedTable: undefined,
@@ -134,7 +136,8 @@ export class AppStore {
     });
 
     this.dbi.loadColumns(table).subscribe({
-      next: (columns) => {
+      next: (response) => {
+        const columns = this.extractData(response, 'columns');
         this.updateState({
           columnDefinitions: [...columns],
           cellContents: [],
@@ -183,13 +186,16 @@ export class AppStore {
     this.updateState({ working: true, rowErrors: [] });
 
     this.dbi.importRows(content).subscribe({
-      next: (result) => this.updateState({
-        cellContents: [],
-        rowErrors: [],
-        working: false,
-        canImport: false,
-        importedRows: result.rowsInserted,
-      }),
+      next: (response) => {
+        const result = this.extractData(response, 'import result');
+        this.updateState({
+          cellContents: [],
+          rowErrors: [],
+          working: false,
+          canImport: false,
+          importedRows: result.rowsInserted,
+        });
+      },
       error: (error) => this.handleImportError(error),
     });
   }
@@ -224,7 +230,7 @@ export class AppStore {
   }
 
   private handleImportError(error: HttpErrorResponse): void {
-    const errors = (error.error?.data?.errors as ErrorList[] | undefined) ?? [];
+    const errors = this.extractErrors(error);
     if (errors.length === 0) {
       console.log(error);
     }
@@ -233,6 +239,24 @@ export class AppStore {
 
   private handleError(error: HttpErrorResponse): void {
     console.error(error);
-    this.updateState({ error: error.message ?? error.toString(), working: false });
+    const message = this.extractErrorMessage(error);
+    this.updateState({ error: message, working: false });
+  }
+
+  private extractData<T>(response: ApiResponse<T> | T, fallbackName: string): T {
+    if (response && typeof response === 'object' && 'success' in response && response.success === true) {
+      return response.data as T;
+    }
+    return response as T;
+  }
+
+  private extractErrors(error: HttpErrorResponse): ErrorList[] {
+    const details = (error.error as { error?: { details?: { errors?: ErrorList[] } } } | undefined)?.error?.details;
+    return (details?.errors as ErrorList[] | undefined) ?? [];
+  }
+
+  private extractErrorMessage(error: HttpErrorResponse): string {
+    const payload = error.error as { error?: { message?: string } } | undefined;
+    return payload?.error?.message ?? error.message ?? error.toString();
   }
 }

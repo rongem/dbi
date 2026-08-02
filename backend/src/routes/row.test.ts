@@ -10,37 +10,41 @@ const testRowPrefix = `rowtest_${Date.now()}_${Math.random().toString(36).slice(
 const locale = getLocale(readRuntimeConfig().locale);
 
 it('sends object with wrong data', async () => {
-    const response = await request(app).post(`/table/${testSchemaName}/${testTableName}`)
+    const response = await request(app).post(`/api/v1/table/${testSchemaName}/${testTableName}`)
         .set('Accept', 'application/json')
         .send({})
         .expect(400)
         .expect('Content-Type', /json/);
 
     expect(response.body).toBeDefined();
-    expect(response.body.data).toBeDefined();
-    expect(response.body.data.errors).toBeDefined();
-    expect(response.body.data.errors.length).toBeDefined();
-    expect(response.body.data.errors.length).toBe(1);
-    expect(response.body.data.errors[0].msg).toContain(locale.rowsIsNotAnArrayError);
+    expect(response.body.success).toBe(false);
+    expect(response.body.error).toBeDefined();
+    expect(response.body.error.details).toBeDefined();
+    expect(response.body.error.details.errors).toBeDefined();
+    expect(response.body.error.details.errors.length).toBeDefined();
+    expect(response.body.error.details.errors.length).toBe(1);
+    expect(response.body.error.details.errors[0].msg).toContain(locale.rowsIsNotAnArrayError);
 });
 
 it('sends an empty array', async () => {
-    const response = await request(app).post(`/table/${testSchemaName}/${testTableName}`)
+    const response = await request(app).post(`/api/v1/table/${testSchemaName}/${testTableName}`)
         .set('Accept', 'application/json')
         .send({ rows: [] })
         .expect(400)
         .expect('Content-Type', /json/);
 
     expect(response.body).toBeDefined();
-    expect(response.body.data).toBeDefined();
-    expect(response.body.data.errors).toBeDefined();
-    expect(response.body.data.errors.length).toBeDefined();
-    expect(response.body.data.errors.length).toBe(1);
-    expect(response.body.data.errors[0].msg).toContain(locale.rowNumberExceedsBoundariesError);
+    expect(response.body.success).toBe(false);
+    expect(response.body.error).toBeDefined();
+    expect(response.body.error.details).toBeDefined();
+    expect(response.body.error.details.errors).toBeDefined();
+    expect(response.body.error.details.errors.length).toBeDefined();
+    expect(response.body.error.details.errors.length).toBe(1);
+    expect(response.body.error.details.errors[0].msg).toContain(locale.rowNumberExceedsBoundariesError);
 });
 
 it('sends an array with unknown field', async () => {
-    const response = await request(app).post(`/table/${testSchemaName}/${testTableName}`)
+    const response = await request(app).post(`/api/v1/table/${testSchemaName}/${testTableName}`)
         .set('Accept', 'application/json')
         .send({
             rows: [{ Username: 'test', Allowed: false }],
@@ -50,47 +54,53 @@ it('sends an array with unknown field', async () => {
         .expect('Content-Type', /json/);
 
     expect(response.body).toBeDefined();
-    expect(response.body.data).toBeDefined();
-    expect(response.body.data.errors).toBeDefined();
-    expect(response.body.data.errors.length).toBeDefined();
-    expect(response.body.data.errors.length).toBe(1);
-    expect(response.body.data.errors[0].msg).toContain('Unknown field');
-    expect(response.body.data.errors[0].fields[0].path).toContain('test');
+    expect(response.body.success).toBe(false);
+    expect(response.body.error).toBeDefined();
+    expect(response.body.error.details).toBeDefined();
+    expect(response.body.error.details.errors).toBeDefined();
+    expect(response.body.error.details.errors.length).toBeDefined();
+    expect(response.body.error.details.errors.length).toBe(1);
+    expect(response.body.error.details.errors[0].msg).toContain('Unknown field');
+    expect(response.body.error.details.errors[0].fields[0].path).toContain('test');
 });
 
 it('sends an array with field name not in table', async () => {
-    const response = await request(app).post(`/table/${testSchemaName}/${testTableName}`)
+    const response = await request(app).post(`/api/v1/table/${testSchemaName}/${testTableName}`)
         .set('Accept', 'application/json')
         .send({ rows: [{ username: 'test', xAllowed: false }] })
         .expect(400)
         .expect('Content-Type', /json/);
 
     expect(response.body).toBeDefined();
-    expect(response.body.data).toBeDefined();
-    expect(response.body.data.errors).toBeDefined();
-    expect(response.body.data.errors.length).toBeDefined();
-    expect(response.body.data.errors.length).toBe(1);
-    expect(response.body.data.errors[0].msg).toContain(locale.columnIsNotPartOfTheTableError('xAllowed'));
+    expect(response.body.success).toBe(false);
+    expect(response.body.error).toBeDefined();
+    expect(response.body.error.details).toBeDefined();
+    expect(response.body.error.details.errors).toBeDefined();
+    expect(response.body.error.details.errors.length).toBeDefined();
+    expect(response.body.error.details.errors.length).toBe(1);
+    expect(response.body.error.details.errors[0].msg).toContain(locale.columnIsNotPartOfTheTableError('xAllowed'));
 });
 
 it('sends an array with illegal field type', async () => {
-    const response = await request(app).post(`/table/${testSchemaName}/${testTableName}`)
+    const response = await request(app).post(`/api/v1/table/${testSchemaName}/${testTableName}`)
         .set('Accept', 'application/json')
         .send({ rows: [{ username: 'test', Allowed: 'string' }] })
         .expect(400)
         .expect('Content-Type', /json/);
 
     expect(response.body).toBeDefined();
-    expect(response.body.data).toBeDefined();
-    expect(response.body.data.errors).toBeDefined();
-    expect(response.body.data.errors.length).toBeDefined();
-    expect(response.body.data.errors.length).toBe(1);
-    expect(response.body.data.errors[0].msg).toContain(locale.typeIsNotAllowedForColumError('string', 'Allowed'));
+    expect(response.body.success).toBe(false);
+    expect(response.body.error).toBeDefined();
+    expect(response.body.error.details).toBeDefined();
+    expect(response.body.error.details.errors).toBeDefined();
+    expect(response.body.error.details.errors.length).toBeDefined();
+    expect(response.body.error.details.errors.length).toBe(1);
+    expect(response.body.error.details.errors[0].msg).toContain(locale.typeIsNotAllowedForColumError('string', 'Allowed'));
 });
 
 it('sends an array with two identical objects', async () => {
     const duplicateName = `${testRowPrefix}_duplicate`;
-    const response = await request(app).post(`/table/${testSchemaName}/${testTableName}`)
+    const response = await request(app).post(`/api/v1/table/${testSchemaName}/${testTableName}`)
         .set('Accept', 'application/json')
         .send({
             rows: [
@@ -102,21 +112,22 @@ it('sends an array with two identical objects', async () => {
         .expect('Content-Type', /json/);
 
     expect(response.body).toBeDefined();
-    expect(response.body.message).toBeDefined();
-    expect(response.body.message).toContain('Errors during import');
-    expect(response.body.data).toBeDefined();
-    expect(response.body.data.errors).toBeDefined();
-    expect(response.body.data.errors.length).toBeDefined();
-    expect(response.body.data.errors.length).toBe(1);
-    expect(response.body.data.errors[0].row).toBe(1);
-    expect(response.body.data.errors[0].msg).toContain('PRIMARY KEY');
+    expect(response.body.success).toBe(false);
+    expect(response.body.error).toBeDefined();
+    expect(response.body.error.message).toContain('Errors during import');
+    expect(response.body.error.details).toBeDefined();
+    expect(response.body.error.details.errors).toBeDefined();
+    expect(response.body.error.details.errors.length).toBeDefined();
+    expect(response.body.error.details.errors.length).toBe(1);
+    expect(response.body.error.details.errors[0].row).toBe(1);
+    expect(response.body.error.details.errors[0].msg).toContain('PRIMARY KEY');
 });
 
 it('sends an array with two valid objects', async () => {
     const firstName = `${testRowPrefix}_valid1`;
     const secondName = `${testRowPrefix}_valid2`;
     await request(app)
-        .post(`/table/${testSchemaName}/${testTableName}`)
+        .post(`/api/v1/table/${testSchemaName}/${testTableName}`)
         .set('Accept', 'application/json')
         .send({
             rows: [
@@ -135,7 +146,7 @@ it('sends an array with a lot of valid objects', async () => {
     }
 
     await request(app)
-        .post('/table/test/BoatExt_Authorizations')
+        .post('/api/v1/table/test/BoatExt_Authorizations')
         .set('Accept', 'application/json')
         .send({ rows })
         .expect(200);

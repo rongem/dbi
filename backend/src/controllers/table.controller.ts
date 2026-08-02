@@ -7,7 +7,10 @@ import { schemaDescriptor, tableDescriptor } from '../utils/params.descriptors.j
 
 export const retrieveAndSendTableColumns = async (req: Request, res: Response) => {
     const columns = await getTableColumns(req.params[schemaDescriptor] as string, req.params[tableDescriptor] as string);
-    res.json(columns);
+    res.json({
+        success: true,
+        data: columns,
+    });
 };
 
 export const previewTableRows = async (req: Request, res: Response) => {
@@ -30,6 +33,9 @@ const handleImportTableRows = async (
         tableName,
         rows: req.body.rows,
     });
-    res.json(result);
+    res.json({
+        success: true,
+        data: result,
+    });
 }
 
