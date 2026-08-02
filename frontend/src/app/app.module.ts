@@ -10,6 +10,7 @@ import { TableComponent } from './table/table.component';
 import { RouterModule } from '@angular/router';
 import { ErrorBadgeComponent } from './error-badge/error-badge.component';
 import { ApiInterceptor } from './lib/interceptors/api.interceptor';
+import { ToastHostComponent } from './lib/components/toast-host/toast-host.component';
 
 @NgModule({
     declarations: [AppComponent],
@@ -21,7 +22,8 @@ import { ApiInterceptor } from './lib/interceptors/api.interceptor';
         ListSchemasComponent,
         ListTablesComponent,
         TableComponent,
-        ErrorBadgeComponent
+        ErrorBadgeComponent,
+        ToastHostComponent
     ],
     providers: [
         Title,

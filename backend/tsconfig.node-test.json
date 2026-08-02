@@ -4,7 +4,8 @@
     "rootDir": "./",
     "outDir": "./dist-test",
     "sourceMap": false,
-    "declaration": false
+    "declaration": false,
+    "types": ["node", "node-test"]
   },
   "exclude": [
     "node_modules"

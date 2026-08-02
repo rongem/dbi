@@ -2,17 +2,27 @@ import { Injectable } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 
+import { ToastService } from '../services/toast.service';
 import { AppStore } from '../store/app-store.service';
 
 @Injectable()
 export class ApiInterceptor implements HttpInterceptor {
-  constructor(private readonly store: AppStore) {}
+  constructor(
+    private readonly store: AppStore,
+    private readonly toastService: ToastService,
+  ) {}
 
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
         const message = this.extractErrorMessage(error);
-        this.store.setError(message);
+        if (error.status === 401 || error.status === 403) {
+          this.store.setError(message);
+          this.toastService.show(message, 'warning', 6000);
+        } else {
+          this.store.setError(message);
+          this.toastService.show(message, 'error', 6000);
+        }
         return throwError(() => error);
       }),
     );
