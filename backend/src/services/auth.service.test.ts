@@ -1,3 +1,5 @@
+/// <reference path="../../custom_types/node-test/index.d.ts" />
+
 import { resolveAuthenticatedUser, getUserAuthorization } from './auth.service.js';
 
 it('resolves anonymous auth when auth mode is none', async () => {

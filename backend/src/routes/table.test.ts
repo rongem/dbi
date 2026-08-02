@@ -1,3 +1,5 @@
+/// <reference path="../../custom_types/node-test/index.d.ts" />
+
 import request from 'supertest';
 
 import { app } from '../app.js';

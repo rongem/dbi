@@ -1,3 +1,5 @@
+/// <reference path="../../custom_types/node-test/index.d.ts" />
+
 import { commitTableImport, previewTableImport } from './table-import.service.js';
 
 const tableColumn = {
