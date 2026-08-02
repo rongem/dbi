@@ -13,6 +13,8 @@ import healthRouter from './routes/health.routes.js';
 import tablesRouter from './routes/tables.routes.js';
 import tableRouter from './routes/table.routes.js';
 import userRouter from './routes/user.routes.js';
+import { enforceAllowedOriginsForUnsafeMethods, enforceCsrfTokenForUnsafeMethods } from './middleware/request-security.middleware.js';
+import { enforceWriteRateLimit } from './middleware/write-rate-limit.middleware.js';
 
 
 const app = express();
@@ -31,8 +33,8 @@ if (env.authMode === 'ntlm') {
 
 // express.json({limit: '50mb'}) -> after route to enhance upload size
 app.use('/api/v1', healthRouter);
-app.use('/api/v1/tables', getAuthentication, tablesRouter);
-app.use('/api/v1/table', express.json({limit: '50mb'}), getAuthentication, tableRouter);
+app.use('/api/v1/tables', getAuthentication, enforceAllowedOriginsForUnsafeMethods(), enforceCsrfTokenForUnsafeMethods(), tablesRouter);
+app.use('/api/v1/table', express.json({limit: '50mb'}), getAuthentication, enforceAllowedOriginsForUnsafeMethods(), enforceCsrfTokenForUnsafeMethods(), enforceWriteRateLimit(), tableRouter);
 app.use('/api/v1/user', getAuthentication, userRouter);
 
 const filename = typeof __filename !== 'undefined' ? __filename : fileURLToPath(import.meta.url);

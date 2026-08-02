@@ -14,6 +14,15 @@ The database importer will use an sql authentication to connect to the database,
 - AUTH_MODE (use ntlm or leave blank)
 - AUTH_TABLENAME (defaults to _Authorizations, table with two columns, username and allowed, that is used for authorizations of NTLM users to use the tool)
 - LOCALE (defaults to en, de is also possible; sets frontend language and locale)
+- ALLOWED_ORIGINS (comma-separated list of allowed browser origins for unsafe methods, for example https://dbi.intra.local)
+- ORIGIN_PROTECTION_ENABLED (defaults to true in ntlm mode, false in none mode)
+- CSRF_PROTECTION_ENABLED (defaults to true in ntlm mode, false in none mode)
+- CSRF_SECRET (required in production when CSRF protection is enabled)
+- WRITE_RATE_LIMIT_ENABLED (defaults to true in ntlm mode, false in none mode)
+- WRITE_RATE_LIMIT_WINDOW_MS (defaults to 60000)
+- WRITE_RATE_LIMIT_MAX_REQUESTS (defaults to 60)
+
+With CSRF protection enabled, the backend returns a csrfToken in GET /api/v1/user. Frontend clients must send this token as request header x-csrf-token on POST/PUT/PATCH/DELETE calls.
 
 The node http server inside the container will listen on port 8000. It is a good idea to use a reverse proxy with SSL inside your infrastructure.
 
@@ -73,4 +82,23 @@ Note: the production and container build keep using relative API paths (`/api/v1
 - Trying to import SQL statements as cell data may result in errors due to protection settings.
 - Column expecting binary data won't allow an import if they are not nullable.
 - Each import is a transaction, so it will work all at once or won't work at all.
+
+## Intranet hardening checklist
+P1 (must-have)
+- Enforce AUTH_MODE safety: disallow AUTH_MODE=none in production.
+- Use origin allow list for unsafe methods (POST, PUT, PATCH, DELETE).
+- Require anti-CSRF token for unsafe methods.
+- Keep backend-internal error details out of 5xx API responses.
+- Block direct access to the authorization table from import and metadata endpoints.
+
+P2 (strongly recommended)
+- Add rate limiting for write endpoints.
+- Add structured audit logging for imports (user, schema, table, row count, request id).
+- Add proxy-level security headers and strict TLS policy.
+- Restrict DB user permissions to exact operational minimum.
+
+P3 (nice-to-have)
+- Optional per-origin rollout modes (monitor-only before enforce).
+- Automated dependency and container image vulnerability scanning.
+- Signed release process and deployment policy checks.
 

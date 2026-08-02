@@ -18,10 +18,25 @@ export const validateRuntimeConfig = (config: RuntimeConfig = readRuntimeConfig(
     if (!['ntlm', 'none'].includes(config.authMode)) {
         throw new Error(getLocale().environmentAuthModeError + config.authMode);
     }
+    if (config.nodeEnv === 'production' && config.authMode === 'none') {
+        throw new Error(getLocale(config.locale).environmentAuthModeNoneInProductionError);
+    }
     if (isNaN(+config.dbPort)) {
         throw new Error(getLocale().environmentDbPortError);
     }
     if (isNaN(+config.appPort)) {
         throw new Error('Non numeric value in variable PORT.');
+    }
+    if (config.nodeEnv === 'production' && config.originProtectionEnabled && config.allowedOrigins.length === 0) {
+        throw new Error(getLocale(config.locale).environmentAllowedOriginsMissingError);
+    }
+    if (config.nodeEnv === 'production' && config.csrfProtectionEnabled && !config.csrfSecret) {
+        throw new Error(getLocale(config.locale).environmentCsrfSecretMissingError);
+    }
+    if (!Number.isInteger(config.writeRateLimitWindowMs) || config.writeRateLimitWindowMs <= 0) {
+        throw new Error(getLocale(config.locale).environmentWriteRateLimitWindowError);
+    }
+    if (!Number.isInteger(config.writeRateLimitMaxRequests) || config.writeRateLimitMaxRequests <= 0) {
+        throw new Error(getLocale(config.locale).environmentWriteRateLimitMaxRequestsError);
     }
 };
