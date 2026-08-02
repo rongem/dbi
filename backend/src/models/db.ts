@@ -34,8 +34,7 @@ export const createSqlConfig = (): config => {
 // const poolPromise = new ConnectionPool(sqlConfig);
 let poolPromise: Promise<sql.ConnectionPool> | null = null;
 
-
-let connectedPool: sql.ConnectionPool;
+let connectedPool: sql.ConnectionPool | null = null;
 
 export const pool = async () => {
     if (connectedPool) return connectedPool;
@@ -55,6 +54,22 @@ export const pool = async () => {
         });
     return connectedPool = p;
 }
+
+export const closePool = async () => {
+    try {
+        if (connectedPool) {
+            await connectedPool.close();
+            return;
+        }
+        if (poolPromise) {
+            const pendingPool = await poolPromise;
+            await pendingPool.close();
+        }
+    } finally {
+        connectedPool = null;
+        poolPromise = null;
+    }
+};
 
 export const requestPromise = async () => {
     const connection = await pool();

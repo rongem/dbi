@@ -22,6 +22,7 @@ export interface AppStoreState {
   columnMapping: number[];
   userName?: string;
   databaseName?: string;
+  csrfToken?: string;
   error?: string;
   rowErrors: ErrorList[];
   canImport: boolean;
@@ -49,6 +50,7 @@ export class AppStore {
   readonly databaseName = computed(() => this.state().databaseName);
   readonly error = computed(() => this.state().error);
   readonly notAuthorized = computed(() => this.state().notAuthorized);
+  readonly csrfToken = computed(() => this.state().csrfToken);
   readonly tables = computed(() => this.state().tables);
   readonly tablesLoaded = computed(() => this.state().tablesLoaded);
   readonly schemas = computed(() => [...new Set(this.tables().map((table) => table.schema))].sort());
@@ -67,6 +69,7 @@ export class AppStore {
     this.updateState({
       userName: undefined,
       databaseName: undefined,
+      csrfToken: undefined,
       notAuthorized: false,
       working: true,
       error: undefined,
@@ -78,11 +81,12 @@ export class AppStore {
     });
   }
 
-  setUser(user: { name: string; databaseName: string; isAuthorized: boolean }): void {
+  setUser(user: { name: string; databaseName: string; isAuthorized: boolean; csrfToken?: string }): void {
     this.updateState({
       userName: user.name,
       databaseName: user.databaseName,
       notAuthorized: !user.isAuthorized,
+      csrfToken: user.csrfToken,
       working: false,
     });
   }

@@ -22,7 +22,11 @@ The database importer will use an sql authentication to connect to the database,
 - WRITE_RATE_LIMIT_WINDOW_MS (defaults to 60000)
 - WRITE_RATE_LIMIT_MAX_REQUESTS (defaults to 60)
 
-With CSRF protection enabled, the backend returns a csrfToken in GET /api/v1/user. Frontend clients must send this token as request header x-csrf-token on POST/PUT/PATCH/DELETE calls.
+With CSRF protection enabled, the backend returns a csrfToken in GET /api/v1/user. The bundled frontend sends this token as request header x-csrf-token on POST/PUT/PATCH/DELETE calls.
+
+All API requests now use an x-request-id correlation id. The bundled frontend sends x-request-id with each API call. If another client sends x-request-id, it is reused. Otherwise, the backend generates one and returns it in the response header.
+
+Structured audit logs are emitted for table import operations with requestId, userName, operation (preview/commit), schemaName, tableName, rowCount, rowsInserted and resultStatus (success, failed_validation, failed_internal).
 
 The node http server inside the container will listen on port 8000. It is a good idea to use a reverse proxy with SSL inside your infrastructure.
 
@@ -71,6 +75,7 @@ This avoids rebuilding container images for every UI change.
 
 Note: `dev:local` only overrides `AUTH_MODE=none` for local browser testing. Production and container runs still use your configured `AUTH_MODE` from `.env`.
 Note: the production and container build keep using relative API paths (`/api/v1`), so inside container/frontend-hosted mode requests still go to the same backend process as before.
+Note: when running `npm run dev:local`, pressing Ctrl+C stops the backend process gracefully. Depending on your local watch runtime, you may still see a watcher status line afterwards; that does not indicate a backend error.
 
 ## Restrictions
 - At the moment, the maximum row count for an import is 10,000 rows. If you have more data, just import it in chunks.

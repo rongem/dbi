@@ -13,7 +13,25 @@ export class ApiInterceptor implements HttpInterceptor {
   ) {}
 
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    return next.handle(req).pipe(
+    const requestId = typeof globalThis.crypto?.randomUUID === 'function'
+      ? globalThis.crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    const csrfToken = this.store.csrfToken();
+    const method = req.method.toUpperCase();
+    const isUnsafeMethod = method === 'POST' || method === 'PUT' || method === 'PATCH' || method === 'DELETE';
+
+    const headers: Record<string, string> = {
+      'x-request-id': requestId,
+    };
+    if (isUnsafeMethod && csrfToken) {
+      headers['x-csrf-token'] = csrfToken;
+    }
+
+    const updatedRequest = req.clone({
+      setHeaders: headers,
+    });
+
+    return next.handle(updatedRequest).pipe(
       catchError((error: HttpErrorResponse) => {
         const message = this.extractErrorMessage(error);
         if (error.status === 401 || error.status === 403) {

@@ -5,6 +5,7 @@ export {};
 declare global {
     namespace Express {
         interface Request {
+            requestId: string;
             userName: string;
             userAuthorized: boolean;
             sqlColumnObject: ColumnObject;

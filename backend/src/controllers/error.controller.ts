@@ -74,10 +74,14 @@ export const normalizeError = (error: unknown): ErrorResponse => {
     };
 };
 
-export const sendErrorResponse = (res: Response, error: unknown) => {
+export const sendErrorResponse = (req: Request, res: Response, error: unknown) => {
     const statusCode = error instanceof HttpError ? error.httpStatusCode : 500;
     const logPayload = {
         statusCode,
+        requestId: req.requestId,
+        method: req.method,
+        path: req.originalUrl,
+        userName: req.userName,
         error: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,
     };
