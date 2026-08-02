@@ -75,7 +75,8 @@
               "buildTarget": "DbIFrontend:build:production"
             },
             "development": {
-              "buildTarget": "DbIFrontend:build:development"
+              "buildTarget": "DbIFrontend:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { getUserAuthorization, resolveAuthenticatedUser } from '../services/auth.service.js';
+import { readRuntimeConfig } from '../config/runtime-config.js';
+import { resolveAuthenticatedUser } from '../services/auth.service.js';
 
 
 export const getAuthentication = async (req: Request, res: Response, next: NextFunction) => {
@@ -11,7 +12,12 @@ export const getAuthentication = async (req: Request, res: Response, next: NextF
 };
 
 export const getAuthorization = async (req: Request, res: Response) => {
-    const user = await getUserAuthorization(req.userName ?? 'test');
+    const env = readRuntimeConfig();
+    const user = {
+        name: req.userName ?? 'unknown',
+        isAuthorized: req.userAuthorized === true,
+        databaseName: env.dbName,
+    };
     res.json({
         success: true,
         data: user,

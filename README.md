@@ -45,6 +45,24 @@ If no errors occured during dry run, the "start import" button occurs, and press
 
 Sounds complicated? Just try, it's quity simple to handle, and works with all kind of spreadsheet data on every operating system.
 
+## Fast local browser testing (without Docker rebuild)
+For day-to-day manual testing, run backend and frontend separately and proxy API calls from Angular dev server to backend.
+
+1. Configure `backend/.env` for local development (for example set `AUTH_MODE=none` to skip NTLM during local tests).
+2. Start backend:
+    - cd backend
+    - npm run dev:local
+3. Start frontend in a second terminal:
+    - cd frontend
+    - npm run start
+4. Open `http://localhost:4200`.
+
+The frontend keeps hot-reloading in the browser, while requests to `/api/*` are forwarded to `http://localhost:8000`.
+This avoids rebuilding container images for every UI change.
+
+Note: `dev:local` only overrides `AUTH_MODE=none` for local browser testing. Production and container runs still use your configured `AUTH_MODE` from `.env`.
+Note: the production and container build keep using relative API paths (`/api/v1`), so inside container/frontend-hosted mode requests still go to the same backend process as before.
+
 ## Restrictions
 - At the moment, the maximum row count for an import is 10,000 rows. If you have more data, just import it in chunks.
 - Using the clipboard instead of uploading files is on purpose. Clipboard works with every operating system and every spreadsheet application, and there is no problem with file formats or malicious file contents.

@@ -1,11 +1,14 @@
 {
   "name": "dbi-frontend",
-  "version": "0.3.139",
+  "version": "0.4.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve --proxy-config proxy.conf.json",
+    "start:noproxy": "ng serve",
+    "start:proxy": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
+    "watch:backend": "ng build --watch --configuration development --output-path ../backend/views",
     "test": "ng test",
     "startdev": "ng build --output-path ../backend/dist/views/"
   },
