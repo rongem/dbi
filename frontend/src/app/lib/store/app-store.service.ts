@@ -73,8 +73,8 @@ export class AppStore {
     });
 
     this.dbi.retrieveUser().subscribe({
-      next: (response) => this.setUser(this.extractData(response, 'user')), 
-      error: (error) => this.handleError(error),
+      next: (response) => this.setUser(this.extractData(response, 'user')),
+      error: () => undefined,
     });
   }
 
@@ -117,8 +117,8 @@ export class AppStore {
         });
         return tables;
       }),
-      catchError((error) => {
-        this.handleError(error);
+      catchError(() => {
+        this.updateState({ working: false });
         return of([]);
       }),
     );
@@ -147,7 +147,7 @@ export class AppStore {
           canImport: false,
         });
       },
-      error: (error) => this.handleError(error),
+      error: () => undefined,
     });
   }
 
@@ -237,12 +237,6 @@ export class AppStore {
     this.updateState({ working: false, rowErrors: [...errors], canImport: errors.length === 0 });
   }
 
-  private handleError(error: HttpErrorResponse): void {
-    console.error(error);
-    const message = this.extractErrorMessage(error);
-    this.updateState({ error: message, working: false });
-  }
-
   private extractData<T>(response: ApiResponse<T> | T, fallbackName: string): T {
     if (response && typeof response === 'object' && 'success' in response && response.success === true) {
       return response.data as T;
@@ -255,8 +249,4 @@ export class AppStore {
     return (details?.errors as ErrorList[] | undefined) ?? [];
   }
 
-  private extractErrorMessage(error: HttpErrorResponse): string {
-    const payload = error.error as { error?: { message?: string } } | undefined;
-    return payload?.error?.message ?? error.message ?? error.toString();
-  }
 }
