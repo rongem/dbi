@@ -18,9 +18,9 @@ export class DbiService {
 
     loadTables = () => this.http.get<ApiResponse<Table[]>>(`${API_BASE}/tables`).pipe(take(1));
 
-    loadColumns = (table: Table) => this.http.get<ApiResponse<Column[]>>(`${API_BASE}/table/${table.schema}/${table.name}`).pipe(take(1));
+    loadColumns = (table: Table) => this.http.get<ApiResponse<Column[]>>(`${API_BASE}/table/${encodeURIComponent(table.schema)}/${encodeURIComponent(table.name)}`).pipe(take(1));
 
-    testRows = (content: RowContainer) => this.http.post<ApiResponse<{rowsInserted: number}>>(`${API_BASE}/table/${content.schema}/${content.table}`, {rows: content.rows}).pipe(take(1));
+    testRows = (content: RowContainer) => this.http.post<ApiResponse<{rowsInserted: number}>>(`${API_BASE}/table/${encodeURIComponent(content.schema)}/${encodeURIComponent(content.table)}`, {rows: content.rows}).pipe(take(1));
 
-    importRows = (content: RowContainer) => this.http.put<ApiResponse<{rowsInserted: number}>>(`${API_BASE}/table/${content.schema}/${content.table}`, {rows: content.rows}).pipe(take(1));
+    importRows = (content: RowContainer) => this.http.put<ApiResponse<{rowsInserted: number}>>(`${API_BASE}/table/${encodeURIComponent(content.schema)}/${encodeURIComponent(content.table)}`, {rows: content.rows}).pipe(take(1));
 }

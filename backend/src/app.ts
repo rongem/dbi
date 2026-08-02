@@ -14,11 +14,14 @@ import tablesRouter from './routes/tables.routes.js';
 import tableRouter from './routes/table.routes.js';
 import userRouter from './routes/user.routes.js';
 import { enforceAllowedOriginsForUnsafeMethods, enforceCsrfTokenForUnsafeMethods } from './middleware/request-security.middleware.js';
+import { setSecurityHeaders } from './middleware/security-headers.middleware.js';
 import { enforceWriteRateLimit } from './middleware/write-rate-limit.middleware.js';
 import { attachRequestContext } from './middleware/request-context.middleware.js';
 
 
 const app = express();
+app.disable('x-powered-by');
+app.use(setSecurityHeaders);
 
 const env = readRuntimeConfig();
 

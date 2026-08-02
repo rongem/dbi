@@ -56,13 +56,13 @@ export class ClipboardHelper {
     }
 
     private static sanitize(result: string) {
-        const regexTag = /\<(applet|audio|embed|object|script|video)/gmi
-        const regexAttr = /\<[^>]+\s(on|action|background="http|cite|code|data|formaction|href="http|icon|longdesk|manifest|profile|src|usemap)/gmi;
+        const regexTag = /\<(applet|audio|embed|iframe|object|script|svg|video)/gmi;
+        const regexAttr = /\<[^>]+[\s\/](on|action|background="http|cite|code|data|formaction|href="http|href="javascript:|icon|longdesk|manifest|profile|src|style|usemap|xlink:href)/gmi;
         if (regexTag.test(result)) {
             throw new Error('Script content is forbidden due to prevention of XSS. Problematic tags found.');
         }
         if (regexAttr.test(result)) {
-            throw new Error('Script content is forbidden due to prevention of XSS. problematic attributes found.');
+            throw new Error('Script content is forbidden due to prevention of XSS. Problematic attributes found.');
         }
     }
 }
