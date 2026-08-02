@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ListSchemasComponent } from './list-schemas/list-schemas.component';
-import { ListTablesComponent } from './list-tables/list-tables.component';
-import { TableComponent } from './table/table.component';
+import { ListSchemasComponent } from './components/list-schemas/list-schemas.component';
+import { ListTablesComponent } from './components/list-tables/list-tables.component';
+import { TableComponent } from './components/table/table.component';
 import { resolveTables } from './lib/resolvers/tables.resolver';
 
 const routes: Routes = [

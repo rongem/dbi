@@ -1,0 +1,55 @@
+$medium-border-style: 1px #005 solid;
+
+.dragging {
+    background-color: lightgray;
+    color: gray;
+    border-color: gray;
+    border-style: dotted;
+}
+
+.target {
+    background-color: lemonchiffon;
+}
+
+.highlighted {
+    background-color: lightblue;
+}
+
+.upper-border {
+    border-top: $medium-border-style;
+}
+
+.right-border {
+    border-right: $medium-border-style;
+}
+
+.lower-border {
+    border-bottom: $medium-border-style;
+}
+
+.left-border {
+    border-left: $medium-border-style;
+}
+
+.red-border {
+    outline: 2px solid red !important;
+}
+
+th {
+    white-space: nowrap;
+}
+
+.primary::after {
+    content: ' (P)';
+    font-style: italic;
+}
+
+.foreign::after {
+    content: ' (F)';
+    font-style: italic;
+}
+
+.position-relative {
+    position: relative;
+}
+
