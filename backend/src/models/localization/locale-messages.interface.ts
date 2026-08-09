@@ -8,6 +8,8 @@ export interface LocaleMessages {
     environmentDbPortError: string;
     environmentAllowedOriginsMissingError: string;
     environmentCsrfSecretMissingError: string;
+    environmentCsrfSecretTooShortError: string;
+    environmentAllowedOriginsInvalidUrlError: string;
     environmentWriteRateLimitWindowError: string;
     environmentWriteRateLimitMaxRequestsError: string;
     missingAuthenticationError: string;

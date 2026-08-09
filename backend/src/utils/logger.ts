@@ -2,6 +2,17 @@ type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 type LogDetails = Record<string, unknown> | string | number | boolean | null | undefined;
 
+const SENSITIVE_KEYS = ['password', 'secret', 'token'];
+
+const maskSensitiveData = (details: LogDetails): LogDetails => {
+    if (typeof details !== 'object' || details === null) return details;
+    const masked: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(details as Record<string, unknown>)) {
+        masked[key] = SENSITIVE_KEYS.some(sk => key.toLowerCase().includes(sk)) ? '***' : value;
+    }
+    return masked as LogDetails;
+};
+
 const write = (level: LogLevel, message: string, details?: LogDetails) => {
     const entry: Record<string, unknown> = {
         level,
@@ -9,7 +20,7 @@ const write = (level: LogLevel, message: string, details?: LogDetails) => {
         timestamp: new Date().toISOString(),
     };
     if (details !== undefined) {
-        entry.details = details;
+        entry.details = maskSensitiveData(details);
     }
     const text = JSON.stringify(entry);
     if (level === 'error') {

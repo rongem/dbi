@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 
 import { readRuntimeConfig } from '../config/runtime-config.js';
 import { HttpError } from '../models/rest-api/httpError.model.js';
+import { type ErrorCode, errorCodeFromStatus } from '../models/rest-api/error-code.model.js';
 import { getLocale } from '../utils/locales.function.js';
 import { logger } from '../utils/logger.js';
 
@@ -10,6 +11,7 @@ export type ErrorResponse = {
     body: {
         success: false;
         error: {
+            code: ErrorCode;
             message: string;
             details?: unknown;
         };
@@ -34,6 +36,7 @@ export const normalizeError = (error: unknown): ErrorResponse => {
                 body: {
                     success: false,
                     error: {
+                        code: 'INTERNAL_ERROR',
                         message: locale.internalServerError,
                     },
                 },
@@ -44,6 +47,7 @@ export const normalizeError = (error: unknown): ErrorResponse => {
             body: {
                 success: false,
                 error: {
+                    code: errorCodeFromStatus(error.httpStatusCode),
                     message: error.message,
                     details: error.data,
                 },
@@ -57,6 +61,7 @@ export const normalizeError = (error: unknown): ErrorResponse => {
             body: {
                 success: false,
                 error: {
+                    code: 'INTERNAL_ERROR',
                     message: locale.internalServerError,
                 },
             },
@@ -68,6 +73,7 @@ export const normalizeError = (error: unknown): ErrorResponse => {
         body: {
             success: false,
             error: {
+                code: 'INTERNAL_ERROR',
                 message: typeof error === 'string' ? error : String(error),
             },
         },

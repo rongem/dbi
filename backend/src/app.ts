@@ -36,7 +36,7 @@ if (env.authMode === 'ntlm') {
 }
 
 // express.json({limit: '50mb'}) -> after route to enhance upload size
-app.use('/api/v1', healthRouter);
+app.use('/api/v1', attachRequestContext, healthRouter);
 app.use('/api/v1/tables', attachRequestContext, getAuthentication, enforceAllowedOriginsForUnsafeMethods(), enforceCsrfTokenForUnsafeMethods(), tablesRouter);
 app.use('/api/v1/table', attachRequestContext, express.json({limit: '50mb'}), getAuthentication, enforceAllowedOriginsForUnsafeMethods(), enforceCsrfTokenForUnsafeMethods(), enforceWriteRateLimit(), tableRouter);
 app.use('/api/v1/user', attachRequestContext, getAuthentication, userRouter);

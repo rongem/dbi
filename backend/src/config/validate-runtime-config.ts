@@ -33,6 +33,16 @@ export const validateRuntimeConfig = (config: RuntimeConfig = readRuntimeConfig(
     if (config.nodeEnv === 'production' && config.csrfProtectionEnabled && !config.csrfSecret) {
         throw new Error(getLocale(config.locale).environmentCsrfSecretMissingError);
     }
+    if (config.csrfProtectionEnabled && config.csrfSecret && config.csrfSecret.length < 32) {
+        throw new Error(getLocale(config.locale).environmentCsrfSecretTooShortError);
+    }
+    for (const origin of config.allowedOrigins) {
+        try {
+            new URL(origin);
+        } catch {
+            throw new Error(getLocale(config.locale).environmentAllowedOriginsInvalidUrlError + origin);
+        }
+    }
     if (!Number.isInteger(config.writeRateLimitWindowMs) || config.writeRateLimitWindowMs <= 0) {
         throw new Error(getLocale(config.locale).environmentWriteRateLimitWindowError);
     }

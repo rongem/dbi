@@ -18,7 +18,7 @@ const createConfig = (overrides?: Partial<RuntimeConfig>): RuntimeConfig => ({
     allowedOrigins: ['https://dbi.intra.local'],
     originProtectionEnabled: true,
     csrfProtectionEnabled: true,
-    csrfSecret: 'secret',
+    csrfSecret: 'a-sufficiently-long-csrf-secret-value',
     writeRateLimitEnabled: true,
     writeRateLimitWindowMs: 60000,
     writeRateLimitMaxRequests: 60,
@@ -72,5 +72,23 @@ it('rejects non-positive write rate limit request count', async () => {
         expect(true).toBe(false);
     } catch (error: any) {
         expect(error.message).toContain('WRITE_RATE_LIMIT_MAX_REQUESTS');
+    }
+});
+
+it('rejects csrf secret shorter than 32 characters', async () => {
+    try {
+        validateRuntimeConfig(createConfig({ csrfSecret: 'short' }));
+        expect(true).toBe(false);
+    } catch (error: any) {
+        expect(error.message).toContain('32');
+    }
+});
+
+it('rejects invalid URL in allowed origins', async () => {
+    try {
+        validateRuntimeConfig(createConfig({ allowedOrigins: ['not-a-valid-url'] }));
+        expect(true).toBe(false);
+    } catch (error: any) {
+        expect(error.message).toContain('not-a-valid-url');
     }
 });
