@@ -35,10 +35,8 @@ export class ApiInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         const message = this.extractErrorMessage(error);
         if (error.status === 401 || error.status === 403) {
-          this.store.setError(message);
           this.toastService.show(message, 'warning', 6000);
         } else {
-          this.store.setError(message);
           this.toastService.show(message, 'error', 6000);
         }
         return throwError(() => error);

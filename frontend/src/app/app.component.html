@@ -13,20 +13,15 @@
 </header>
 
 @if (!notAuthorized()) {
-  <main class="content" role="main">
+  <main class="content" role="main" id="main-content">
     <router-outlet></router-outlet>
   </main>
 }
 
 <footer>
-  @if (errorPresent()) {
-    <button (click)="clearError()" class="error" title="Clear error" i18n-title>
-      {{error()}}
-    </button>
-  }
   @if (notAuthorized()) {
-    <div class="backdrop"></div>
-    <div class="busy" i18n>
+    <div class="backdrop" role="presentation"></div>
+    <div class="busy" role="alert" i18n>
       You don't have sufficient rights to import into database.
     </div>
   }
@@ -35,6 +30,6 @@
 <app-toast-host></app-toast-host>
 
 @if (busy()) {
-  <div class="backdrop"></div>
-  <div class="busy" i18n>Working...</div>
+  <div class="backdrop" role="presentation"></div>
+  <div class="busy" role="status" aria-live="polite" i18n>Working...</div>
 }

@@ -290,6 +290,22 @@
           <context context-type="linenumber">116</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="7172610509240246759" datatype="html">
+        <source>Breadcrumb</source>
+        <target>Brotkrumen-Navigation</target>
+      </trans-unit>
+      <trans-unit id="6473922615558393784" datatype="html">
+        <source>Show row error details</source>
+        <target>Fehlerdetails der Zeile anzeigen</target>
+      </trans-unit>
+      <trans-unit id="5231766068688430404" datatype="html">
+        <source>Data import table — paste rows here then press Start import</source>
+        <target>Datenimport-Tabelle — Zeilen hier einf&uuml;gen, dann Import starten dr&uuml;cken</target>
+      </trans-unit>
+      <trans-unit id="7281838124122799115" datatype="html">
+        <source>Close notification</source>
+        <target>Benachrichtigung schlie&szlig;en</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

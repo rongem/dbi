@@ -10,6 +10,7 @@ import { CellInformation } from '../../lib/models/cellinformation.model';
 import { RowContainer } from '../../lib/models/rest-backend/row-container.model';
 import { ErrorBadgeComponent } from '../error-badge/error-badge.component';
 import { AppStore } from '../../lib/store/app-store.service';
+import { ToastService } from '../../lib/services/toast.service';
 
 @Component({
     selector: 'app-table',
@@ -28,7 +29,7 @@ export class TableComponent implements OnInit, OnDestroy {
   private table = '';
   private subscriptions: Subscription[] = [];
 
-  constructor(private readonly store: AppStore, private readonly router: Router, private readonly route: ActivatedRoute) {
+  constructor(private readonly store: AppStore, private readonly router: Router, private readonly route: ActivatedRoute, private readonly toastService: ToastService) {
     effect(() => {
       const rowNumbers = this.store.rowNumbers();
       const errorPresent = this.store.tableContainsErrors();
@@ -139,9 +140,7 @@ export class TableComponent implements OnInit, OnDestroy {
         this.fillCellContents(rows);
       }
     } catch (error: any) {
-      console.error(error.message);
-      console.error(error.toString());
-      this.store.setError(error.message ?? error.toString());
+      this.toastService.show(error.message ?? error.toString(), 'error', 6000);
     }
   }
 

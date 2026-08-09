@@ -1,4 +1,7 @@
-<button class="error-sign" (click)="visibleText = !visibleText">!</button>
+<button class="error-sign"
+  (click)="visibleText = !visibleText"
+  [attr.aria-expanded]="visibleText"
+  i18n-aria-label aria-label="Show row error details">!</button>
 <span class="visually-hidden" i18n>
     This line contains data causing errors.
 </span>

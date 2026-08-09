@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import packageJson from '../../package.json';
 import { AppStore } from './lib/store/app-store.service';
 
@@ -13,8 +13,6 @@ export class AppComponent implements OnInit {
   title = 'Datenbank-Importer';
   version = packageJson.version;
   readonly busy = this.store.working;
-  readonly error = this.store.error;
-  readonly errorPresent = computed(() => !!this.error());
   readonly authenticatedUser = this.store.userName;
   readonly notAuthorized = this.store.notAuthorized;
   readonly headerText = this.store.databaseName;
@@ -23,9 +21,5 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.retrieveUser();
-  }
-
-  clearError(): void {
-    this.store.clearError();
   }
 }

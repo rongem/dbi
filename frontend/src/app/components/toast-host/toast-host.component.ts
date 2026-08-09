@@ -6,6 +6,7 @@ import { ToastService } from '../../lib/services/toast.service';
   templateUrl: './toast-host.component.html',
   styleUrls: ['./toast-host.component.scss'],
   standalone: true,
+  host: { role: 'status', 'aria-live': 'polite', 'aria-atomic': 'false' },
 })
 export class ToastHostComponent {
   readonly toastService = inject(ToastService);

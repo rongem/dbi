@@ -1,4 +1,4 @@
-<div class="breadcrumb">
+<nav class="breadcrumb" i18n-aria-label aria-label="Breadcrumb">
   @if (schemasCount() > 1) {
     <a [routerLink]="['/']" i18n>Home</a>
   } @else {
@@ -9,7 +9,7 @@
     <ng-container i18n>Schema: </ng-container>
     {{schema}}
   </a>
-</div>
+</nav>
 
 @if (importedRows() !== undefined) {
   <div class="success">
@@ -38,12 +38,14 @@
   </div>
 }
 <table class="table">
+  <caption class="visually-hidden" i18n>Data import table — paste rows here then press Start import</caption>
   <thead>
     <tr>
-      <th style="padding:0;"></th>
-      <th style="padding:0;">#</th>
+      <th scope="col" style="padding:0;"></th>
+      <th scope="col" style="padding:0;">#</th>
       @for (column of columnMappings(); track column; let i = $index) {
         <th
+          scope="col"
           draggable="true"
           (dragstart)="onDragStart($event, i)"
           (dragend)="onDragEnd()"

@@ -1,6 +1,6 @@
 @for (toast of toasts(); track toast.id) {
     <div class="toast toast-{{ toast.type }}">
         <span>{{ toast.message }}</span>
-        <button type="button" (click)="toastService.remove(toast.id)">×</button>
+        <button type="button" (click)="toastService.remove(toast.id)" i18n-aria-label aria-label="Close notification">×</button>
     </div>
 }

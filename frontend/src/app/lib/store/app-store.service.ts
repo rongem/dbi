@@ -23,7 +23,6 @@ export interface AppStoreState {
   userName?: string;
   databaseName?: string;
   csrfToken?: string;
-  error?: string;
   rowErrors: ErrorList[];
   canImport: boolean;
   importedRows?: number;
@@ -48,7 +47,6 @@ export class AppStore {
   readonly working = computed(() => this.state().working);
   readonly userName = computed(() => this.state().userName);
   readonly databaseName = computed(() => this.state().databaseName);
-  readonly error = computed(() => this.state().error);
   readonly notAuthorized = computed(() => this.state().notAuthorized);
   readonly csrfToken = computed(() => this.state().csrfToken);
   readonly tables = computed(() => this.state().tables);
@@ -72,7 +70,6 @@ export class AppStore {
       csrfToken: undefined,
       notAuthorized: false,
       working: true,
-      error: undefined,
     });
 
     this.dbi.retrieveUser().subscribe({
@@ -89,14 +86,6 @@ export class AppStore {
       csrfToken: user.csrfToken,
       working: false,
     });
-  }
-
-  clearError(): void {
-    this.updateState({ error: undefined });
-  }
-
-  setError(error?: string): void {
-    this.updateState({ error, working: false });
   }
 
   loadTables(): Observable<Table[]> {
@@ -159,7 +148,6 @@ export class AppStore {
     this.updateState({
       cellContents: [...contents],
       rowErrors: [],
-      error: undefined,
     });
   }
 
@@ -169,7 +157,6 @@ export class AppStore {
       working: false,
       rowErrors: [],
       canImport: false,
-      error: undefined,
     });
   }
 
