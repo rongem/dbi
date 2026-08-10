@@ -6,6 +6,7 @@ import { ColumnObject } from '../models/data/column-object.model.js';
 import { getTableColumns, listTables } from '../services/table.service.js';
 import { rowsDescriptor, schemaDescriptor, tableDescriptor } from '../utils/params.descriptors.js';
 import { getLocale } from '../utils/locales.function.js';
+import { Column } from '../models/data/column.model.js';
 
 const sqlStringValidator: CustomValidator = (value: string) => `'${value}'` === SqlString.escape(value);
 const env = readRuntimeConfig();
@@ -87,7 +88,7 @@ const tableRowsContentValidator = body(`${rowsDescriptor}.*`)
             } else {
                 const column = sqlColumnObject[key.toLocaleLowerCase()]!;
                 const cell = row[key];
-                if (!column.typeInfo.allowedTypes.includes(typeof cell)) {
+                if (!isCellCompatibleWithColumn(cell, column)) {
                     errors.push(locale.typeIsNotAllowedForColumError(typeof cell, column.name));
                 }
             }
@@ -99,3 +100,95 @@ const tableRowsContentValidator = body(`${rowsDescriptor}.*`)
     }).bail({level: 'request'});
 
 export const tableImportValidator = checkExact([schemaNameValidator, tableNameValidator, tableRowsArrayValidator, tableRowsContentValidator]);
+
+export function isCellCompatibleWithColumn(cell: unknown, column: Column): boolean {
+    if (cell === null || cell === undefined) {
+        return column.isNullable;
+    }
+
+    const allowedTypes = getAllowedTypes(column);
+    const compatibleWithType = isCompatibleWithAllowedTypes(cell, allowedTypes);
+    if (!compatibleWithType) {
+        return false;
+    }
+
+    const constraints = column.constraints;
+    if (!constraints) {
+        return true;
+    }
+
+    if (constraints.enumValues && constraints.enumValues.length > 0 && !constraints.enumValues.includes(cell as string | number | boolean)) {
+        return false;
+    }
+
+    if (typeof cell === 'string') {
+        const minLength = constraints.string?.minLength;
+        const maxLength = constraints.string?.maxLength;
+        if (minLength !== undefined && cell.length < minLength) {
+            return false;
+        }
+        if (maxLength !== undefined && cell.length > maxLength) {
+            return false;
+        }
+
+        if (constraints.binary?.maxBytes !== undefined) {
+            const bytes = Buffer.byteLength(cell, 'utf8');
+            if (bytes > constraints.binary.maxBytes) {
+                return false;
+            }
+        }
+    }
+
+    if (typeof cell === 'number' && Number.isFinite(cell)) {
+        const minimum = constraints.number?.minimum;
+        const maximum = constraints.number?.maximum;
+        if (minimum !== undefined && cell < minimum) {
+            return false;
+        }
+        if (maximum !== undefined && cell > maximum) {
+            return false;
+        }
+        if (constraints.number?.integer === true && !Number.isInteger(cell)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function getAllowedTypes(column: Column): Array<'boolean' | 'date' | 'number' | 'string' | 'binary'> {
+    const fromConstraints = column.constraints?.logicalTypes;
+    if (fromConstraints && fromConstraints.length > 0) {
+        return fromConstraints;
+    }
+    return column.typeInfo.allowedTypes;
+}
+
+function isCompatibleWithAllowedTypes(cell: unknown, allowedTypes: Array<'boolean' | 'date' | 'number' | 'string' | 'binary'>): boolean {
+    if (allowedTypes.length === 0) {
+        return true;
+    }
+
+    if (allowedTypes.includes('boolean') && typeof cell === 'boolean') {
+        return true;
+    }
+    if (allowedTypes.includes('number') && typeof cell === 'number' && Number.isFinite(cell)) {
+        return true;
+    }
+    if (allowedTypes.includes('string') && typeof cell === 'string') {
+        return true;
+    }
+    if (allowedTypes.includes('date')) {
+        if (cell instanceof Date && !isNaN(cell.getTime())) {
+            return true;
+        }
+        if (typeof cell === 'string' && !isNaN(Date.parse(cell))) {
+            return true;
+        }
+    }
+    if (allowedTypes.includes('binary') && typeof cell === 'string') {
+        return true;
+    }
+
+    return false;
+}

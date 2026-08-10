@@ -3,6 +3,7 @@ import sql, { NVarChar } from 'mssql';
 import { requestPromise } from '../db.js';
 import { sqlGetColumnInformationForSchemaAndTable, sqlGetColumnKeyInformation, sqlGetForeignColumnInformation, sqlGetReferantialConstraints } from '../../utils/sql.templates.js';
 import { Column } from '../data/column.model.js';
+import { ColumnConstraints } from '../data/column-constraints.model.js';
 import { getTypeInformation } from '../data/tsTypeInfo.js';
 import { logger } from '../../utils/logger.js';
 
@@ -47,6 +48,7 @@ export const selectColumns = async (schema: string, table: string) => {
 
 function createColumn(columnData: {table: string, schema: string, sqlColumn: any}) {
     const {schema, sqlColumn} = columnData;
+    const typeInfo = getTypeInformation(sqlColumn.DATA_TYPE);
     const c: Column = {
         table: {
             name: columnData.table,
@@ -57,7 +59,8 @@ function createColumn(columnData: {table: string, schema: string, sqlColumn: any
         isNullable: sqlColumn.IS_NULLABLE === 'YES',
         name: sqlColumn.COLUMN_NAME,
         ordinalPosition: sqlColumn.ORDINAL_POSITION,
-        typeInfo: getTypeInformation(sqlColumn.DATA_TYPE),
+        typeInfo,
+        constraints: createColumnConstraints(sqlColumn.DATA_TYPE, typeInfo.allowedTypes, sqlColumn),
         primary: false,
         foreignKey: false,
         unique: false,
@@ -76,6 +79,87 @@ function createColumn(columnData: {table: string, schema: string, sqlColumn: any
         };
     }
     return c;
+}
+
+function createColumnConstraints(
+    sqlType: string,
+    logicalTypes: Array<'boolean' | 'date' | 'number' | 'string' | 'binary'>,
+    sqlColumn: any,
+): ColumnConstraints {
+    const constraints: ColumnConstraints = {
+        logicalTypes,
+    };
+
+    if (logicalTypes.includes('string')) {
+        const maxLength = toFiniteNumber(sqlColumn.CHARACTER_MAXIMUM_LENGTH);
+        if (maxLength !== undefined && maxLength >= 0) {
+            constraints.string = { maxLength };
+        }
+    }
+
+    if (logicalTypes.includes('binary')) {
+        const maxBytes = toFiniteNumber(sqlColumn.CHARACTER_MAXIMUM_LENGTH);
+        if (maxBytes !== undefined && maxBytes >= 0) {
+            constraints.binary = { maxBytes };
+        }
+    }
+
+    if (logicalTypes.includes('number')) {
+        const numberConstraints = {
+            minimum: undefined as number | undefined,
+            maximum: undefined as number | undefined,
+            integer: undefined as boolean | undefined,
+            precision: toFiniteNumber(sqlColumn.NUMERIC_PRECISION),
+            scale: toFiniteNumber(sqlColumn.NUMERIC_SCALE),
+        };
+
+        switch ((sqlType ?? '').toLocaleLowerCase()) {
+            case 'tinyint':
+                numberConstraints.minimum = 0;
+                numberConstraints.maximum = 255;
+                numberConstraints.integer = true;
+                break;
+            case 'smallint':
+                numberConstraints.minimum = -32768;
+                numberConstraints.maximum = 32767;
+                numberConstraints.integer = true;
+                break;
+            case 'int':
+                numberConstraints.minimum = -2147483648;
+                numberConstraints.maximum = 2147483647;
+                numberConstraints.integer = true;
+                break;
+        }
+
+        if (numberConstraints.scale !== undefined) {
+            numberConstraints.integer = numberConstraints.scale === 0;
+        }
+
+        if (
+            numberConstraints.minimum !== undefined ||
+            numberConstraints.maximum !== undefined ||
+            numberConstraints.integer !== undefined ||
+            numberConstraints.precision !== undefined ||
+            numberConstraints.scale !== undefined
+        ) {
+            constraints.number = numberConstraints;
+        }
+    }
+
+    return constraints;
+}
+
+function toFiniteNumber(value: unknown): number | undefined {
+    if (typeof value === 'number' && Number.isFinite(value)) {
+        return value;
+    }
+    if (typeof value === 'string' && value.trim() !== '') {
+        const parsed = Number(value);
+        if (Number.isFinite(parsed)) {
+            return parsed;
+        }
+    }
+    return undefined;
 }
 
 async function fetchColumnData(schema: string, table: string) {

@@ -2,18 +2,18 @@ import { SqlType } from "./sqltype.js";
 
 export interface tsTypeInfo {
     sqlType: SqlType;
-    allowedTypes: string[];
+    allowedTypes: Array<'boolean' | 'date' | 'number' | 'string' | 'binary'>;
 }
 
 export const getTypeInformation = (sqlType: SqlType) => {
-    let allowedTypes: string[];
+    let allowedTypes: Array<'boolean' | 'date' | 'number' | 'string' | 'binary'>;
     switch (sqlType) {
         case 'binary':
         case 'image':
         case 'rowversion':
         case 'timestamp':
         case 'varbinary':
-            allowedTypes = [];
+            allowedTypes = ['binary'];
             break;
         case 'bigint':
         case 'decimal':

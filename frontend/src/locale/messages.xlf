@@ -253,6 +253,72 @@
           <context context-type="linenumber">116</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="2212326770111821950" datatype="html">
+        <source>Value is not part of the allowed enum values</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/lib/models/cellinformation.model.ts</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2571163206572076995" datatype="html">
+        <source>Value is shorter than allowed</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/lib/models/cellinformation.model.ts</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2676276641581592362" datatype="html">
+        <source>Value is longer than allowed</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/lib/models/cellinformation.model.ts</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3429632113143838923" datatype="html">
+        <source>Value exceeds allowed byte size</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/lib/models/cellinformation.model.ts</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1850893903892137477" datatype="html">
+        <source>Value is below the minimum</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/lib/models/cellinformation.model.ts</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8351265420333584399" datatype="html">
+        <source>Value exceeds the maximum</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/lib/models/cellinformation.model.ts</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8155910699855900269" datatype="html">
+        <source>Integer value expected</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/lib/models/cellinformation.model.ts</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7364958212928912796" datatype="html">
+        <source>Max string length: </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/table/table.component.ts</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2408462760466209304" datatype="html">
+        <source>Max bytes: </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/table/table.component.ts</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="8955046160218411056" datatype="html">
+        <source>Number range: </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/table/table.component.ts</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="1200666826680300849" datatype="html">
+        <source>Allowed values: </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/components/table/table.component.ts</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>

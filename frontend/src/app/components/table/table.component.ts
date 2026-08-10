@@ -109,8 +109,25 @@ export class TableComponent implements OnInit, OnDestroy {
     if (column?.isNullable) {
       content.push($localize `Null values allowed`);
     }
-    const allowedTypes = column?.typeInfo?.allowedTypes ?? [];
+    const allowedTypes = column?.constraints?.logicalTypes ?? column?.typeInfo?.allowedTypes ?? [];
     content.push($localize `Allowed Data Types: ` + allowedTypes.join('|'));
+    if (column?.constraints?.string?.maxLength !== undefined) {
+      content.push($localize `Max string length: ` + column.constraints.string.maxLength);
+    }
+    if (column?.constraints?.binary?.maxBytes !== undefined) {
+      content.push($localize `Max bytes: ` + column.constraints.binary.maxBytes);
+    }
+    if (column?.constraints?.number?.minimum !== undefined || column?.constraints?.number?.maximum !== undefined) {
+      content.push(
+        $localize `Number range: ` +
+        (column.constraints.number?.minimum ?? '-Infinity') +
+        ' .. ' +
+        (column.constraints.number?.maximum ?? 'Infinity'),
+      );
+    }
+    if (column?.constraints?.enumValues && column.constraints.enumValues.length > 0) {
+      content.push($localize `Allowed values: ` + column.constraints.enumValues.join('|'));
+    }
     return content.join($localize `, `);
   }
 

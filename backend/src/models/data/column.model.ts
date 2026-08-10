@@ -1,6 +1,7 @@
 import { SqlType } from "./sqltype.js";
 import { Table } from "./table.model.js";
 import { tsTypeInfo } from "./tsTypeInfo.js";
+import { ColumnConstraints } from "./column-constraints.model.js";
 
 export interface Column {
     table: Table;
@@ -19,6 +20,7 @@ export interface Column {
         numericScale: number;
     };
     typeInfo: tsTypeInfo;
+    constraints?: ColumnConstraints;
     primary: boolean;
     foreignKey: boolean;
     foreignKeyInformation?: {

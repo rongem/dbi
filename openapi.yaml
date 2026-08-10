@@ -202,7 +202,233 @@ components:
         data:
           type: array
           items:
-            type: object
+            $ref: '#/components/schemas/Column'
+      example:
+        success: true
+        data:
+          - table:
+              name: Orders
+              schema: dbo
+            name: Status
+            ordinalPosition: 3
+            hasDefaultValue: false
+            isNullable: false
+            dataType: nvarchar
+            typeInfo:
+              sqlType: nvarchar
+              allowedTypes:
+                - string
+            constraints:
+              logicalTypes:
+                - string
+              enumValues:
+                - new
+                - ready
+                - done
+              string:
+                minLength: 1
+                maxLength: 20
+              extensions:
+                rest:
+                  pattern: '^[a-z]+$'
+            primary: false
+            foreignKey: false
+            unique: false
+          - table:
+              name: Inventory
+              schema: dbo
+            name: Quantity
+            ordinalPosition: 2
+            hasDefaultValue: false
+            isNullable: false
+            dataType: smallint
+            typeInfo:
+              sqlType: smallint
+              allowedTypes:
+                - number
+            constraints:
+              logicalTypes:
+                - number
+              number:
+                minimum: -32768
+                maximum: 32767
+                integer: true
+            primary: false
+            foreignKey: false
+            unique: false
+          - table:
+              name: Files
+              schema: dbo
+            name: Content
+            ordinalPosition: 4
+            hasDefaultValue: false
+            isNullable: true
+            dataType: varbinary
+            typeInfo:
+              sqlType: varbinary
+              allowedTypes:
+                - binary
+            constraints:
+              logicalTypes:
+                - binary
+              binary:
+                maxBytes: 1024
+            primary: false
+            foreignKey: false
+            unique: false
+    Column:
+      type: object
+      properties:
+        table:
+          $ref: '#/components/schemas/TableRef'
+        name:
+          type: string
+        ordinalPosition:
+          type: integer
+        hasDefaultValue:
+          type: boolean
+        isNullable:
+          type: boolean
+        dataType:
+          type: string
+          description: Native backend type label (for example MSSQL data type).
+        characterData:
+          type: object
+          properties:
+            maximumCharacterLength:
+              type: integer
+            characterSetName:
+              type: string
+            collationName:
+              type: string
+        numericData:
+          type: object
+          properties:
+            numericPrecision:
+              type: integer
+            numericScale:
+              type: integer
+        typeInfo:
+          $ref: '#/components/schemas/TypeInfo'
+        constraints:
+          $ref: '#/components/schemas/ColumnConstraints'
+        primary:
+          type: boolean
+        foreignKey:
+          type: boolean
+        foreignKeyInformation:
+          type: object
+          properties:
+            schema:
+              type: string
+            table:
+              type: string
+            column:
+              type: string
+        unique:
+          type: boolean
+      required:
+        - table
+        - name
+        - ordinalPosition
+        - hasDefaultValue
+        - isNullable
+        - typeInfo
+        - primary
+        - foreignKey
+        - unique
+    TableRef:
+      type: object
+      properties:
+        name:
+          type: string
+        schema:
+          type: string
+      required:
+        - name
+        - schema
+    TypeInfo:
+      type: object
+      properties:
+        sqlType:
+          type: string
+        allowedTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ColumnLogicalType'
+      required:
+        - sqlType
+        - allowedTypes
+    ColumnLogicalType:
+      type: string
+      enum:
+        - string
+        - number
+        - boolean
+        - date
+        - binary
+    ColumnConstraints:
+      type: object
+      properties:
+        logicalTypes:
+          type: array
+          items:
+            $ref: '#/components/schemas/ColumnLogicalType'
+        enumValues:
+          type: array
+          description: Explicit allowed values for enum-like constraints.
+          items:
+            oneOf:
+              - type: string
+              - type: number
+              - type: boolean
+        string:
+          $ref: '#/components/schemas/StringConstraints'
+        number:
+          $ref: '#/components/schemas/NumberConstraints'
+        binary:
+          $ref: '#/components/schemas/BinaryConstraints'
+        date:
+          $ref: '#/components/schemas/DateConstraints'
+        extensions:
+          type: object
+          additionalProperties: true
+      required:
+        - logicalTypes
+    StringConstraints:
+      type: object
+      properties:
+        minLength:
+          type: integer
+        maxLength:
+          type: integer
+    NumberConstraints:
+      type: object
+      properties:
+        minimum:
+          type: number
+        maximum:
+          type: number
+        integer:
+          type: boolean
+        precision:
+          type: integer
+        scale:
+          type: integer
+    BinaryConstraints:
+      type: object
+      properties:
+        maxBytes:
+          type: integer
+    DateConstraints:
+      type: object
+      properties:
+        format:
+          type: string
+          enum:
+            - date
+            - date-time
+            - time
     ImportRequest:
       type: object
       properties:

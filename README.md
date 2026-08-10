@@ -28,6 +28,44 @@ All API requests now use an x-request-id correlation id. The bundled frontend se
 
 Structured audit logs are emitted for table import operations with requestId, userName, operation (preview/commit), schemaName, tableName, rowCount, rowsInserted and resultStatus (success, failed_validation, failed_internal).
 
+### Column metadata contract (backend-neutral)
+To keep the frontend decoupled from database vendors, `/api/v1/table/:schema/:table` can provide generic constraints per column.
+
+The frontend primarily reads `constraints.logicalTypes` and additional constraint blocks. `typeInfo.allowedTypes` is still supported as legacy fallback.
+
+Example:
+
+```json
+{
+    "name": "Status",
+    "isNullable": false,
+    "hasDefaultValue": false,
+    "constraints": {
+        "logicalTypes": ["string"],
+        "enumValues": ["new", "ready", "done"],
+        "string": {
+            "maxLength": 20
+        },
+        "extensions": {
+            "rest": {
+                "pattern": "^[a-z]+$"
+            }
+        }
+    }
+}
+```
+
+Supported generic keys:
+- `logicalTypes`: one or more of `string`, `number`, `boolean`, `date`, `binary`
+- `enumValues`: explicit allowed set for enum-like constraints
+- `string`: `minLength`, `maxLength`
+- `number`: `minimum`, `maximum`, `integer`, `precision`, `scale`
+- `binary`: `maxBytes`
+- `date`: format hint (`date`, `date-time`, `time`)
+- `extensions`: open object for backend-specific metadata that should not break consumers
+
+MSSQL-specific metadata (`dataType`, `characterData`, `numericData`) can still be included, but frontend validation and display should rely on `constraints` whenever available.
+
 The node http server inside the container will listen on port 8000. It is a good idea to use a reverse proxy with SSL inside your infrastructure.
 
 ### Example database script for auth table

@@ -1,5 +1,6 @@
 import { CellContent } from "./cellcontent.model";
 import { Column } from "./rest-backend/column.model";
+import { ColumnLogicalType } from "./rest-backend/column-constraints.model";
 
 export class CellInformation{
     get value() { return this.cellContent.originalValue }
@@ -47,6 +48,9 @@ export class CellInformation{
     get stringValue() {
         return this.canContainString() ? this.value ?? undefined : undefined;
     }
+    get binaryValue() {
+        return this.canContainBinary() ? this.value ?? undefined : undefined;
+    }
     get isBoolean() { return this.booleanValue !== undefined; }
     get isDate() { return this.dateValue !== undefined; }
     get isNumber() { return this.numberValue !== undefined; }
@@ -58,7 +62,9 @@ export class CellInformation{
         if (this.isDate) return this.dateValue;
         if (this.isBoolean) return this.booleanValue;
         if (this.isNumber) return this.numberValue;
-        return this.stringValue;
+        if (this.stringValue !== undefined) return this.stringValue;
+        if (this.binaryValue !== undefined) return this.binaryValue;
+        return this.value ?? undefined;
     }
 
     get name() { return this.columnDefinition.name; }
@@ -88,6 +94,7 @@ export class CellInformation{
             if (this.canContainString() && !this.stringValue) {
                 this.errorDescriptions.push($localize `String expected`);
             }
+            this.validateConstraints();
         }
     };
 
@@ -95,8 +102,17 @@ export class CellInformation{
     private canContainDate = () => this.checkType('date');
     private canContainNumber = () => this.checkType('number');
     private canContainString = () => this.checkType('string');
+    private canContainBinary = () => this.checkType('binary');
 
-    private checkType = (type: 'boolean' | 'date' | 'number' | 'string') => this.columnDefinition.typeInfo.allowedTypes.includes(type);
+    private checkType = (type: ColumnLogicalType) => this.allowedTypes.includes(type);
+
+    private get allowedTypes(): ColumnLogicalType[] {
+        const logicalTypes = this.columnDefinition.constraints?.logicalTypes;
+        if (logicalTypes && logicalTypes.length > 0) {
+            return logicalTypes;
+        }
+        return this.columnDefinition.typeInfo.allowedTypes;
+    }
 
     private readonly hasBrowserGermanLanguageSet = /^de\b/.test(navigator.language);
 
@@ -122,6 +138,68 @@ export class CellInformation{
             }
         }
         return value;
+    }
+
+    private validateConstraints() {
+        const constraints = this.columnDefinition.constraints;
+        if (!constraints) {
+            return;
+        }
+
+        if (constraints.enumValues && constraints.enumValues.length > 0) {
+            const typedValue = this.typedValue;
+            if (!constraints.enumValues.includes(typedValue as string | number | boolean)) {
+                this.errorDescriptions.push($localize `Value is not part of the allowed enum values`);
+            }
+        }
+
+        this.validateStringConstraints();
+        this.validateBinaryConstraints();
+        this.validateNumberConstraints();
+    }
+
+    private validateStringConstraints() {
+        const constraints = this.columnDefinition.constraints?.string;
+        if (!constraints || typeof this.value !== 'string') {
+            return;
+        }
+
+        if (constraints.minLength !== undefined && this.value.length < constraints.minLength) {
+            this.errorDescriptions.push($localize `Value is shorter than allowed`);
+        }
+        if (constraints.maxLength !== undefined && this.value.length > constraints.maxLength) {
+            this.errorDescriptions.push($localize `Value is longer than allowed`);
+        }
+    }
+
+    private validateBinaryConstraints() {
+        const maxBytes = this.columnDefinition.constraints?.binary?.maxBytes;
+        if (maxBytes === undefined || typeof this.value !== 'string') {
+            return;
+        }
+
+        const bytes = new TextEncoder().encode(this.value).length;
+        if (bytes > maxBytes) {
+            this.errorDescriptions.push($localize `Value exceeds allowed byte size`);
+        }
+    }
+
+    private validateNumberConstraints() {
+        const constraints = this.columnDefinition.constraints?.number;
+        const value = this.numberValue;
+        if (!constraints || value === undefined) {
+            return;
+        }
+
+        if (constraints.minimum !== undefined && value < constraints.minimum) {
+            this.errorDescriptions.push($localize `Value is below the minimum`);
+        }
+        if (constraints.maximum !== undefined && value > constraints.maximum) {
+            this.errorDescriptions.push($localize `Value exceeds the maximum`);
+        }
+        if (constraints.integer === true && !Number.isInteger(value)) {
+            this.errorDescriptions.push($localize `Integer value expected`);
+        }
     }
 
     private parseDate(input: string, format: string = 'yyyy-mm-dd') {

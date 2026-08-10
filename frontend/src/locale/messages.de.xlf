@@ -306,6 +306,50 @@
         <source>Close notification</source>
         <target>Benachrichtigung schlie&szlig;en</target>
       </trans-unit>
+      <trans-unit id="2212326770111821950" datatype="html">
+        <source>Value is not part of the allowed enum values</source>
+        <target>Der Wert ist nicht Teil der erlaubten Enum-Werte</target>
+      </trans-unit>
+      <trans-unit id="2571163206572076995" datatype="html">
+        <source>Value is shorter than allowed</source>
+        <target>Der Wert ist k&uuml;rzer als erlaubt</target>
+      </trans-unit>
+      <trans-unit id="2676276641581592362" datatype="html">
+        <source>Value is longer than allowed</source>
+        <target>Der Wert ist l&auml;nger als erlaubt</target>
+      </trans-unit>
+      <trans-unit id="3429632113143838923" datatype="html">
+        <source>Value exceeds allowed byte size</source>
+        <target>Der Wert &uuml;berschreitet die erlaubte Byte-Gr&ouml;&szlig;e</target>
+      </trans-unit>
+      <trans-unit id="1850893903892137477" datatype="html">
+        <source>Value is below the minimum</source>
+        <target>Der Wert liegt unter dem Minimum</target>
+      </trans-unit>
+      <trans-unit id="8351265420333584399" datatype="html">
+        <source>Value exceeds the maximum</source>
+        <target>Der Wert &uuml;berschreitet das Maximum</target>
+      </trans-unit>
+      <trans-unit id="8155910699855900269" datatype="html">
+        <source>Integer value expected</source>
+        <target>Es wird ein Ganzzahlwert erwartet</target>
+      </trans-unit>
+      <trans-unit id="7364958212928912796" datatype="html">
+        <source>Max string length: </source>
+        <target>Maximale String-L&auml;nge: </target>
+      </trans-unit>
+      <trans-unit id="2408462760466209304" datatype="html">
+        <source>Max bytes: </source>
+        <target>Maximale Bytes: </target>
+      </trans-unit>
+      <trans-unit id="8955046160218411056" datatype="html">
+        <source>Number range: </source>
+        <target>Zahlenbereich: </target>
+      </trans-unit>
+      <trans-unit id="1200666826680300849" datatype="html">
+        <source>Allowed values: </source>
+        <target>Erlaubte Werte: </target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
