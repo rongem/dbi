@@ -89,7 +89,7 @@ function createColumn(columnData: {table: string, schema: string, sqlColumn: any
  * Maps SQL column metadata to the generic constraint contract used by the API and frontend validation.
  * It populates logical type hints, enum-like limits, numeric ranges, and text or binary length constraints derived from MSSQL metadata.
  */
-function createColumnConstraints(
+export function createColumnConstraints(
     sqlType: string,
     logicalTypes: Array<'boolean' | 'date' | 'number' | 'string' | 'binary'>,
     sqlColumn: any,

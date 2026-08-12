@@ -8,10 +8,24 @@ const SENSITIVE_KEYS = ['password', 'secret', 'token'];
  * Redacts sensitive keys from a log payload so credentials and tokens are never written to plain-text output.
  */
 const maskSensitiveData = (details: LogDetails): LogDetails => {
-    if (typeof details !== 'object' || details === null) return details;
+    if (typeof details === 'string' || typeof details === 'number' || typeof details === 'boolean' || details === null || details === undefined) {
+        return details;
+    }
+
+    if (Array.isArray(details)) {
+        return details.map(item => maskSensitiveData(item as LogDetails)) as unknown as LogDetails;
+    }
+
+    if (typeof details !== 'object') {
+        return details;
+    }
+
     const masked: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(details as Record<string, unknown>)) {
-        masked[key] = SENSITIVE_KEYS.some(sk => key.toLowerCase().includes(sk)) ? '***' : value;
+        const maskedValue = SENSITIVE_KEYS.some(sk => key.toLowerCase().includes(sk))
+            ? '***'
+            : maskSensitiveData(value as LogDetails);
+        masked[key] = maskedValue;
     }
     return masked as LogDetails;
 };
