@@ -66,6 +66,8 @@ Supported generic keys:
 
 MSSQL-specific metadata (`dataType`, `characterData`, `numericData`) can still be included, but frontend validation and display should rely on `constraints` whenever available.
 
+> Integration note: the OpenAPI schema for column metadata contains the generic `constraints` contract and examples for enum, length, range, and binary constraints in [openapi.yaml](openapi.yaml). This is the recommended contract for any non-MSSQL backend or custom data source.
+
 The node http server inside the container will listen on port 8000. It is a good idea to use a reverse proxy with SSL inside your infrastructure.
 
 ### Example database script for auth table

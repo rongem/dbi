@@ -5,6 +5,10 @@ export interface tsTypeInfo {
     allowedTypes: Array<'boolean' | 'date' | 'number' | 'string' | 'binary'>;
 }
 
+/**
+ * Maps a raw SQL Server type to the normalized logical field categories used across validation and the generic metadata contract.
+ * This keeps the rest of the application independent from vendor-specific type names while preserving compatibility with legacy metadata.
+ */
 export const getTypeInformation = (sqlType: SqlType) => {
     let allowedTypes: Array<'boolean' | 'date' | 'number' | 'string' | 'binary'>;
     switch (sqlType) {

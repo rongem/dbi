@@ -9,6 +9,10 @@ import { logger } from '../../utils/logger.js';
 
 const { TYPES } = sql;
 
+/**
+ * Loads all column metadata for a table, enriches it with key information, and resolves foreign-key references into a normalized column model.
+ * The method keeps the raw SQL metadata and the generic constraint summary together so the API can expose a backend-neutral contract.
+ */
 export const selectColumns = async (schema: string, table: string) => {
     const sqlColumns = await fetchColumnData(schema, table);
     const sqlColumnInformations = await fetchColumnKeyInformations(schema, table);
@@ -81,6 +85,10 @@ function createColumn(columnData: {table: string, schema: string, sqlColumn: any
     return c;
 }
 
+/**
+ * Maps SQL column metadata to the generic constraint contract used by the API and frontend validation.
+ * It populates logical type hints, enum-like limits, numeric ranges, and text or binary length constraints derived from MSSQL metadata.
+ */
 function createColumnConstraints(
     sqlType: string,
     logicalTypes: Array<'boolean' | 'date' | 'number' | 'string' | 'binary'>,

@@ -99,8 +99,15 @@ const tableRowsContentValidator = body(`${rowsDescriptor}.*`)
         return true;
     }).bail({level: 'request'});
 
+/**
+ * Validates the full import payload by checking table structure, required fields, row shapes, and cell-to-column compatibility before the request is accepted.
+ */
 export const tableImportValidator = checkExact([schemaNameValidator, tableNameValidator, tableRowsArrayValidator, tableRowsContentValidator]);
 
+/**
+ * Determines whether a single cell value matches the target column's logical type and constraint rules.
+ * The function supports nullability, enum values, string length limits, and numeric boundaries while keeping legacy allowed-type fallbacks intact.
+ */
 export function isCellCompatibleWithColumn(cell: unknown, column: Column): boolean {
     if (cell === null || cell === undefined) {
         return column.isNullable;
@@ -156,6 +163,9 @@ export function isCellCompatibleWithColumn(cell: unknown, column: Column): boole
     return true;
 }
 
+/**
+ * Resolves the effective logical types for a column from the generic constraints contract and falls back to legacy metadata when needed.
+ */
 function getAllowedTypes(column: Column): Array<'boolean' | 'date' | 'number' | 'string' | 'binary'> {
     const fromConstraints = column.constraints?.logicalTypes;
     if (fromConstraints && fromConstraints.length > 0) {
@@ -164,6 +174,9 @@ function getAllowedTypes(column: Column): Array<'boolean' | 'date' | 'number' | 
     return column.typeInfo.allowedTypes;
 }
 
+/**
+ * Compares a raw value against a list of logical allowed types and accepts values that match booleans, numbers, strings, dates, or binary payloads.
+ */
 function isCompatibleWithAllowedTypes(cell: unknown, allowedTypes: Array<'boolean' | 'date' | 'number' | 'string' | 'binary'>): boolean {
     if (allowedTypes.length === 0) {
         return true;

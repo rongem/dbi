@@ -63,6 +63,9 @@ export class AppStore {
 
   constructor(private readonly dbi: DbiService) {}
 
+/**
+ * Loads the current user session from the backend, clears stale identity state, and updates the store with the authorization payload and CSRF token.
+ */
   retrieveUser(): void {
     this.updateState({
       userName: undefined,
@@ -88,6 +91,9 @@ export class AppStore {
     });
   }
 
+/**
+ * Retrieves the list of available tables from the backend once and caches the result so repeated navigation does not trigger redundant calls.
+ */
   loadTables(): Observable<Table[]> {
     if (this.tablesLoaded()) {
       return of(this.tables());
@@ -117,6 +123,9 @@ export class AppStore {
     );
   }
 
+/**
+ * Selects a specific table, resets the current cell state, and loads the target column definition set from the backend.
+ */
   selectTable(table: Table): void {
     this.updateState({
       selectedTable: { ...table },
@@ -160,6 +169,9 @@ export class AppStore {
     });
   }
 
+/**
+ * Submits a preview request for the current row data and toggles the import state based on the backend validation response.
+ */
   testRows(content: RowContainer): void {
     this.updateState({
       working: true,
@@ -173,6 +185,9 @@ export class AppStore {
     });
   }
 
+/**
+ * Commits the validated row set to the backend and clears the current buffer while storing the imported row count in the store.
+ */
   importRows(content: RowContainer): void {
     this.updateState({ working: true, rowErrors: [] });
 
@@ -207,6 +222,9 @@ export class AppStore {
     return computed(() => this.rowErrorsFor(rowIndex)().length > 0 || this.cellInformations().some((cell) => cell.row === rowIndex && cell.containsErrors));
   }
 
+/**
+ * Aggregates row-level backend errors and per-cell validation errors into a single list for the UI error badge and tooltip rendering.
+ */
   rowErrorsFor(rowIndex: number) {
     return computed(() => [
       ...this.rowErrors().filter((error) => error.row === rowIndex).map((error) => error.msg),
@@ -214,12 +232,18 @@ export class AppStore {
     ]);
   }
 
+/**
+ * Rebuilds the cell validation model from the current cell contents and the active column metadata, so the UI can immediately reflect type and constraint errors.
+ */
   readonly cellInformations = computed(() => this.cellContents().map((cell) => new CellInformation(cell, this.columnDefinitions()[this.columnMapping()[cell.column]])));
 
   private updateState(update: Partial<AppStoreState>): void {
     this.state.update((current) => ({ ...current, ...update }));
   }
 
+/**
+ * Converts a backend import failure into the UI error list used by the table view while preserving the original HTTP error for debugging.
+ */
   private handleImportError(error: HttpErrorResponse): void {
     const errors = this.extractErrors(error);
     if (errors.length === 0) {
@@ -228,6 +252,9 @@ export class AppStore {
     this.updateState({ working: false, rowErrors: [...errors], canImport: errors.length === 0 });
   }
 
+/**
+ * Extracts the successful payload from a backend response while tolerating plain values and legacy direct payloads during local state updates.
+ */
   private extractData<T>(response: ApiResponse<T> | T, fallbackName: string): T {
     if (response && typeof response === 'object' && 'success' in response && response.success === true) {
       return response.data as T;
@@ -235,6 +262,9 @@ export class AppStore {
     return response as T;
   }
 
+/**
+ * Reads backend validation details from the HTTP error payload and returns an empty list when no structured validation errors are present.
+ */
   private extractErrors(error: HttpErrorResponse): ErrorList[] {
     const details = (error.error as { error?: { details?: { errors?: ErrorList[] } } } | undefined)?.error?.details;
     return (details?.errors as ErrorList[] | undefined) ?? [];

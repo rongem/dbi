@@ -36,6 +36,10 @@ let poolPromise: Promise<sql.ConnectionPool> | null = null;
 
 let connectedPool: sql.ConnectionPool | null = null;
 
+/**
+ * Returns a shared SQL Server connection pool and lazily creates it on first use.
+ * The pool is cached to avoid reconnecting on every request while still handling startup failures consistently.
+ */
 export const pool = async () => {
     if (connectedPool) return connectedPool;
     if (!poolPromise) {
@@ -55,6 +59,9 @@ export const pool = async () => {
     return connectedPool = p;
 }
 
+/**
+ * Closes the database pool and clears the cached connection so tests and shutdown routines can reset the SQL state reliably.
+ */
 export const closePool = async () => {
     try {
         if (connectedPool) {
@@ -71,11 +78,17 @@ export const closePool = async () => {
     }
 };
 
+/**
+ * Creates a new SQL request bound to the active connection pool and is used by database queries that do not need a transaction.
+ */
 export const requestPromise = async () => {
     const connection = await pool();
     return new Request(connection);
 };
 
+/**
+ * Starts a database transaction over the shared pool so import operations can commit or roll back as one atomic unit.
+ */
 export const transactionPool = async () => {
     const connection = await pool();
     const transaction = new Transaction(connection);
@@ -87,6 +100,9 @@ export const transactionRequest = async (transaction: sql.Transaction, overrides
 }
 
 // preflight check if connection works and all tables and stored procedures exist
+/**
+ * Performs a lightweight database readiness check and confirms that the authorization table exists and is accessible to the configured user.
+ */
 export const checkDatabase = async () => {
     const req = await requestPromise();
     try {

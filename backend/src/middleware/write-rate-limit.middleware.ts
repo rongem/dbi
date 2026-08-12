@@ -12,8 +12,14 @@ type CounterEntry = {
 const unsafeMethods = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
 const counters = new Map<string, CounterEntry>();
 
+/**
+ * Determines the rate-limit identity for a request based on the authenticated username, IP address, or a fallback value.
+ */
 const getRequesterKey = (req: Request) => req.userName || req.ip || 'anonymous';
 
+/**
+ * Removes rate-limit counters whose time window has already expired so stale entries do not accumulate indefinitely.
+ */
 const removeExpiredEntries = (threshold: number) => {
     for (const [key, entry] of counters.entries()) {
         if (entry.windowStart < threshold) {
@@ -22,6 +28,10 @@ const removeExpiredEntries = (threshold: number) => {
     }
 };
 
+/**
+ * Enforces a sliding-window request cap for state-changing methods. It tracks requests per user or client, prunes expired counters,
+ * and returns a 429 response once the configured threshold is exceeded within the active time window.
+ */
 export const enforceWriteRateLimit = (dependencies?: ReadConfigDependency) => {
     return (req: Request, res: Response, next: NextFunction) => {
         const env = getReadConfig(dependencies)();

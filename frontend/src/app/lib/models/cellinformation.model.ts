@@ -74,6 +74,10 @@ export class CellInformation{
 
     private errorDescriptions: string[] = [];
 
+/**
+ * Creates a typed cell view for a spreadsheet value and validates it against the column definition, including logical types and backend-provided constraints.
+ * The constructor normalizes empty values, checks expected data types, and records the user-facing validation messages used in the UI.
+ */
     constructor(private cellContent: CellContent, private columnDefinition: Column) {
         if (!cellContent) throw new Error($localize `Missing cell content`);
         if (!columnDefinition) throw new Error($localize `Missing column definition for ` + JSON.stringify(cellContent));
@@ -140,6 +144,9 @@ export class CellInformation{
         return value;
     }
 
+/**
+ * Applies backend-defined constraints such as enum membership, string length, binary size, and numeric ranges to the current cell value.
+ */
     private validateConstraints() {
         const constraints = this.columnDefinition.constraints;
         if (!constraints) {
@@ -158,6 +165,9 @@ export class CellInformation{
         this.validateNumberConstraints();
     }
 
+/**
+ * Checks string-specific limits like minimum and maximum length before a cell is marked as valid.
+ */
     private validateStringConstraints() {
         const constraints = this.columnDefinition.constraints?.string;
         if (!constraints || typeof this.value !== 'string') {
@@ -172,6 +182,9 @@ export class CellInformation{
         }
     }
 
+/**
+ * Ensures that binary-like string values do not exceed the backend-defined maximum byte length.
+ */
     private validateBinaryConstraints() {
         const maxBytes = this.columnDefinition.constraints?.binary?.maxBytes;
         if (maxBytes === undefined || typeof this.value !== 'string') {
@@ -184,6 +197,9 @@ export class CellInformation{
         }
     }
 
+/**
+ * Validates numeric boundaries such as minimum, maximum, and integer-only settings using the normalized locale-aware number value.
+ */
     private validateNumberConstraints() {
         const constraints = this.columnDefinition.constraints?.number;
         const value = this.numberValue;
@@ -202,6 +218,9 @@ export class CellInformation{
         }
     }
 
+/**
+ * Parses a date string using a locale-oriented format template and converts it into a JavaScript Date instance.
+ */
     private parseDate(input: string, format: string = 'yyyy-mm-dd') {
         const parts = input.match(/(\d+)/g);
         if (!parts || parts.length < 3) {

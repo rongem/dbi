@@ -4,6 +4,9 @@ type LogDetails = Record<string, unknown> | string | number | boolean | null | u
 
 const SENSITIVE_KEYS = ['password', 'secret', 'token'];
 
+/**
+ * Redacts sensitive keys from a log payload so credentials and tokens are never written to plain-text output.
+ */
 const maskSensitiveData = (details: LogDetails): LogDetails => {
     if (typeof details !== 'object' || details === null) return details;
     const masked: Record<string, unknown> = {};
@@ -13,6 +16,9 @@ const maskSensitiveData = (details: LogDetails): LogDetails => {
     return masked as LogDetails;
 };
 
+/**
+ * Writes a structured log entry with a timestamp, level, and sanitized details while sending errors to stderr and warnings/info to stdout.
+ */
 const write = (level: LogLevel, message: string, details?: LogDetails) => {
     const entry: Record<string, unknown> = {
         level,

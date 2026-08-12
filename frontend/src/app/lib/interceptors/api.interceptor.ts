@@ -12,6 +12,9 @@ export class ApiInterceptor implements HttpInterceptor {
     private readonly toastService: ToastService,
   ) {}
 
+/**
+ * Adds correlation and CSRF headers to outgoing requests and converts backend HTTP failures into user-visible toast notifications.
+ */
   intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const requestId = typeof globalThis.crypto?.randomUUID === 'function'
       ? globalThis.crypto.randomUUID()
@@ -44,6 +47,9 @@ export class ApiInterceptor implements HttpInterceptor {
     );
   }
 
+/**
+ * Extracts the meaningful backend error message from the response payload and falls back to a generic request error when no structured message is available.
+ */
   private extractErrorMessage(error: HttpErrorResponse): string {
     const payload = error.error as { error?: { message?: string } } | undefined;
     if (payload?.error?.message) {

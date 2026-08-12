@@ -7,10 +7,17 @@ import { isCsrfTokenValid } from '../services/csrf-token.service.js';
 
 const unsafeMethods = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
 
+/**
+ * Normalizes an Origin header to a canonical origin string so it can be compared against the configured allow-list.
+ */
 const normalizeOrigin = (originValue: string) => {
     return new URL(originValue).origin.toLocaleLowerCase();
 };
 
+/**
+ * Rejects unsafe HTTP requests whose Origin header is missing, malformed, or not part of the configured allow-list.
+ * The middleware is only active when origin protection is enabled and the request method is one of the unsafe verbs.
+ */
 export const enforceAllowedOriginsForUnsafeMethods = (dependencies?: ReadConfigDependency) => {
     return (req: Request, res: Response, next: NextFunction) => {
         const env = getReadConfig(dependencies)();
@@ -35,6 +42,10 @@ export const enforceAllowedOriginsForUnsafeMethods = (dependencies?: ReadConfigD
     };
 };
 
+/**
+ * Validates the x-csrf-token header for unsafe requests by checking token presence and comparing it against the authenticated user.
+ * This protects state-changing endpoints against cross-site request forgery when CSRF protection is enabled.
+ */
 export const enforceCsrfTokenForUnsafeMethods = (dependencies?: ReadConfigDependency) => {
     return (req: Request, res: Response, next: NextFunction) => {
         const env = getReadConfig(dependencies)();

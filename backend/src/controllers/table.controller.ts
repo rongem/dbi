@@ -8,6 +8,9 @@ import { logger } from '../utils/logger.js';
 import { HttpError } from '../models/rest-api/httpError.model.js';
 import { classifyImportResultStatus } from '../utils/import-audit.js';
 
+/**
+ * Loads the column metadata for a selected schema and table and returns it in the API response so the frontend can render validation hints and import controls.
+ */
 export const retrieveAndSendTableColumns = async (req: Request, res: Response) => {
     const columns = await getTableColumns(req.params[schemaDescriptor] as string, req.params[tableDescriptor] as string);
     res.json({
@@ -16,14 +19,23 @@ export const retrieveAndSendTableColumns = async (req: Request, res: Response) =
     });
 };
 
+/**
+ * Validates a row set in dry-run mode and returns import status information without committing database changes.
+ */
 export const previewTableRows = async (req: Request, res: Response) => {
     return handleImportTableRows(req, res, previewTableImport, 'preview');
 }
 
+/**
+ * Commits the validated row set to the target table after all backend checks and import validation have succeeded.
+ */
 export const commitTableRows = async (req: Request, res: Response) => {
     return handleImportTableRows(req, res, commitTableImport, 'commit');
 }
 
+/**
+ * Executes the common import flow for preview or commit mode, records audit data, and maps internal import failures to an API response with the correct status.
+ */
 const handleImportTableRows = async (
     req: Request,
     res: Response,

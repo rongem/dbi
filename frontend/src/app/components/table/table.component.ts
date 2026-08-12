@@ -29,6 +29,9 @@ export class TableComponent implements OnInit, OnDestroy {
   private table = '';
   private subscriptions: Subscription[] = [];
 
+/**
+ * Keeps the table view synchronized with the store and triggers backend preview requests whenever the current dataset becomes valid.
+ */
   constructor(private readonly store: AppStore, private readonly router: Router, private readonly route: ActivatedRoute, private readonly toastService: ToastService) {
     effect(() => {
       const rowNumbers = this.store.rowNumbers();
@@ -40,6 +43,9 @@ export class TableComponent implements OnInit, OnDestroy {
     });
   }
 
+/**
+ * Resolves the selected schema/table from the URL and updates the active store state when the route changes.
+ */
   ngOnInit(): void {
     this.subscriptions.push(
       this.route.params.subscribe(({schema, table}) => {
@@ -66,6 +72,9 @@ export class TableComponent implements OnInit, OnDestroy {
     };
   }
 
+/**
+ * Converts the validated spreadsheet cells into the backend row payload format while skipping empty optional values and preserving only typed data.
+ */
   private createRowsForBackend(cellInformations: CellInformation[], rowNumbers: number[]) {
     const rows: Row[] = [];
     for (const rowNumber of rowNumbers) {
@@ -91,6 +100,9 @@ export class TableComponent implements OnInit, OnDestroy {
   getCellInformation = (rowIndex: number, columIndex: number) =>
     this.store.cellInformation(rowIndex, columIndex)();
 
+/**
+ * Builds the tooltip content for a column by combining metadata such as key flags, logical types, allowed values, and numeric/string boundaries.
+ */
   getColumnTitle(columnPosition: number): string {
     const column = this.getColumn(columnPosition);
     const content: string[] = [];
@@ -146,6 +158,9 @@ export class TableComponent implements OnInit, OnDestroy {
   readonly canImport = this.store.canImport;
   readonly importedRows = this.store.importedRows;
 
+/**
+ * Handles pasted spreadsheet data from the clipboard, sanitizes it into rows and columns, and writes the resulting values into the application state.
+ */
   @HostListener('window:paste', ['$event'])
   onPaste(event: ClipboardEvent) {
     event.stopPropagation();
@@ -161,6 +176,9 @@ export class TableComponent implements OnInit, OnDestroy {
     }
   }
 
+/**
+ * Normalizes pasted rows to the current table width so all cells align with the visible column mappings before validation begins.
+ */
   private fitRowWidth(rows: string[][], columnMappings: number[]) {
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
@@ -172,6 +190,9 @@ export class TableComponent implements OnInit, OnDestroy {
     }
   }
 
+/**
+ * Converts raw pasted rows into CellContent objects so each value is bound to its row and column position for validation and import sequencing.
+ */
   private fillCellContents(rows: string[][]) {
     const contents: CellContent[] = [];
     for (let i = 0; i < rows.length; i++) {

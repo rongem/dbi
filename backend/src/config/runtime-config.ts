@@ -26,6 +26,10 @@ const parseCsv = (value: string | undefined) => (value ?? '')
     .map(item => item.trim())
     .filter(item => item.length > 0);
 
+/**
+ * Parses a string-based boolean environment value and falls back to a default when the value is missing or malformed.
+ * Supported truthy values are 1, true, yes, and on; supported falsey values are 0, false, no, and off.
+ */
 const parseBoolean = (value: string | undefined, fallback: boolean) => {
     if (value === undefined) return fallback;
     const normalized = value.trim().toLocaleLowerCase();
@@ -34,6 +38,9 @@ const parseBoolean = (value: string | undefined, fallback: boolean) => {
     return fallback;
 };
 
+/**
+ * Parses an integer from an environment variable and keeps the provided fallback when the value is empty or invalid.
+ */
 const parseInteger = (value: string | undefined, fallback: number) => {
     if (!value) return fallback;
     const parsed = Number.parseInt(value.trim(), 10);
@@ -41,6 +48,10 @@ const parseInteger = (value: string | undefined, fallback: number) => {
     return parsed;
 };
 
+/**
+ * Reads the runtime configuration from environment variables and normalizes defaults for security, locale, and rate-limit settings.
+ * The function centralizes parsing logic so every service uses the same canonical values for authentication, CORS, CSRF, and business limits.
+ */
 export const readRuntimeConfig = (): RuntimeConfig => {
     const authMode = process.env.AUTH_MODE?.trim().toLocaleLowerCase() ?? 'ntlm';
     const nodeEnv = process.env.NODE_ENV?.trim().toLocaleLowerCase() ?? 'development';

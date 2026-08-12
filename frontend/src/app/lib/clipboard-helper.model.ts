@@ -1,3 +1,7 @@
+/**
+ * Extracts spreadsheet-like table data from the clipboard and either returns a valid row/column matrix or throws a clear error for unsupported content.
+ * The implementation prefers HTML tables because they preserve the row structure better than plain text, and it falls back to tab-delimited text when needed.
+ */
 export class ClipboardHelper {
     static getTableContent(data: DataTransfer): string[][] {
         // first, try html
@@ -55,6 +59,9 @@ export class ClipboardHelper {
         throw new Error('No valid table could be retrieved from clipboard.');
     }
 
+/**
+ * Rejects clipboard content that contains scriptable HTML elements or unsafe attributes before it is turned into rows for import.
+ */
     private static sanitize(result: string) {
         const regexTag = /\<(applet|audio|embed|iframe|object|script|svg|video)/gmi;
         const regexAttr = /\<[^>]+[\s\/](on|action|background="http|cite|code|data|formaction|href="http|href="javascript:|icon|longdesk|manifest|profile|src|style|usemap|xlink:href)/gmi;

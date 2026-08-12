@@ -1,6 +1,9 @@
 import { Request, Response } from 'express';
 import { checkDatabase } from '../models/db.js';
 
+/**
+ * Returns a lightweight health payload used by monitoring endpoints and internal readiness checks.
+ */
 export const getHealth = (req: Request, res: Response) => {
     res.json({
         success: true,
@@ -12,6 +15,9 @@ export const getHealth = (req: Request, res: Response) => {
     });
 };
 
+/**
+ * Verifies that the application can reach the configured database and reports a 503 status when the backing store is not ready yet.
+ */
 export const getReadiness = async (req: Request, res: Response) => {
     const databaseReady = await checkDatabase();
     if (!databaseReady) {

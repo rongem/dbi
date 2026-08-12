@@ -18,6 +18,9 @@ export type ErrorResponse = {
     };
 };
 
+/**
+ * Handles missing routes by returning the standard HTTP 404 response.
+ */
 export function error404(req: Request, res: Response, next: NextFunction) {
     res.sendStatus(404);
 }
@@ -80,6 +83,10 @@ export const normalizeError = (error: unknown): ErrorResponse => {
     };
 };
 
+/**
+ * Normalizes an error into the public API payload, logs it with request metadata, and sends a consistent status-code-specific response.
+ * This keeps client feedback stable while still preserving enough detail for operational diagnostics.
+ */
 export const sendErrorResponse = (req: Request, res: Response, error: unknown) => {
     const statusCode = error instanceof HttpError ? error.httpStatusCode : 500;
     const logPayload = {

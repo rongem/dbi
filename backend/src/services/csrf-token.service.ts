@@ -10,6 +10,9 @@ let fallbackSecretLogged = false;
 const base64UrlEncode = (value: string) => Buffer.from(value, 'utf8').toString('base64url');
 const base64UrlDecode = (value: string) => Buffer.from(value, 'base64url').toString('utf8');
 
+/**
+ * Resolves the effective secret for CSRF signatures. It prefers the configured secret and falls back to a generated in-memory value only for local/dev safety.
+ */
 const resolveCsrfSecret = () => {
     const env = readRuntimeConfig();
     if (env.csrfSecret) {
@@ -22,10 +25,16 @@ const resolveCsrfSecret = () => {
     return fallbackSecret;
 };
 
+/**
+ * Creates a HMAC signature for a base64url-encoded token payload using the current effective CSRF secret.
+ */
 const createSignature = (payload: string, secret: string) => {
     return createHmac('sha256', secret).update(payload).digest('base64url');
 };
 
+/**
+ * Generates a signed CSRF token that binds a username and expiry time together so the backend can verify later requests without storing the token server-side.
+ */
 export const createCsrfToken = (userName: string, now: number = Date.now()): string => {
     const payload = JSON.stringify({
         userName,
@@ -36,6 +45,9 @@ export const createCsrfToken = (userName: string, now: number = Date.now()): str
     return `${encodedPayload}.${signature}`;
 };
 
+/**
+ * Validates a signed CSRF token by recomputing the HMAC, checking the username and expiry, and guarding against timing attacks.
+ */
 export const isCsrfTokenValid = (token: string, userName: string, now: number = Date.now()): boolean => {
     const [encodedPayload, signature] = token.split('.');
     if (!encodedPayload || !signature) {

@@ -54,6 +54,10 @@ const createUser = async (name: string): Promise<User> => {
     }
 };
 
+/**
+ * Validates that the authorization table contains the minimum required username and allowed columns regardless of casing.
+ * The function returns the canonical column names so the rest of the auth workflow can read them consistently.
+ */
 const checkIfTableContainsRequiredColumnsCaseInsensitiveAndReturnKeyNames = (recordset: sql.IRecordSet<any>) => {
     const env = readRuntimeConfig();
     const userKey = getDatabaseKey(recordset, 'username');

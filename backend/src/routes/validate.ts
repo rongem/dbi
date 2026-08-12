@@ -5,6 +5,9 @@ import { readRuntimeConfig } from '../config/runtime-config.js';
 import { HttpError } from '../models/rest-api/httpError.model.js';
 import { getLocale } from '../utils/locales.function.js';
 
+/**
+ * Ensures the request is authenticated as a user with write privileges and that previous express-validator checks passed before the controller logic proceeds.
+ */
 export const validate = (req: Request, res: Response, next: NextFunction) => {
     const env = readRuntimeConfig();
     const errors = validationResult(req);
