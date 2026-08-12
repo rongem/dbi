@@ -35,7 +35,7 @@ describe('TableComponent', () => {
     rowNumbers: signal([0]),
     tableContainsErrors: signal(false),
     cellInformations: signal([]),
-    columnMapping: signal([0]),
+    columnMapping: signal([0, 1]),
     importedRows: signal(undefined),
     rowErrorsFor: vi.fn(() => computed(() => [])),
     rowContainsErrors: vi.fn(() => computed(() => false)),
@@ -70,5 +70,22 @@ describe('TableComponent', () => {
     expect(tooltip).toContain('Allowed Data Types: number');
     expect(tooltip).toContain('Number range: 0 .. 100');
     expect(tooltip).toContain('Allowed values: 10|25');
+  });
+
+  it('fills the store with pasted rows and keeps them aligned to the current column width', () => {
+    const setCellContents = vi.spyOn(store, 'setCellContents');
+    const data = {
+      stopPropagation: vi.fn(),
+      clipboardData: {
+        getData: (type: string) => type === 'text/plain' ? '10\t25\n30\t40' : '',
+      },
+    } as unknown as ClipboardEvent;
+
+    component.onPaste(data);
+
+    expect(setCellContents).toHaveBeenCalledTimes(1);
+    const contents = setCellContents.mock.calls[0][0];
+    expect(contents).toHaveLength(4);
+    expect(contents.map((cell: { originalValue: string }) => cell.originalValue)).toEqual(['10', '25', '30', '40']);
   });
 });
