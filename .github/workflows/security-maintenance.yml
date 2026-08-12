@@ -1,0 +1,49 @@
+name: Security Maintenance
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 4 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  npm-audit:
+    name: NPM Audit
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - backend
+          - frontend
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+          cache-dependency-path: ${{ matrix.project }}/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ${{ matrix.project }}
+        run: npm ci
+
+      - name: Run npm audit (high and critical)
+        working-directory: ${{ matrix.project }}
+        run: npm audit --audit-level=high
+
+  docker-build:
+    name: Docker Build With Latest Base
+    runs-on: ubuntu-latest
+    needs: npm-audit
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image with latest base layers
+        run: docker build --pull --no-cache -t dbi:security-check .
