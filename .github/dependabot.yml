@@ -20,11 +20,28 @@ updates:
       day: monday
       time: "05:10"
     open-pull-requests-limit: 10
+    # Do not open PRs for indirect lockfile-only churn that Angular controls.
+    allow:
+      - dependency-type: direct
+    # Keep Angular framework packages together in one coordinated PR.
+    groups:
+      angular-ecosystem:
+        patterns:
+          - "@angular/*"
+          - "rxjs"
+          - "zone.js"
+          - "typescript"
+        update-types:
+          - "minor"
+          - "patch"
     # Avoid framework-breaking proposals (e.g. unsupported TS majors for Angular).
     ignore:
       - dependency-name: "*"
         update-types:
           - "version-update:semver-major"
+      - dependency-name: "typescript"
+        versions:
+          - ">=7"
 
   - package-ecosystem: docker
     directory: /
