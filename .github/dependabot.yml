@@ -7,9 +7,11 @@ updates:
       day: monday
       time: "05:00"
     open-pull-requests-limit: 10
-    labels:
-      - dependencies
-      - security
+    # Keep backend npm updates safe/automatic: only patch + minor.
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
 
   - package-ecosystem: npm
     directory: /frontend
@@ -18,9 +20,11 @@ updates:
       day: monday
       time: "05:10"
     open-pull-requests-limit: 10
-    labels:
-      - dependencies
-      - security
+    # Avoid framework-breaking proposals (e.g. unsupported TS majors for Angular).
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
 
   - package-ecosystem: docker
     directory: /
@@ -29,6 +33,3 @@ updates:
       day: monday
       time: "05:20"
     open-pull-requests-limit: 5
-    labels:
-      - dependencies
-      - security
