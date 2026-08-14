@@ -1,6 +1,6 @@
 {
   "name": "dbi-backend",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Database importer backend",
   "type": "module",
   "main": "app.ts",
@@ -47,6 +47,6 @@
     "tsqlstring": "^1.0.1"
   },
   "allowScripts": {
-    "unrs-resolver@1.12.2": true
+    "esbuild": true
   }
 }

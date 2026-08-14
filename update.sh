@@ -11,6 +11,7 @@ npm version patch
 npm install
 npm outdated
 ng build
+ng test
 cd ../backend/
 echo Updating backend
 npm update
