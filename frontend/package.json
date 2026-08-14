@@ -31,6 +31,7 @@
     "@angular/compiler-cli": "^22.1.2",
     "@angular/localize": "^22.1.2",
     "@vitest/browser-playwright": "^4.1.10",
+    "happy-dom": "^20.11.2",
     "typescript": "~6.0.3",
     "vitest": "^4.1.10"
   },
