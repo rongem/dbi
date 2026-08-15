@@ -39,9 +39,6 @@ updates:
       - dependency-name: "*"
         update-types:
           - "version-update:semver-major"
-      - dependency-name: "typescript"
-        versions:
-          - ">=7"
 
   - package-ecosystem: docker
     directory: /
