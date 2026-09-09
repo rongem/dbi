@@ -1,8 +1,8 @@
 import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { describe, expect, it, beforeEach, vi } from 'vitest';
 
-import { AppModule } from './app.module';
 import { AppComponent } from './app.component';
 import { AppStore } from './lib/store/app-store.service';
 
@@ -18,8 +18,11 @@ describe('AppComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppModule],
-      providers: [{ provide: AppStore, useValue: store }],
+      imports: [AppComponent],
+      providers: [
+        { provide: AppStore, useValue: store },
+        provideRouter([]),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AppComponent);
