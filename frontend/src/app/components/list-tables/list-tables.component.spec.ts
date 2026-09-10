@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
-import { RouterTestingModule } from '@angular/router/testing';
 import { computed, signal } from '@angular/core';
 import { of } from 'rxjs';
 import { describe, expect, it, beforeEach, vi } from 'vitest';
@@ -19,7 +18,7 @@ describe('ListTablesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ListTablesComponent, RouterTestingModule],
+      imports: [ListTablesComponent],
       providers: [
         { provide: AppStore, useValue: store },
         { provide: Router, useValue: router },

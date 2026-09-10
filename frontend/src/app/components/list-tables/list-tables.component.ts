@@ -1,6 +1,6 @@
-import { Component, OnDestroy, OnInit, ChangeDetectionStrategy, computed } from '@angular/core';
+import { Component, DestroyRef, OnInit, ChangeDetectionStrategy, computed, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AppStore } from '../../lib/store/app-store.service';
 
 @Component({
@@ -10,15 +10,15 @@ import { AppStore } from '../../lib/store/app-store.service';
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [RouterLink]
 })
-export class ListTablesComponent implements OnInit, OnDestroy {
+export class ListTablesComponent implements OnInit {
   readonly schemas = computed(() => this.store.schemas().map((schema) => schema.toLocaleLowerCase()));
   schemaName = '';
 
-  private subscription?: Subscription;
+  private readonly destroyRef = inject(DestroyRef);
   constructor(private readonly store: AppStore, private readonly router: Router, private readonly route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.subscription = this.route.params.subscribe(({schema}) => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(({schema}) => {
       const normalizedSchemas = this.schemas();
       if (!normalizedSchemas.includes(schema.toLocaleLowerCase())) {
         this.router.navigateByUrl('/schemas', {replaceUrl: true});
@@ -26,10 +26,6 @@ export class ListTablesComponent implements OnInit, OnDestroy {
         this.schemaName = schema;
       }
     });
-  }
-
-  ngOnDestroy(): void {
-    this.subscription?.unsubscribe();
   }
 
   getTables(schemaName: string) {

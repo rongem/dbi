@@ -1,7 +1,7 @@
-import { Component, ElementRef, HostListener, OnDestroy, OnInit, viewChildren, ChangeDetectionStrategy, computed, effect } from '@angular/core';
+import { Component, DestroyRef, ElementRef, HostListener, OnInit, inject, viewChildren, ChangeDetectionStrategy, computed, effect } from '@angular/core';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { NgClass } from '@angular/common';
-import { Subscription } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { ClipboardHelper } from '../../lib/clipboard-helper.model';
 import { CellContent } from '../../lib/models/cellcontent.model';
@@ -19,7 +19,7 @@ import { ToastService } from '../../lib/services/toast.service';
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [RouterLink, NgClass, ErrorBadgeComponent]
 })
-export class TableComponent implements OnInit, OnDestroy {
+export class TableComponent implements OnInit {
   readonly schemasCount = computed(() => this.store.schemas().length);
   readonly columnDefinitions = this.store.columnDefinitions;
   readonly cells = viewChildren<ElementRef<HTMLTableCellElement>>('td');
@@ -27,7 +27,7 @@ export class TableComponent implements OnInit, OnDestroy {
   presumedTargetIndex: number | undefined;
   schema = '';
   private table = '';
-  private subscriptions: Subscription[] = [];
+  private readonly destroyRef = inject(DestroyRef);
 
 /**
  * Keeps the table view synchronized with the store and triggers backend preview requests whenever the current dataset becomes valid.
@@ -47,8 +47,7 @@ export class TableComponent implements OnInit, OnDestroy {
  * Resolves the selected schema/table from the URL and updates the active store state when the route changes.
  */
   ngOnInit(): void {
-    this.subscriptions.push(
-      this.route.params.subscribe(({schema, table}) => {
+    this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(({schema, table}) => {
         const targetTable = this.store.tables().find((candidate) =>
           candidate.name.toLocaleLowerCase() === table.toString().toLocaleLowerCase() &&
           candidate.schema.toLocaleLowerCase() === (schema as string).toLocaleLowerCase()
@@ -60,8 +59,7 @@ export class TableComponent implements OnInit, OnDestroy {
           this.table = table.toString();
           this.store.selectTable(targetTable);
         }
-      })
-    );
+      });
   }
 
   private createRowContainer(rows: Row[]): RowContainer {
@@ -87,12 +85,6 @@ export class TableComponent implements OnInit, OnDestroy {
       }
     }
     return rows;
-  }
-
-  ngOnDestroy(): void {
-    for (const sub of this.subscriptions) {
-      sub.unsubscribe();
-    }
   }
 
   getColumn = (columnIndex: number) => this.store.columnDefinition(columnIndex)();
