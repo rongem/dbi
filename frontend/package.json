@@ -1,6 +1,6 @@
 {
   "name": "dbi-frontend",
-  "version": "0.4.10",
+  "version": "0.4.11",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",
@@ -24,8 +24,8 @@
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@angular/build": "^22.2.1",
-    "@angular/cli": "~22.2.1",
+    "@angular/build": "^22.2.2",
+    "@angular/cli": "~22.2.2",
     "@angular/compiler-cli": "^22.2.1",
     "@angular/localize": "^22.2.1",
     "@vitest/browser-playwright": "^4.1.10",

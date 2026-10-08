@@ -1,6 +1,6 @@
 {
   "name": "dbi-backend",
-  "version": "0.4.10",
+  "version": "0.4.11",
   "description": "Database importer backend",
   "type": "module",
   "main": "app.ts",
@@ -33,12 +33,12 @@
     "@types/supertest": "^7.2.1",
     "@types/tsqlstring": "^1.0.2",
     "cross-env": "^10.1.0",
+    "dotenv": "^18.0.6",
     "tsx": "^4.23.1",
     "typescript": "^7.0.2"
   },
   "dependencies": {
     "body-parser": "^2.2.0",
-    "dotenv": "^17.4.2",
     "express": "^5.1.0",
     "express-ntlm": "^2.6.2",
     "express-validator": "^7.0.1",
